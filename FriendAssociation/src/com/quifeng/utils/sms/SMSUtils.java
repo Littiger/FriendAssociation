@@ -40,15 +40,13 @@ public class SMSUtils {
     private static final String SMSAPPID="1400464327";
 	private static final String SMSSECREID="AKIDCEXv9FVF3uwk9SvtW0K2dsdGnBPfGWIw";
 	private static final String SMSSECREKEY = "i7NdrK2Y9gZpaBlDeMoYN9g6hRvDdwzp";
-	private static final String SMSSDKAPPID="1400464327";
-	private static final String SMSSIGN="程序测试站";
+	private static final String SMSSIGN="程序测试站公众号";
 	private static final String SMSTEMPLATEID="818497";
 
 
-    public static void main(String[] args) throws TencentCloudSDKException {
-		sendSms("1234", new String[]{"8616636123475"});
-	}
-
+//    public static void main(String[] args) throws TencentCloudSDKException {
+//		sendSms("1234", new String[]{"8618731072731"});
+//	}
     /**
      * 发送短信
      * @param valcode 模板参数

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.quifeng.servlet.registered.RegisteredServlet;
+import com.quifeng.servlet.login.RegisteredServlet;
 import com.quifeng.utils.error.ErrorUtils;
 
 /**

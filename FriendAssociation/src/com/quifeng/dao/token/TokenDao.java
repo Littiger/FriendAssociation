@@ -57,7 +57,6 @@ public class TokenDao {
 					token
 			});
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return data.get("uid").toString();

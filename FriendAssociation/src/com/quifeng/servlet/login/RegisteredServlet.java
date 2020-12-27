@@ -1,4 +1,4 @@
-package com.quifeng.servlet.registered;
+package com.quifeng.servlet.login;
 
 import java.io.IOException;
 import java.io.PrintWriter;

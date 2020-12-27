@@ -1,4 +1,4 @@
-package com.quifeng.config.filter;
+package com.quifeng.config;
 
 import java.io.IOException;
 
@@ -7,6 +7,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @Desc 1.设置编码 2.设置跨域  
  */
+@WebFilter("/*")
 public class CharFilter implements Filter {
 
 	@Override
