@@ -892,6 +892,118 @@ public class CircleDao {
 				});
 	}
 	
+	/**
+	 * @desc  收藏帖子
+	 * @param postid
+	 * @param token
+	 * @throws NumberFormatException
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public void addPostAos(String postid, String token) throws NumberFormatException, ClassNotFoundException, SQLException, FileNotFoundException, IOException {
+		
+		//获取用户id
+		String uid = tokenDao.queryUidByToken(token);
+		
+		//获取该条收藏信息
+		Map<String, Object> map = dao.executeQueryForMap("select * from aos where postid=? and uid=?",new int[]{Types.INTEGER,Types.INTEGER},new Object[]{Integer.parseInt(postid),Integer.parseInt(uid)});
+		//第一次收藏
+		if(map==null){
+			dao.executeUpdate("insert into aos values(0,?,?,'0',?)",
+					new int[]{
+							Types.INTEGER,
+							Types.INTEGER,
+							Types.INTEGER
+					},
+					new Object[]{
+							Integer.parseInt(postid),
+							Integer.parseInt(uid),
+							Integer.parseInt(queryUserById(uid).get("schoolid").toString()),
+					});
+			//postinfo  postzan+1
+			dao.executeUpdate("update postinfo set postaos=postaos+1 where postid=?",
+					new int[]{
+							Types.INTEGER
+					},
+					new Object[]{
+							Integer.parseInt(postid)
+					});
+			
+			
+
+			
+		}
+		//已收藏
+		else{
+			String display = map.get("display").toString();
+			//取消收藏
+			if(display.equals("0")){
+				dao.executeUpdate("update aos set display='1' where postid=? and uid=?",
+						new int[]{
+								Types.INTEGER,
+								Types.INTEGER
+						},
+						new Object[]{
+								Integer.parseInt(postid),
+								Integer.parseInt(uid)	
+						});
+				//postinfo  postaos-1
+				dao.executeUpdate("update postinfo set postaos=postaos-1 where postid=?",
+						new int[]{
+								Types.INTEGER
+						},
+						new Object[]{
+								Integer.parseInt(postid)
+						});
+			}
+			//收藏
+			else if(display.equals("1")){
+				dao.executeUpdate("update aos set display='0' where postid=? and uid=?",
+						new int[]{
+								Types.INTEGER,
+								Types.INTEGER
+						},
+						new Object[]{
+								Integer.parseInt(postid),
+								Integer.parseInt(uid)	
+						});
+				//postinfo  postaos+1
+				dao.executeUpdate("update postinfo set postaos=postaos+1 where postid=?",
+						new int[]{
+								Types.INTEGER
+						},
+						new Object[]{
+								Integer.parseInt(postid)
+						});
+			}
+		}
+			
+	}
+	
+	/**
+	 * 查询收藏
+	 * @param postid
+	 * @param token
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 */
+	public Map<String, Object> queryPostAos(String postid, String token) throws NumberFormatException, ClassNotFoundException, SQLException {
+		String uid = tokenDao.queryUidByToken(token);
+		//获取display
+		return dao.executeQueryForMap("select * from aos where postid=? and uid=?",
+						new int[]{
+								Types.INTEGER,
+								Types.INTEGER
+						},
+						new Object[]{
+								Integer.parseInt(postid),
+								Integer.parseInt(uid)
+						});
+	}
 	
 	
 }
