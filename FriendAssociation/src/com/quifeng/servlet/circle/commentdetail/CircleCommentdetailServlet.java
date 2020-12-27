@@ -90,7 +90,11 @@ public class CircleCommentdetailServlet {
 				data.put("postos", circleDao.queryOsCount(FiOsMessage.get("osfirstid").toString()));
 			}
 			//获取二级或以上评论
-			
+			List<Map<String, Object>> allOthOs =circleDao.querySEOthOs(comment);
+			for (Map<String, Object> map : allOthOs) {
+				//获取所有二级以上评论
+				
+			}
 			
 			
 		} catch (Exception e) {
