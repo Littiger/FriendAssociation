@@ -44,9 +44,9 @@ public class SMSUtils {
 	private static final String SMSTEMPLATEID="818497";
 
 
-//    public static void main(String[] args) throws TencentCloudSDKException {
-//		sendSms("1234", new String[]{"8618731072731"});
-//	}
+    public static void main(String[] args) throws TencentCloudSDKException {
+		sendSms("1234", new String[]{"8618731072731"});
+	}
     /**
      * 发送短信
      * @param valcode 模板参数

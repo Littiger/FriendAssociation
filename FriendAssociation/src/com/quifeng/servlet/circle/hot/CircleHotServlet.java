@@ -38,14 +38,14 @@ public class CircleHotServlet {
 		String token = request.getParameter("token");
 		String size = request.getParameter("size");
 		//空值判断
-		if(hottype.equals("") || hottype == null){
+		if(hottype == null || hottype.equals("")){
 			jsonObject = new JSONObject();
 			jsonObject.put("code", "-1");
 			jsonObject.put("msg", "未获取到推荐类型");
 			writer.write(jsonObject.toString());
 			return;
 		}
-		if(token.equals("") || token == null){
+		if(token == null || token.equals("")){
 			jsonObject = new JSONObject();
 			jsonObject.put("code", "-1");
 			jsonObject.put("msg", "未获取到token");
@@ -53,7 +53,7 @@ public class CircleHotServlet {
 			return;
 		}
 		//获取帖子数量  默认值为10
-		if(size.equals("") || size == null){
+		if(size == null || size.equals("")){
 			size="10";
 		}
 		//推荐类型编号不属于校内、校外
@@ -108,13 +108,14 @@ public class CircleHotServlet {
 				
 				//是否点赞或收藏
 				if(!map.get("zuid").toString().equals("0")){
-					System.out.println(map.get("zuid"));
+					System.out.println("zzz"+map.get("zuid").toString());
 					mapPost.put("isgreat", true);
 				}
 				else{
 					mapPost.put("isgreat", false);
 				}
 				if(!map.get("auid").toString().equals("0")){
+					System.out.println("aaa"+map.get("auid").toString());
 					mapPost.put("collect", true);
 				}
 				else{

@@ -94,10 +94,10 @@ public class CircleDao {
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 */
-	public static Map<String, Object> queryUserZanAndAos(String postid,String token) throws NumberFormatException, ClassNotFoundException, SQLException{
+	public Map<String, Object> queryUserZanAndAos(String postid,String token) throws NumberFormatException, ClassNotFoundException, SQLException{
 		String uid = tokenDao.queryUidByToken(token);
 		return dao.executeQueryForMap("select z.*,a.* from user"
-				+ " LEFT JOIN (select uid zuid from zan where postid=? and display=0 and osid=0) z"
+				+ " LEFT JOIN (select uid zuid from zan where postid=? and display=0 and osid is null) z"
 				+ " on user.uid=z.zuid"
 				+ " left JOIN (select uid auid from aos where postid=? and display=0 ) a"
 				+ " on user.uid=a.auid"
@@ -261,6 +261,13 @@ public class CircleDao {
 				new int[]{Types.INTEGER},
 				new Object[]{new Integer(postId)});
 	}
+	/**
+	 * 一级评论评论量
+	 * @param string
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public int queryOsCount(String string) throws ClassNotFoundException, SQLException {
 		int temp = new Integer(string);
 		return dao.executeQueryForInt("select count(*) from osother where osfirstid=? and display=0", new int[]{Types.INTEGER}, new Object[]{temp});
@@ -399,7 +406,6 @@ public class CircleDao {
 					postid
 			});
 		} catch (ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return count;
@@ -451,7 +457,270 @@ public class CircleDao {
 		}
 		return count;
 	}
-
+	/**
+	 * 根据id获取一级评论详细信息
+	 * @param comment
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 */
+	public Map<String, Object> queryFiOsMessageById(String comment,String token) throws NumberFormatException, ClassNotFoundException, SQLException {
+		String uid = tokenDao.queryUidByToken(token);
+		String sql = "select * from osfirst LEFT JOIN user on osfirst.uid=user.uid where osfirst.uid=? and osfirst.osfirstid=?";
+		return dao.executeQueryForMap(sql,
+				new int[]{
+						Types.INTEGER,
+						Types.INTEGER
+				},
+				new Object[]{
+					Integer.parseInt(uid),
+					Integer.parseInt(comment)
+				});
+	}
+	/**
+	 * 查看是否点赞该评论
+	 * @param string
+	 * @param token
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 */
+	public Map<String, Object> queryOsZan(String osid, String token) throws NumberFormatException, ClassNotFoundException, SQLException {
+		String uid = tokenDao.queryUidByToken(token);
+		return dao.executeQueryForMap("select * from zan where osid=? and uid=?",
+				new int[]{
+						Types.INTEGER,
+						Types.INTEGER
+				},
+				new Object[]{
+						Integer.parseInt(osid),
+						Integer.parseInt(uid)
+				});
+	}
+	/**
+	 * 添加一级评论
+	 * @throws IOException 
+	 * @throws SQLException 
+	 * @throws FileNotFoundException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 */
+	public void addOsFiOs(String postid, String uid, String comment,String schoolid) throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
+		//osfirst表+一条评论
+		dao.executeUpdate("insert into osfirst values(0,?,?,?,?,0,?)",
+				new int[]{
+						Types.INTEGER,
+						Types.INTEGER,
+						Types.VARCHAR,
+						Types.VARCHAR,
+						Types.INTEGER
+				},
+				new Object[]{
+						Integer.parseInt(postid),
+						Integer.parseInt(uid),
+						System.currentTimeMillis(),
+						comment,
+						Integer.parseInt(schoolid)
+				});
+		addPostOsCount(postid);
+		
+	}
+	/**
+	 * 帖子评论数+1
+	 * @param postid
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public void addPostOsCount(String postid) throws ClassNotFoundException, SQLException, FileNotFoundException, IOException {
+		//postinfo postos+1 评论数+1
+		dao.executeUpdate("update postinfo set postos=postos+1 where postid=?",
+				new int[]{
+						Types.INTEGER
+				},
+				new Object[]{
+						Integer.parseInt(postid)
+				});
+	}
+	/**
+	 * 添加二级评论
+	 * @throws IOException 
+	 * @throws SQLException 
+	 * @throws FileNotFoundException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 */
+	public void addSeOs(String osfirstid, String comment, String schoolid) throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
+		int id = Integer.parseInt(osfirstid);
+		//osother表添加评论
+		dao.executeUpdate("insert into osother values(0,?,?,?,0,?,?)",
+				new int[]{
+						Types.INTEGER,
+						Types.VARCHAR,
+						Types.INTEGER,
+						Types.VARCHAR,
+						Types.INTEGER
+				},
+				new Object[]{
+						id,
+						comment,
+						-id,
+						System.currentTimeMillis(),
+						Integer.parseInt(schoolid)
+				});
+	}
+	/**
+	 * 添加二级以上评论
+	 * @param osfirstid
+	 * @param comment
+	 * @param string
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 */
+	public void addOthOs(String osfirstid, String comment, String schoolid) throws NumberFormatException, ClassNotFoundException, SQLException, FileNotFoundException, IOException {
+		int idTemp = Integer.parseInt(osfirstid);
+		int id=Integer.parseInt(
+				dao.executeQueryForMap("select * from osother where osotherid=?",
+						new int[]{
+								Types.INTEGER
+						},
+						new Object[]{
+								-idTemp
+						}).get("osfirstid").toString()
+				);
+		dao.executeUpdate("insert into osother values(0,?,?,?,0,?,?)",
+				new int[]{
+						Types.INTEGER,
+						Types.VARCHAR,
+						Types.INTEGER,
+						Types.VARCHAR,
+						Types.INTEGER
+				},new Object[]{
+						id,
+						comment,
+						-idTemp,
+						System.currentTimeMillis(),
+						Integer.parseInt(schoolid)
+				});
+	}
+	/**
+	 * 帖子点赞
+	 * @param postid
+	 * @param token
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 */
+	public void addPostZan(String postid, String token) throws NumberFormatException, ClassNotFoundException, SQLException, FileNotFoundException, IOException {
+		String uid = tokenDao.queryUidByToken(token);
+		//获取display
+		String display = dao.executeQueryForMap("select * from zan where postid=? and uid=? and osid is null",
+						new int[]{
+								Types.INTEGER,
+								Types.INTEGER
+						},
+						new Object[]{
+								Integer.parseInt(postid),
+								Integer.parseInt(uid)
+						}).get("display").toString();
+		//点过赞
+		if(display != null){
+			//取消点赞
+			if(display.equals("0")){
+				dao.executeUpdate("update zan set display=1 where postid=? and uid=? and osid is null",
+						new int[]{
+								Types.INTEGER,
+								Types.INTEGER
+						},
+						new Object[]{
+								Integer.parseInt(postid),
+								Integer.parseInt(uid)	
+						});
+				//postinfo  postzan-1
+				dao.executeUpdate("update postinfo set postzan=postzan-1 where postid=?",
+						new int[]{
+								Types.INTEGER
+						},
+						new Object[]{
+								Integer.parseInt(postid)
+						});
+			}
+			//点赞
+			else if(display.equals("1")){
+				dao.executeUpdate("update zan set display=0 where postid=? and uid=? and osid is null",
+						new int[]{
+								Types.INTEGER,
+								Types.INTEGER
+						},
+						new Object[]{
+								Integer.parseInt(postid),
+								Integer.parseInt(uid)	
+						});
+				//postinfo  postzan+1
+				dao.executeUpdate("update postinfo set postzan=postzan+1 where postid=?",
+						new int[]{
+								Types.INTEGER
+						},
+						new Object[]{
+								Integer.parseInt(postid)
+						});
+			}
+		}
+		//第一次点赞
+		else{
+			dao.executeUpdate("insert into zan values(0,?,?,0,?,null)",
+					new int[]{
+							Types.INTEGER,
+							Types.INTEGER,
+							Types.INTEGER
+					},
+					new Object[]{
+							Integer.parseInt(postid),
+							Integer.parseInt(uid),
+							Integer.parseInt(queryUserById(uid).get("schoolid").toString()),
+					});
+			//postinfo  postzan+1
+			dao.executeUpdate("update postinfo set postzan=postzan+1 where postid=?",
+					new int[]{
+							Types.INTEGER
+					},
+					new Object[]{
+							Integer.parseInt(postid)
+					});
+		}
+		
+	}
+	/**
+	 * 查询点赞情况
+	 * @param postid
+	 * @param token
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 */
+	public Map<String, Object> queryPostZan(String postid, String token) throws NumberFormatException, ClassNotFoundException, SQLException {
+		String uid = tokenDao.queryUidByToken(token);
+		//获取display
+		return dao.executeQueryForMap("select * from zan where postid=? and uid=? and osid is null",
+						new int[]{
+								Types.INTEGER,
+								Types.INTEGER
+						},
+						new Object[]{
+								Integer.parseInt(postid),
+								Integer.parseInt(uid)
+						});
+	}
+	
 	
 	
 }
