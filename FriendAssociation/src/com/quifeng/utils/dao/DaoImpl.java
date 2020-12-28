@@ -393,19 +393,6 @@ public class DaoImpl implements Dao{
 
 		
 		
-	public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException {
-		
-		DaoImpl dao = new DaoImpl();
-		int[] types1 = {Types.VARCHAR};
-		String[] objValues1 = {"%"};
-		
-		
-		List<Map<String, Object>> list = dao.executeQueryForList("select * from  jobs where job_desc like ?", types1, objValues1);
-		
-		System.out.println("list.size()==="+list.size());
-		for (int i = 0; i < list.size(); i++) {
-			System.out.println(  list.get(i) );
-		}
-	}
+
 
 }

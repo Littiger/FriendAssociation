@@ -23,7 +23,7 @@ public class SetschoolController extends HttpServlet{
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		try {
-			loginServlet.setschool(request, response);
+			loginServlet.setSchool(request, response);
 		} catch (Exception e) {
 			out.print(ErrorUtils.errorTomCat());
 		}finally {
