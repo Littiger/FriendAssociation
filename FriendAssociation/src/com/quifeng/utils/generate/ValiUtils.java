@@ -16,7 +16,7 @@ public class ValiUtils {
 	 * @return
 	 */
 	public static boolean isPhone(String phtone){
-		String pattern = "[0-9-()（）]{7,18}";
+		String pattern = "^[1](([3|5|8][\\d])|([4][4,5,6,7,8,9])|([6][2,5,6,7])|([7][^9])|([9][1,8,9]))[\\d]{8}$";
 		Pattern r = Pattern.compile(pattern);
 		Matcher m = r.matcher(phtone);
 		return m.matches();
@@ -48,7 +48,7 @@ public class ValiUtils {
 	 * @return
 	 */
 	public static boolean isStrSize(String str,int size){
-		if (str.length()>size) {
+		if (str.length()<size) {
 			return true;
 		}
 		return false;	

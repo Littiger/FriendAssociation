@@ -2,7 +2,9 @@ package com.quifeng.utils.sms;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -16,7 +18,6 @@ import com.tencentcloudapi.sms.v20190711.models.SendSmsResponse;
 
 public class SMSUtils {
 	
-	/*
 	static Properties pro =null;	
 	static {
     	try {
@@ -29,14 +30,14 @@ public class SMSUtils {
     	
 	}
 	
-    public static final String SMSAPPID= pro.getProperty("SMSAPPID");
-    public static final String SMSSECREID = pro.getProperty("SMSSECREID");
-    public static final String SMSSECREKEY = pro.getProperty("SMSSECREKEY");
-    public static final String SMSSDKAPPID= pro.getProperty("SMSSDKAPPID");
-    public static final String SMSSIGN= pro.getProperty("SMSSIGN");
-    public static final String SMSTEMPLATEID= pro.getProperty("SMSTEMPLATEID");
+//    public static final String SMSAPPID= pro.getProperty("SMSAPPID");
+//    public static final String SMSSECREID = pro.getProperty("SMSSECREID");
+//    public static final String SMSSECREKEY = pro.getProperty("SMSSECREKEY");
+//    public static final String SMSSDKAPPID= pro.getProperty("SMSSDKAPPID");
+//    public static final String SMSSIGN= pro.getProperty("SMSSIGN");
+//    public static final String SMSTEMPLATEID= pro.getProperty("SMSTEMPLATEID");
 
-    */
+  
     private static final String SMSAPPID="1400464327";
 	private static final String SMSSECREID="AKIDCEXv9FVF3uwk9SvtW0K2dsdGnBPfGWIw";
 	private static final String SMSSECREKEY = "i7NdrK2Y9gZpaBlDeMoYN9g6hRvDdwzp";
@@ -44,9 +45,8 @@ public class SMSUtils {
 	private static final String SMSTEMPLATEID="818497";
 
 
-    public static void main(String[] args) throws TencentCloudSDKException {
-		sendSms("1234", new String[]{"8618731072731"});
-	}
+
+
     /**
      * 发送短信
      * @param valcode 模板参数
@@ -97,5 +97,24 @@ public class SMSUtils {
         return SendSmsResponse.toJsonString(res);
     }
  
-    
+    /**
+	 * 生成四位数验证码
+	 * @return
+	 */
+	public static String createdCode(){
+		String[] beforeShuffle = new String[] { "2", "3", "4", "5", "6", "7", "8", "9"}; 
+		List<String> list = Arrays.asList(beforeShuffle);
+		Collections.shuffle(list);//自动洗牌
+		StringBuilder sb=new StringBuilder();
+		for(int i =0;i<=3;i++)
+		{
+	       		sb.append(list.get(i));
+		}
+		
+		return sb.toString();
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(createdCode());
+	}
 }

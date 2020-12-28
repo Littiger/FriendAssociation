@@ -57,6 +57,7 @@ public class TokenDao {
 					token
 			});
 		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return data.get("uid").toString();
@@ -75,14 +76,14 @@ public class TokenDao {
 	 * @throws FileNotFoundException 
 	 * @throws ClassNotFoundException 
 	 */
-	public int addToken(String uid, String utoken,String logintime,String userip,String lasttime ) {
-		String sql="INSERT INTO userlogin(uid,utoken,logintime,userip,lasttime) VALUES (?,?,?,?,?)";
+	public int addToken(String uid, String utoken,String logintime,String userip) {
+		String sql="INSERT INTO userlogin(uid,utoken,logintime,userip) VALUES (?,?,?,?)";
 		int count=0;
 		try {
 			count = dao.executeUpdate(sql, new int[]{
-					Types.INTEGER,Types.VARCHAR,Types.VARBINARY,Types.VARCHAR,Types.VARCHAR
+					Types.INTEGER,Types.VARCHAR,Types.VARCHAR,Types.VARCHAR
 			}, new Object[]{
-					uid,utoken,logintime,userip,lasttime
+					uid,utoken,logintime,userip
 			});
 		} catch (ClassNotFoundException | SQLException | IOException e) {
 			// TODO Auto-generated catch block
@@ -100,12 +101,12 @@ public class TokenDao {
 	 */
 	public int updateToken(String utoen,String nuoken){
 		int count =0;
-		String sql="UPDATE userlogin SET utoken=? WHERE utoken=? ";
+		String sql="UPDATE userlogin SET utoken=? WHERE utoken=? or uid= ? ";
 		try {
 			count =dao.executeUpdate(sql, new int[]{	
-					Types .VARCHAR,Types.VARCHAR
+					Types .VARCHAR,Types.VARCHAR,Types.INTEGER
 			}, new Object[]{
-					nuoken,utoen
+					nuoken,utoen,utoen
 			});
 		} catch (ClassNotFoundException | SQLException | IOException e) {
 			// TODO Auto-generated catch block

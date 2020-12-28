@@ -5,19 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * @desc   日期工具类
- * @author JZH
- * @time   2020-12-20
- */
 public class DateUtils {
-//	public static void main(String[] args) throws ParseException {
-//		System.out.println(differTime("2020年12月20日 20:00:00", 5));
-//	}
-	public static void main(String[] args) {
-		
-		System.out.println((System.currentTimeMillis()-1608720402230l)/1000/60/60);
-	}
+
 	/**
 	 * @desc  求两个日期相差的天数
 	 * @param strDate
@@ -36,10 +25,8 @@ public class DateUtils {
 		//4.将上面获取到的日期转变为天
 		aCalendar.setTime(fDate);
 		int day1 = aCalendar.get(Calendar.DAY_OF_YEAR);
-		
 		aCalendar.setTime(oDate);
 		int day2 = aCalendar.get(Calendar.DAY_OF_YEAR);
-		
 		return day2-day1;
 	}
 	
