@@ -30,20 +30,20 @@ public class SMSUtils {
     	
 	}
 	
-    public static final String SMSAPPID= pro.getProperty("SMSAPPID");
-   
-    public static final String SMSSECREID = pro.getProperty("SMSSECREID");
-    public static final String SMSSECREKEY = pro.getProperty("SMSSECREKEY");
-    public static final String SMSSDKAPPID= pro.getProperty("SMSSDKAPPID");
-    public static final String SMSSIGN= pro.getProperty("SMSSIGN");
-    public static final String SMSTEMPLATEID= pro.getProperty("SMSTEMPLATEID");
+//    public static final String SMSAPPID= pro.getProperty("SMSAPPID");
+//   
+//    public static final String SMSSECREID = pro.getProperty("SMSSECREID");
+//    public static final String SMSSECREKEY = pro.getProperty("SMSSECREKEY");
+//    public static final String SMSSDKAPPID= pro.getProperty("SMSSDKAPPID");
+//    public static final String SMSSIGN= pro.getProperty("SMSSIGN");
+//    public static final String SMSTEMPLATEID= pro.getProperty("SMSTEMPLATEID");
 
   
-//    private static final String SMSAPPID="1400464327";
-//	private static final String SMSSECREID="AKIDCEXv9FVF3uwk9SvtW0K2dsdGnBPfGWIw";
-//	private static final String SMSSECREKEY = "i7NdrK2Y9gZpaBlDeMoYN9g6hRvDdwzp";
-//	private static final String SMSSIGN="程序测试站公众号";
-//	private static final String SMSTEMPLATEID="818497";
+    private static final String SMSAPPID="1400464327";
+	private static final String SMSSECREID="AKIDCEXv9FVF3uwk9SvtW0K2dsdGnBPfGWIw";
+	private static final String SMSSECREKEY = "i7NdrK2Y9gZpaBlDeMoYN9g6hRvDdwzp";
+	private static final String SMSSIGN="程序测试站公众号";
+	private static final String SMSTEMPLATEID="818497";
 
 
 

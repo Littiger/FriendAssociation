@@ -27,6 +27,8 @@ import com.quifeng.dao.user.UserDao;
 import com.quifeng.utils.face.Base64Utils;
 import com.quifeng.utils.face.FaceUtils;
 import com.quifeng.utils.generate.TokenUtils;
+import com.quifeng.utils.state.StateUtils;
+import com.quifeng.utils.state.UserType;
 
 /**
  * @Desc 登录使用
@@ -90,7 +92,7 @@ public class loginServlet {
 			
 			if (userzt.equals("6")) {	
 				print(out, dataP, "-1", "请先认证手机号");
-				new RegisteredServlet().signverify(request, response);				
+//				new RegisteredServlet().signverify(request, response);				
 				//这里是获取token
 				return;
 			}
@@ -247,6 +249,9 @@ public class loginServlet {
 		}
 		else if (userzt.equals("7")) {
 			print(out, dataP, "200", "没有选择学校");
+		}else {
+			print(out, dataP, "200", "获取成功");
+
 		}
 		
 		
@@ -285,16 +290,19 @@ public class loginServlet {
 	
 	
 	/**
-	 * @Desc 对学校的认证
+	 * @Desc 对学校的 添加学校信息
 	 * @param request
 	 * @param response
 	 * @throws IOException
 	 */
-	public void setchool(HttpServletRequest request, HttpServletResponse response) throws IOException{
+	public void setSchool(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		String schoolID = request.getParameter("schoolid");
 		String token=request.getParameter("token");
 		String auth = request.getParameter("auth");	
+		
+		//创建输出对象
 		PrintWriter out = response.getWriter();
+		
 		Map<String, Object> data = new HashMap<>();
 		if (schoolID==null||schoolID.equals("")||auth==null||auth.equals("")) {
 			print(out, data, "-5", "非法请求");
@@ -302,12 +310,12 @@ public class loginServlet {
 		}
 		
 		int count = schoolDao.upadateSchool(schoolID, auth, token);
-		Map<String, Object> schoolMap = schoolDao.getSchoolById(schoolID);
 		Map<String, Object> dataP = new HashMap<>();
-		dataP.put("name",schoolMap.get("schoolname"));
-		dataP.put("sede", schoolMap.get("schoolsede"));
+
 		data.put("data", dataP);
 		if (count>0) {
+			//认证学校成功 设置状态为0
+			StateUtils.queryType(userDao.getUserByToken(token).get("uid").toString(),UserType.USERZERO );
 			print(out, data, "200", "请求成功");
 		}
 		else{

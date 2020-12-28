@@ -28,8 +28,6 @@ public class StateUtils {
 			return 0<usersatte.updateUserState(user, "2");
 		case  USERTHREE:
 			return 0<usersatte.updateUserState(user, "3");
-		case  USERFOUR:
-			return 0<usersatte.updateUserState(user, "4");
 		case  USERFIVE:
 			return 0<usersatte.updateUserState(user, "5");
 		case  USERSIX:

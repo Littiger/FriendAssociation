@@ -32,7 +32,7 @@ public class LoginDao {
 		int count =0;
 		//对密码经行加密
 		String userpwd1=new Mademd5().toMd5(userpwd);
-		String sql ="INSERT INTO user(userphone,username, password,userzt) VALUES (?,?,?,4)";
+		String sql ="INSERT INTO user(userphone,username, password,userzt) VALUES (?,?,?,5)";
 		try {
 			count = dao.executeUpdate(sql, new int[]{
 					Types.VARCHAR,Types.VARCHAR,Types.VARCHAR
@@ -55,7 +55,7 @@ public class LoginDao {
 	public Map<String, Object> isPhone(String phone){		
 		Map<String, Object> data = null;
 		
-		String sql = "SELECT *	 FROM	 `user` WHERE userphone=?";
+		String sql = "SELECT *	 FROM	 `user` WHERE userphone=? ";
 		try {
 			data = dao.executeQueryForMap(sql , new int[]{
 					Types.VARCHAR
@@ -69,6 +69,33 @@ public class LoginDao {
 	
 		return data;
 	}
+	
+	
+	
+	/**
+	 * @Desc username查suer
+	 * @param username
+	 * @return
+	 */
+	public Map<String, Object>  getUserByUserName(String username){
+			Map<String, Object> data = null;
+		
+		String sql = "SELECT *	 FROM	 `user` WHERE userphone=? ";
+		try {
+			data = dao.executeQueryForMap(sql , new int[]{
+					Types.VARCHAR
+			}, new Object[]{
+				username	
+			});
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return data;		
+		
+	}
+	
 	
 	
 	

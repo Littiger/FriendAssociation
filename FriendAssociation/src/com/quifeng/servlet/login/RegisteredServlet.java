@@ -46,6 +46,7 @@ public class RegisteredServlet {
 		String username = request.getParameter("username");
 		String userpwd = request.getParameter("userpwd");
 		
+
 		Map<String, Object> data = new HashMap<String, Object>();
 		try {
 			
@@ -81,10 +82,19 @@ public class RegisteredServlet {
 				return;
 			}
 			
+			
+			Map<String, Object>  phoneMap = login.isPhone(phone);
+			Map<String, Object> user1 = login.getUserByUserName(username);
+			
+			if (user1!=null) {
+				print(out, data, "-2", "用户已经有人注册过了");
+				return;
+			}
+				
 			//验证手机号是否注册过
-			Map<String, Object> phoneMap = login.isPhone(phone);
 			if (phoneMap!=null) {
 				print(out, data, "-2", isPhone(phoneMap,phone));
+				return;
 			}
 			
 			//这里是发送验证码
@@ -122,7 +132,7 @@ public class RegisteredServlet {
 				print(out, data, "-1", "验证码发送失败");
 			}
 			
-			//存入数据  设置状态为 4 注册什么都没有验证  这里是不用生成token的等待手机认证成功验证
+			//存入数据  设置状态为 注册什么都没有验证  这里是不用生成token的等待手机认证成功验证
 			
 		} catch (TencentCloudSDKException e) {
 			// TODO Auto-generated catch block
@@ -238,9 +248,6 @@ public class RegisteredServlet {
 		Map<String, Object> data = login.isPhone(phone);
 		if (data.get("userzt").toString().equals("0")) {
 			return "手机号已经注册过了";
-		}
-		else if (data.get("userzt").toString().equals("4")) {
-			return "请您先认证手机号和人脸";
 		}
 		else if (data.get("userzt").toString().equals("6")) {
 			return "请认证人脸";
