@@ -101,9 +101,10 @@ public class FaceServlet {
 		int count = faceDao.queryCountById(uid);
 		
 		if (count<8) {
-			String[] faceJpegPath = ImgeUtise.detectFaceImage(mat_01, FacePathUtis.getPath(request, "face/"));
+			String[] faceJpegPath = ImgeUtise.detectFaceImage(mat_01, FacePathUtis.getPath(request, ""));
 			
 			for (String string : faceJpegPath) {
+				System.out.println(string);
 				String faceBase64 = Base64Utils.GetImgBase(string);
 				faceDao.addFace(uid, faceBase64, System.currentTimeMillis()+"");	
 			}
