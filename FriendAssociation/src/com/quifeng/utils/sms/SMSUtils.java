@@ -31,6 +31,7 @@ public class SMSUtils {
 	}
 	
     public static final String SMSAPPID= pro.getProperty("SMSAPPID");
+   
     public static final String SMSSECREID = pro.getProperty("SMSSECREID");
     public static final String SMSSECREKEY = pro.getProperty("SMSSECREKEY");
     public static final String SMSSDKAPPID= pro.getProperty("SMSSDKAPPID");
