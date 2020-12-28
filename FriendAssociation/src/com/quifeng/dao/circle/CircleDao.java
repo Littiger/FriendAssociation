@@ -1046,6 +1046,38 @@ public class CircleDao {
 					Integer.parseInt(osid)
 				});
 				
+	}
+	/**
+	 * 分页获取二级或以上评论
+	 * @param comment
+	 * @param page
+	 * @param count
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 */
+	public List<Map<String, Object>> queryOthOs(String comment, String page, String count) throws NumberFormatException, ClassNotFoundException, SQLException {
+		int count1 = Integer.parseInt(count);
+		int page1 = Integer.parseInt(page);
+		
+		if (page1==0) page1=1;
+		page1=(page1-1)*count1;
+		String sql = "select * from osother "
+				+ "LEFT JOIN user on osother.uid=user.uid "
+				+ "LEFT JOIN (select zan.osid,count(*) zcount from zan GROUP BY osid) z on osother.osotherid=z.osid "
+				+ "where osother.osfirstid=? ORDER BY CAST(osother.createtime as SIGNED) desc limit ?,?";
+		return dao.executeQueryForList(sql,
+				new int[]{
+						Types.INTEGER,
+						Types.INTEGER,
+						Types.INTEGER
+				},
+				new Object[]{
+						Integer.parseInt(comment),
+						page1,
+						count1
+				});
 	}	
 	
 }
