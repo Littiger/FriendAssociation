@@ -26,15 +26,13 @@ public class UserStateDao {
 	public int updateUserState(String user, String type) {
 		int count=0;
 		try {
-		count=	dao.executeUpdate("UPDATE `user` SET userzt=? WHERE uid=? OR  utoken=? or userphone=?", 
+		count=	dao.executeUpdate("UPDATE `user` SET userzt=? WHERE uid=?  or userphone=?", 
 					new int[]{
 						Types.INTEGER,
 						Types.VARCHAR,
 						Types.VARCHAR,
-						Types.VARCHAR
 					}, new Object[]{
 						type,
-						user,
 						user,
 						user
 					});

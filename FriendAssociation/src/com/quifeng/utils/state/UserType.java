@@ -13,6 +13,7 @@ public enum UserType {
 	USERTHREE, //禁评论
 	USERFOUR, //注册没有验证
 	USERFIVE, // 注册没有验证人脸
-	USERSIX   //注册没有验证手机号
+	USERSIX,   //注册没有验证手机号
+	USERSEVEN  //注册成功后没有选择学校
 	
 }

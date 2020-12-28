@@ -1,6 +1,7 @@
 package com.quifeng.utils.state;
 
 import com.quifeng.dao.user.UserStateDao;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 /**
  * @Desc 用户状态
@@ -13,7 +14,7 @@ public class StateUtils {
 	
 	/**
 	 * @Desc 更新用户状态
-	 * @param user
+	 * @param user 用户id 或者手机号
 	 * @param type
 	 * @return
 	 */
@@ -33,8 +34,13 @@ public class StateUtils {
 			return 0<usersatte.updateUserState(user, "5");
 		case  USERSIX:
 			return 0<usersatte.updateUserState(user, "6");
-		}
+		case USERSEVEN:
+			return 0<usersatte.updateUserState(user, "7");			
+		}	
 		return false;
 	}
+	
+	
+
 	
 }

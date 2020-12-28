@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import com.ndktools.javamd5.Mademd5;
 import com.quifeng.dao.token.TokenDao;
-import com.sun.javafx.fxml.expression.Expression.Parser.Token;
 
 /**
  * @Desc 生成token
@@ -34,5 +33,12 @@ public class TokenUtils {
 	}
 	
 	
-	
+	/**
+	 * @Desc 更新 token
+	 * @param token
+	 */
+	public static void updateTokenByU(String token,String newtoken){
+		TokenDao t = new TokenDao();
+		t.updateToken(token, newtoken);
+	}
 }
