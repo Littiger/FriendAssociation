@@ -489,7 +489,7 @@ public class CircleDao {
 	 */
 	public Map<String, Object> queryOsZan(String osid, String token) throws NumberFormatException, ClassNotFoundException, SQLException {
 		String uid = tokenDao.queryUidByToken(token);
-		return dao.executeQueryForMap("select * from zan where osid=? and uid=?",
+		return dao.executeQueryForMap("select * from zan where osid=? and uid=? and display=0",
 				new int[]{
 						Types.INTEGER,
 						Types.INTEGER
@@ -509,7 +509,7 @@ public class CircleDao {
 	 */
 	public void addOsFiOs(String postid, String uid, String comment,String schoolid) throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
 		//osfirst表+一条评论
-		dao.executeUpdate("insert into osfirst values(0,?,?,?,?,0,?)",
+		dao.executeUpdate("insert into osfirst v	alues(0,?,?,?,?,0,?)",
 				new int[]{
 						Types.INTEGER,
 						Types.INTEGER,
@@ -553,15 +553,16 @@ public class CircleDao {
 	 * @throws ClassNotFoundException 
 	 * @throws NumberFormatException 
 	 */
-	public void addSeOs(String osfirstid, String comment, String schoolid) throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
+	public void addSeOs(String osfirstid, String comment, String schoolid,String uid) throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
 		int id = Integer.parseInt(osfirstid);
 		//osother表添加评论
-		dao.executeUpdate("insert into osother values(0,?,?,?,0,?,?)",
+		dao.executeUpdate("insert into osother values(0,?,?,?,0,?,?,?)",
 				new int[]{
 						Types.INTEGER,
 						Types.VARCHAR,
 						Types.INTEGER,
 						Types.VARCHAR,
+						Types.INTEGER,
 						Types.INTEGER
 				},
 				new Object[]{
@@ -569,7 +570,8 @@ public class CircleDao {
 						comment,
 						-id,
 						System.currentTimeMillis(),
-						Integer.parseInt(schoolid)
+						Integer.parseInt(schoolid),
+						Integer.parseInt(uid)
 				});
 	}
 	/**
@@ -583,7 +585,7 @@ public class CircleDao {
 	 * @throws IOException 
 	 * @throws FileNotFoundException 
 	 */
-	public void addOthOs(String osfirstid, String comment, String schoolid) throws NumberFormatException, ClassNotFoundException, SQLException, FileNotFoundException, IOException {
+	public void addOthOs(String osfirstid, String comment, String schoolid,String uid) throws NumberFormatException, ClassNotFoundException, SQLException, FileNotFoundException, IOException {
 		int idTemp = Integer.parseInt(osfirstid);
 		int id=Integer.parseInt(
 				dao.executeQueryForMap("select * from osother where osotherid=?",
@@ -594,19 +596,21 @@ public class CircleDao {
 								-idTemp
 						}).get("osfirstid").toString()
 				);
-		dao.executeUpdate("insert into osother values(0,?,?,?,0,?,?)",
+		dao.executeUpdate("insert into osother values(0,?,?,?,0,?,?,?)",
 				new int[]{
 						Types.INTEGER,
 						Types.VARCHAR,
 						Types.INTEGER,
 						Types.VARCHAR,
+						Types.INTEGER,
 						Types.INTEGER
 				},new Object[]{
 						id,
 						comment,
 						-idTemp,
 						System.currentTimeMillis(),
-						Integer.parseInt(schoolid)
+						Integer.parseInt(schoolid),
+						Integer.parseInt(uid)
 				});
 	}
 	/**
@@ -843,7 +847,7 @@ public class CircleDao {
 				});
 	}
 	/**
-	 * 分向表添加数据
+	 * 分享表添加数据
 	 * @param postid
 	 * @param token
 	 * @throws SQLException 
@@ -869,7 +873,7 @@ public class CircleDao {
 				});
 	}
 	/**
-	 * 获取二级评论信息
+	 * 获取二级和二级以上评论信息
 	 * @param comment
 	 * @param token
 	 * @return
@@ -877,12 +881,11 @@ public class CircleDao {
 	 * @throws ClassNotFoundException 
 	 * @throws NumberFormatException 
 	 */
-	public List<Map<String, Object>> querySEOthOs(String comment) throws NumberFormatException, ClassNotFoundException, SQLException {
-		String sql = "select * "
-				+ "from osother "
-				+ "LEFT JOIN (select zan.osid,count(*) from zan GROUP BY osid) z "
-				+ "on osother.osotherid=z.osid "
-				+ "where osother.osfirstid=? and osother.upid<0";
+	public List<Map<String, Object>> queryOthOs(String comment) throws NumberFormatException, ClassNotFoundException, SQLException {
+		String sql = "select * from osother "
+				+ "LEFT JOIN user on osother.uid=user.uid "
+				+ "LEFT JOIN (select zan.osid,count(*) zcount from zan GROUP BY osid) z on osother.osotherid=z.osid "
+				+ "where osother.osfirstid=? ORDER BY CAST(osother.createtime as SIGNED) desc";
 		return dao.executeQueryForList(sql,
 				new int[]{
 						Types.INTEGER
@@ -1005,5 +1008,44 @@ public class CircleDao {
 						});
 	}
 	
+	/**
+	 * 评论二级评论的三级评论数量
+	 * @param string
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 */
+	public String querySEOs(String osotherid) throws NumberFormatException, ClassNotFoundException, SQLException {
+		return dao.executeQueryForMap("select count(*) count from osother where upid=?",
+				new int []{
+						Types.INTEGER
+				},
+				new Object[]{
+						Integer.parseInt(osotherid)
+				}).get("count").toString();
+	}
+	/**
+	 * 根据id查询评论信息
+	 * @param string
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 */
+	public Map<String, Object> queryOthOsById(String osid) throws NumberFormatException, ClassNotFoundException, SQLException {
+		return dao.executeQueryForMap("select * from osother"
+				+ " LEFT JOIN user on osother.osotherid=user.uid"
+				+ " LEFT JOIN (select zan.osid,count(*) zcount from zan GROUP BY osid) z"
+				+ " on osother.osotherid=z.osid"
+				+ " where osotherid=?",
+				new int[]{
+					Types.INTEGER	
+				},
+				new Object[]{
+					Integer.parseInt(osid)
+				});
+				
+	}	
 	
 }

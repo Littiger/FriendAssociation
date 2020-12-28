@@ -90,14 +90,88 @@ public class CircleCommentdetailServlet {
 				data.put("postos", circleDao.queryOsCount(FiOsMessage.get("osfirstid").toString()));
 			}
 			//获取二级或以上评论
-			List<Map<String, Object>> allOthOs =circleDao.querySEOthOs(comment);
-			for (Map<String, Object> map : allOthOs) {
-				//获取所有二级以上评论
+			List<Map<String, Object>> allOs =circleDao.queryOthOs(comment);
+			List<Map<String, Object>> replyList = new ArrayList<>();
+			for (Map<String, Object> os : allOs) {
+				//获取当前评论信息
+				Map<String, Object> map = new HashMap<>();
+				Map<String, Object> userinfo = new HashMap<>();
+				userinfo.put("uname",os.get("username").toString());
+				userinfo.put("useravatar", os.get("useravatar").toString());
+				map.put("userinfo", userinfo);
+				map.put("osfirstid", -Integer.parseInt(os.get("osotherid").toString()));
+				//是否点赞
+				System.out.println(circleDao.queryOsZan(-Integer.parseInt(os.get("osotherid").toString())+"", token));
+				if(circleDao.queryOsZan(os.get("osotherid").toString(), token) == null){
+					map.put("isgreat", false);
+				}
+				else{
+					map.put("isgreat", true);
+				}
+				map.put("comment", os.get("osothertext"));
+				//获取赞
+				if(os.get("count") == null || os.get("count").toString().equals("")){
+					map.put("postzan","0");
+				}
+				else{
+					map.put("postzan", os.get("count").toString());
+				}
+				//发布时间
+				map.put("commenttime", DateUtils.MillToTime(os.get("createtime").toString()));
+				//回复数量
+				map.put("postos", circleDao.querySEOs(os.get("osotherid").toString()));
 				
+				//该评论upid是负数   二级评论
+				if(Integer.parseInt(os.get("upid").toString()) < 0){
+					map.put("superior", "");
+ 				}
+				//upid是正数 二级以上评论
+				else{
+					//获取该评论上级id
+					String upid = os.get("upid").toString();
+					//获取上级平论信息
+					Map<String, Object> upOs = circleDao.queryOthOsById(os.get("upid").toString());
+					//上级评论
+					Map<String, Object> superior = new HashMap<>();
+					//用户信息
+					Map<String, Object> userinfo2 = new HashMap<>();
+					userinfo2.put("uname", upOs.get("username").toString());
+					userinfo2.put("useravatar", upOs.get("useravatar").toString());
+					superior.put("userinfo", userinfo2);
+					//评论信息
+					superior.put("osfirstid", -Integer.parseInt(upOs.get("osotherid").toString()));
+					//是否点赞
+					if(circleDao.queryOsZan(-Integer.parseInt(upOs.get("osotherid").toString())+"", token) == null){
+						superior.put("isgreat", false);
+					}
+					else{
+						superior.put("isgreat", true);
+					}
+					superior.put("comment", upOs.get("osothertext").toString());
+					//获取赞
+					if(upOs.get("count") == null || upOs.get("count").toString().equals("")){
+						superior.put("postzan","0");
+					}
+					else{
+						superior.put("postzan", upOs.get("count").toString());
+					}
+					
+					superior.put("commenttime", DateUtils.MillToTime(upOs.get("createtime").toString()));
+					superior.put("postos", circleDao.querySEOs(upOs.get("osotherid").toString()));
+					map.put("superior", superior);
+				}
+				replyList.add(map);
+				data.put("replyList", replyList);
 			}
-			
+			jsonObject = new JSONObject();
+			jsonObject.put("code", "200");
+			jsonObject.put("msg", "获取成功");
+			jsonObject.put("data", data);
+			writer.write(jsonObject.toString());
+			return;
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println(e.getMessage());
 			jsonObject = new JSONObject();
 			jsonObject.put("code", "-1");

@@ -118,7 +118,7 @@ public class CirclePushcommentServlet {
 			//二级评论
 			else if(Integer.parseInt(osfirstid) > 0){
 				//添加二级评论  帖子评论量+1
-				circleDao.addSeOs(osfirstid,comment,userMessage.get("schoolid").toString());
+				circleDao.addSeOs(osfirstid,comment,userMessage.get("schoolid").toString(),userMessage.get("uid").toString());
 				circleDao.addPostOsCount(postid);
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "200");
@@ -129,7 +129,7 @@ public class CirclePushcommentServlet {
 			//二级以上评论
 			else if(Integer.parseInt(osfirstid) < 0){
 				//添加二级以上评论 帖子评论量+1
-				circleDao.addOthOs(osfirstid,comment,userMessage.get("schoolid").toString());
+				circleDao.addOthOs(osfirstid,comment,userMessage.get("schoolid").toString(),userMessage.get("uid").toString());
 				circleDao.addPostOsCount(postid);
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "200");
