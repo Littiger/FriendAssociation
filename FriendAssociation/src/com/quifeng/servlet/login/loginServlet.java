@@ -3,6 +3,7 @@ package com.quifeng.servlet.login;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,8 +45,9 @@ public class loginServlet {
 	 * @param request
 	 * @param response
 	 * @throws IOException 
+	 * @throws ParseException 
 	 */
-	public void  login(HttpServletRequest request, HttpServletResponse response) throws IOException{
+	public void  login(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException{
 		PrintWriter out = response.getWriter();
 		String username = request.getParameter("username");
 		String type = request.getParameter("type").trim();
@@ -76,18 +78,24 @@ public class loginServlet {
 			print(out, dataP, "-1", "请先认证人脸");
 			return;
 		}
-		if (userzt.equals("6")) {
+		if (userzt.equals("6")) {	
 			print(out, dataP, "-1", "请先认证手机号");
 			return;
 		}
-		if (userzt.equals("7")) {
-			print(out, dataP, "-1", "请先认证学校");
-			return;
-		}
+
 		
 		
 		//登录
 		if (type.equals("2")) {
+			
+			if (userzt.equals("6")) {	
+				print(out, dataP, "-1", "请先认证手机号");
+				new RegisteredServlet().signverify(request, response);				
+				//这里是获取token
+				return;
+			}
+			
+
 			String userpwd = request.getParameter("userpwd");
 			Mademd5 md = new Mademd5();
 			userpwd=md.toMd5(userpwd);
@@ -95,13 +103,21 @@ public class loginServlet {
 			String pwd = userMap.get("password").toString().trim();
 			
 			if (userpwd.equals(pwd)) {
+				
+	
 				//这里是更新token的
 				String newtoken = TokenUtils.getToken(userMap.get("userphone").toString());
 				TokenUtils.updateTokenByU(userMap.get("uid").toString(),newtoken);
 				data.put("token", newtoken);
 				data.put("state", userMap.get("userzt"));
 				dataP.put("data", data);
-				print(out, dataP, "200", "登录成功");
+								
+				if (userzt.equals("7")) {
+					print(out, dataP, "200", "请先认证学校");
+				}
+				else {
+					print(out, dataP, "200", "登录成功");
+				}
 				return;
 			}else {
 				print(out, dataP, "-1", "密码错误");
@@ -215,12 +231,23 @@ public class loginServlet {
 			print(out, dataP, "-1", "请先进行注册");
 			return;
 		}
-		
-		data.put("state", userMap.get("userzt"));
+		 String userzt = userMap.get("userzt").toString().trim();
+		data.put("state", userzt);
 		data.put("img", userMap.get("useravatar"));
+		data.put("sex",userMap.get("usersex"));
+		
 		
 		dataP.put("data", data);
-		print(out, dataP, "200", "账号正常");
+		
+		if (userzt.equals("5")) {
+			print(out, dataP, "200", "人脸没有录入");
+		}
+		else if (userzt.equals("6")) {
+			print(out, dataP, "200", "手机号没有验证");
+		}
+		else if (userzt.equals("7")) {
+			print(out, dataP, "200", "没有选择学校");
+		}
 		
 		
 	}
@@ -243,12 +270,13 @@ public class loginServlet {
 			print(out, dataP, "-1", "请求失败");
 			return;
 		}
-		
+		      
 		
 		for (Map<String, Object> map : schoolList) {
 			Map<String, Object>  everySchool= new HashMap<>();
-			everySchool.put("code", map.get("schoolid"));
-			everySchool.put("name", map.get("schoolname"));
+			everySchool.put("value", map.get("schoolid"));
+			everySchool.put("text"
+					+ "", map.get("schoolname"));
 			data.add(everySchool);
 		}
 		dataP.put("data", data);
@@ -256,7 +284,13 @@ public class loginServlet {
 	}
 	
 	
-	public void setschool(HttpServletRequest request, HttpServletResponse response) throws IOException{
+	/**
+	 * @Desc 对学校的认证
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
+	public void setchool(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		String schoolID = request.getParameter("schoolid");
 		String token=request.getParameter("token");
 		String auth = request.getParameter("auth");	

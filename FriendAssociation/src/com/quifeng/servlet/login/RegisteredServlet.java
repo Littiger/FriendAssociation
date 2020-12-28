@@ -180,7 +180,6 @@ public class RegisteredServlet {
 					String token = TokenUtils.getToken(phone); //获取token
 					Map<String, Object> userMap = userDao.getUserByPhone(phone);
 					String uid = userMap.get("uid").toString();
-					System.out.println(token+"/////////");
 				
 					//认证成功 将token 插入 log 中
 					int isC = tokenDao.addToken(uid, token,System.currentTimeMillis()+"", request.getRemoteAddr().toString());

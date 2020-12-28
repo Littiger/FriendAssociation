@@ -15,13 +15,14 @@ public class UserDao {
 	 * @return
 	 */
 	public Map<String, Object> getUserByPhone(String phone){
-		String sql ="SELECT * FROM user WHERE  userphone=? ";
+		String sql ="SELECT * FROM user WHERE  userphone=? or email=? ";
 		Map<String, Object> data =null;
 		try {
 			data=dao.executeQueryForMap(sql, new int[]{
+					Types.VARCHAR,
 					Types.VARCHAR
 			}, new Object[]{
-					phone
+					phone,phone
 			});
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
