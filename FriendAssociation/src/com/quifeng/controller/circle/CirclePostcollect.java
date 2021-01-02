@@ -1,4 +1,4 @@
-package com.quifeng.controller;
+package com.quifeng.controller.circle;
 
 import java.io.IOException;
 
@@ -9,7 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.quifeng.servlet.circle.postcollect.PostcollectServlet;
-
+/**
+ * @desc   帖子收藏
+ * @author SLH
+ * @time   2021-01-02
+ */
 @SuppressWarnings("serial")
 @WebServlet("/api/circle/postcollect")
 public class CirclePostcollect extends HttpServlet{

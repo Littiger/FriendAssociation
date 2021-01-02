@@ -1,4 +1,4 @@
-package com.quifeng.controller;
+package com.quifeng.controller.user;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,28 +9,28 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.quifeng.servlet.login.FaceServlet;
 import com.quifeng.servlet.login.RegisteredServlet;
 import com.quifeng.utils.error.ErrorUtils;
 
 /**
- * @Desc 人脸的录入 
+ * @Desc 验证码验证
  * @author 语录
- * 1. http：//127.0.0.1/api/user/setface
- * 
+ *
  */
 @SuppressWarnings("serial")
-@WebServlet("/api/user/setface")
-public class SetfaceController extends HttpServlet {
+@WebServlet("/api/user/signverify")
+public class SignverifyController extends HttpServlet{
 
-	FaceServlet faceServlet = new FaceServlet();
+	RegisteredServlet recompile = new RegisteredServlet();
+	
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		try {
-			faceServlet.signFace(request,response);
+			recompile.signverify(request, response);
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			out.print(ErrorUtils.errorTomCat());
 		}finally {
 			out.close();
