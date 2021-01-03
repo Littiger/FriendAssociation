@@ -99,13 +99,5 @@ public class DateUtils {
 		Date date = new Date(time);
         SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sd.format(date);
-		return "不到1小时前";     
-	}
-	
-	public static String getForMat(String data){
-		long tiem = Long.parseLong(data);
-		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	    String sd = sdf.format(new Date(Long.parseLong(String.valueOf(tiem))));      // 时间戳转换成时间
-	    return sd;
 	}
 }
