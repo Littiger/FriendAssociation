@@ -87,8 +87,17 @@ public class DateUtils {
 			return Math.abs((System.currentTimeMillis()-time)/1000/60/60)+"小时前";
 		}
 		return "不到1小时前";
-		
-		
-        
+
+	}
+	/**
+	 * 根据毫秒返回具体时间
+	 * @param lo
+	 * @return
+	 */
+	public static String MillToHourAndMin(String lo){
+		long time = Long.parseLong(lo);
+		Date date = new Date(time);
+        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sd.format(date);
 	}
 }
