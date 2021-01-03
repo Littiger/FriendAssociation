@@ -57,6 +57,8 @@ public class CirclePostshareServlet {
 			}
 			//share 表添加数据
 			circleDao.addShare(postid,token);
+			//postinfo分享列+1
+			circleDao.updateShare(postid);
 			jsonObject = new JSONObject();
 			jsonObject.put("code", "200");
 			jsonObject.put("msg", "分享成功");

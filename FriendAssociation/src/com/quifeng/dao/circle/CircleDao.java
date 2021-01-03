@@ -1078,6 +1078,24 @@ public class CircleDao {
 						page1,
 						count1
 				});
+	}
+	/**
+	 * 增加分享量
+	 * @param postid
+	 * @throws IOException 
+	 * @throws SQLException 
+	 * @throws FileNotFoundException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 */
+	public void updateShare(String postid) throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
+		dao.executeUpdate("update postinfo set postshare=postshare+1 where postid=?",
+				new int[]{
+						Types.INTEGER
+				},
+				new Object[]{
+						Integer.parseInt(postid)
+				});
 	}	
 	
 }
