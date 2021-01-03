@@ -23,7 +23,7 @@ import com.quifeng.utils.qiniu.SendInfo;
 import com.quifeng.utils.qiniu.putfile;
 
 /**
- * @Desc  http：//127.0.0.1/api/chat/send2usermsg
+ * @Desc  http：//127.0.0.1/api/chat/send2usermsg  这里接收值 是否使用DiskFileItemFactory对象  还是一半ajax 一般 DiskFileItemFactory
  * @author 语录
  *
  */
