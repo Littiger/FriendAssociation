@@ -25,7 +25,7 @@ public class CircleDao {
 	public List<Map<String, Object>> queryAllPost(String hottype, String size,String token) throws ClassNotFoundException, SQLException {
 		String uid = tokenDao.queryUidByToken(token);
 		System.out.println(uid);
-		String sql = "SELECT u.username,p.posttext,p.createtime,p.placaid,p.postid,p.postimg,p.postvideo,u.useravatar,p.schoolid"
+		String sql = "SELECT u.username,p.posttext,p.createtime,p.placaid,p.postid,p.postimg,p.postvideo,u.useravatar,p.schoolid,p2.postzan,p2.postshare,p2.postaos,p2.postos,p2.postsee"
 				+ " from user u , (select post.* from post,user where not exists (SELECT postid from user , trilha where user.uid=? and user.uid=trilha.uid and post.postid=postid )and user.uid=? and post.schoolid=user.schoolid) p ,"
 				+ " postinfo p2 , postbk pb"
 				+ " where u.uid=p.uid and p.postid=p2.postid and p.display=0 and p.placaid=pb.placaid  and p2.isexamina=1 and pb.isschool=?"
@@ -199,7 +199,7 @@ public class CircleDao {
 		
 		if (page1==0) page1=1;
 		page1=(page1-1)*size1;
-		String sql="select * from post p LEFT JOIN user u on p.uid=u.uid where p.display=0 and p.placaid=? ORDER BY CAST(p.createtime as SIGNED) desc LIMIT?,?"; 
+		String sql="select * from post p LEFT JOIN user u on p.uid=u.uid left join postinfo p2 on p2.postid=p.postid where p.display=0 and p.placaid=? ORDER BY CAST(p.createtime as SIGNED) desc LIMIT?,?"; 
 		List<Map<String, Object>>  list=null;
 		try {
 			 list = dao.executeQueryForList(sql, new int[]{
@@ -1095,6 +1095,23 @@ public class CircleDao {
 				},
 				new Object[]{
 						Integer.parseInt(postid)
+				});
+	}
+	/**
+	 * 根据id获取板块信息
+	 * @param string
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 */
+	public Map<String, Object> queryPlacaById(String id) throws NumberFormatException, ClassNotFoundException, SQLException {
+		return dao.executeQueryForMap("select * from postbk where placaid=?",
+				new int[]{
+						Types.INTEGER
+				},
+				new Object[]{
+					Integer.parseInt(id)	
 				});
 	}	
 	
