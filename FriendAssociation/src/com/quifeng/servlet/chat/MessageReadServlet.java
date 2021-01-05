@@ -1,5 +1,11 @@
-package com.quifeng.servlet.circle.ospraise;
+package com.quifeng.servlet.chat;
+/**
+ * @desc   聊天-消息置为已读
+ * @author JZH
+ * @time   2021-01-02
+ */
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -9,31 +15,28 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONObject;
-import com.quifeng.dao.circle.CircleDao;
+import com.quifeng.dao.chat.ChatDao;
 import com.quifeng.dao.token.TokenDao;
 
-/**
- * @desc   评论点赞
- * @author JZH
- * @time   2020-12-27
- */
-public class CircleOspraiseServlet {
-
-	CircleDao circleDao = new CircleDao();
+public class MessageReadServlet {
+	ChatDao chatDao = new ChatDao();
 	TokenDao tokenDao = new TokenDao();
 	
-	public void AddOsZan(HttpServletRequest request, HttpServletResponse response) {
+	public void isRead(HttpServletRequest request, HttpServletResponse response) {
+		//json对象
 		JSONObject jsonObject = null;
 		PrintWriter writer = null;
 		try {
 			writer = response.getWriter();
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
+			System.out.println("printwriter获取异常");
 		}
 		//接值
 		String token = request.getParameter("token");
-		String commentid = request.getParameter("commentid");
-		try{
+		String targetid = request.getParameter("targetid");
+		String chatid = request.getParameter("chatid");
+		try {
+			
 			//判空
 			if(token == null || token.equals("")){
 				jsonObject = new JSONObject();
@@ -42,14 +45,27 @@ public class CircleOspraiseServlet {
 				writer.write(jsonObject.toString());
 				return;
 			}
-			if(commentid == null || commentid.equals("")){
+			if(targetid == null || targetid.equals("")){
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
-				jsonObject.put("msg", "评论获取异常");
+				jsonObject.put("msg", "参数异常");
 				writer.write(jsonObject.toString());
 				return;
 			}
-			//判断是否登录
+			if(chatDao.queryUserById(targetid) == null){
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "-1");
+				jsonObject.put("msg", "无此接收对象用户");
+				writer.write(jsonObject.toString());
+				return;
+			}
+			if(chatid == null || chatid.equals("")){
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "-1");
+				jsonObject.put("msg", "参数异常");
+				writer.write(jsonObject.toString());
+				return;
+			}
 			if(tokenDao.queryToken(token) == null){
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
@@ -57,47 +73,49 @@ public class CircleOspraiseServlet {
 				writer.write(jsonObject.toString());
 				return;
 			}
-			//判断是否点过赞
-			Map<String, Object> isOsZan = circleDao.isOsZan(commentid,token);
-			if(isOsZan == null){//未点过赞
-				//zan表添加数据
-				circleDao.addOsZan(commentid,token);
+			 
+			//自己的id
+			String uid = tokenDao.queryUidByToken(token);
+			if(chatid.equals("all")){
+				//全部已读
+				chatDao.updateIsRead(uid,targetid);
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "200");
-				jsonObject.put("msg", "已点赞");
+				jsonObject.put("msg", "设置成功");
 				writer.write(jsonObject.toString());
 				return;
 			}
 			else{
-				//取消赞
-				if(isOsZan.get("display").equals("0")){
-					circleDao.DelOsZan(commentid,token);
+				int count = chatDao.updateIsReadById(chatid);
+				System.out.println(count);
+				if(count > 0){
+					//单条已读
 					jsonObject = new JSONObject();
 					jsonObject.put("code", "200");
-					jsonObject.put("msg", "已取消");
+					jsonObject.put("msg", "设置成功");
 					writer.write(jsonObject.toString());
 					return;
 				}
-				//点赞
 				else{
-					circleDao.addOsZan2(commentid,token);
 					jsonObject = new JSONObject();
-					jsonObject.put("code", "200");
-					jsonObject.put("msg", "已点赞");
+					jsonObject.put("code", "-1");
+					jsonObject.put("msg", "无此消息");
 					writer.write(jsonObject.toString());
 					return;
 				}
 			}
 			
 		}catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println("异常---->"+e.getMessage());
+			e.printStackTrace();
 			jsonObject = new JSONObject();
 			jsonObject.put("code", "-1");
 			jsonObject.put("msg", "请求异常");
 			writer.write(jsonObject.toString());
 			return;
-		}finally {
-			
+		} finally {
+			writer.flush();
+			writer.close();
 		}
 	}
 	

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSONObject;
 import com.quifeng.dao.circle.CircleDao;
 import com.quifeng.dao.token.TokenDao;
+import com.quifeng.utils.dao.DateUtils;
 
 public class CircleHotServlet {
 	
@@ -127,11 +128,11 @@ public class CircleHotServlet {
 					mapPost.put("type", 1);
 				}
 				//图片帖
-				else if(mapPostArr.get("postimg") != null && mapPostArr.get("posttext") == null && mapPostArr.get("postvideo") == null ){
+				else if(mapPostArr.get("postimg") != null && mapPostArr.get("postvideo") == null ){
 					mapPost.put("type", 2);
 				}
 				//视频帖
-				else if(mapPostArr.get("postvideo") != null && mapPostArr.get("posttext") == null && mapPostArr.get("postimg") == null ){
+				else if(mapPostArr.get("postvideo") != null && mapPostArr.get("postimg") == null ){
 					mapPost.put("type", 3);
 				}
 				//混合帖
@@ -142,12 +143,27 @@ public class CircleHotServlet {
 				if(mapPostArr.get("postvideo") != null){
 					mapPost.put("postvideo", mapPostArr.get("postvideo"));
 				}
-				else{
+				else if(mapPostArr.get("postimg") != null){
 					mapPost.put("postimg", mapPostArr.get("postimg"));
 				}
-				mapPost.put("placaid", mapPostArr.get("placaid"));
-				mapPost.put("createtime", mapPostArr.get("createtime"));
+				else{
+					mapPost.put("postimg", "");
+					mapPost.put("postvideo", "");
+				}
+				//板块信息
+				Map<String, Object> placas = circleDao.queryPlacaById(mapPostArr.get("placaid").toString());
+				Map<String, Object> placa = new HashMap<>();
+				placa.put("placaid", mapPostArr.get("placaid"));
+				placa.put("placaname", placas.get("placaname").toString());
+				mapPost.put("placa", placa);
+				mapPost.put("createtime", DateUtils.MillToHourAndMin(mapPostArr.get("createtime").toString()));
 				mapPost.put("posttext", mapPostArr.get("posttext"));
+				mapPost.put("postzan", mapPostArr.get("postzan"));
+				mapPost.put("postaos", mapPostArr.get("postaos"));
+				mapPost.put("postshare", mapPostArr.get("postshare"));
+				mapPost.put("postos", mapPostArr.get("postos"));
+				mapPost.put("postos", mapPostArr.get("postos"));
+				mapPost.put("postsee", mapPostArr.get("postsee"));
 				
 				postListArr.add(mapPost);
 			}

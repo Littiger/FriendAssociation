@@ -1,135 +1,135 @@
 package com.quifeng.servlet.chat;
+/**
+ * @desc   查询历史聊天记录
+ * @author JZH
+ * @time   2021-01-02
+ */
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.quifeng.dao.chat.ChatDao;
-import com.quifeng.dao.user.UserDao;
+import com.quifeng.dao.token.TokenDao;
 
-/**
- * @Desc http：//127.0.0.1/api/user/gethistory
- * @author 语录
- *
- */
 public class GethistoryServlet {
-	UserDao userDao = new UserDao();
-	ChatDao chatDao =new ChatDao();
-	/**
-	 * @Desc 查询聊天记录的业务逻辑
-	 * @param request
-	 * @param response
-	 * @throws IOException 
-	 */
-	public void gethistory(HttpServletRequest request, HttpServletResponse response) throws IOException{
+	ChatDao chatDao = new ChatDao();
+	TokenDao tokenDao = new TokenDao();
+	
+	public void queryHistory(HttpServletRequest request, HttpServletResponse response) {
+		//json对象
+		JSONObject jsonObject = null;
+		PrintWriter writer = null;
+		try {
+			writer = response.getWriter();
+		} catch (IOException e) {
+			System.out.println("printwriter获取异常");
+		}
 		//接值
 		String token = request.getParameter("token");
 		String targetid = request.getParameter("targetid");
-		//创建 PrintWriter 对象
-		PrintWriter out = response.getWriter();
-		//创建返回出错的Map
-		Map<String, Object> data = new LinkedHashMap<>();
-		
-		//这里是防止非法调用的
-		if (targetid==null||token==null||targetid.equals("")||token.equals("")) {
-			print(out, data, "-5", "非法调用");
-			return;
-		}
-		
-		//验证token
-		Map<String, Object> userMap = userDao.getUserByToken(token);
-		if (userMap==null) {
-			print(out, data, "-1", "未登录");
-			return;
-		}
-		//查询接收的账户是否存在
-		Map<String, Object> userTar = userDao.getUserById(targetid);
-		//为空接收对象不存在
-		if (userTar==null) {
-			print(out, data, "-3", "接收对象不存在");
-			return;
-		}
-		//查询发送的人是否是自己的好友
-		
-		//获取uid
-		String uid = userMap.get("uid").toString();
-		//查询是否相互关注
-		Map<String, Object> fix1 = chatDao.isFixidez(uid, targetid);
-		Map<String, Object> fix2 = chatDao.isFixidez(targetid, uid);
-		//不是好友返回数据
-		if (fix1==null||fix2==null) {
-			print(out, data, "-2", "接收对象不是好友关系");
-			return;
-		}
-		//这里是查询聊天记录了
-		List<Map<String, Object>> chatLiatu = chatDao.getThisTory(uid,targetid);
-		List<Map<String, Object>> chatLiatt = chatDao.getThisTory(targetid,uid);
-		//创建一个list合并他俩
-		List<Map<String, Object>> chatList = new ArrayList<>(); 
-		chatList.addAll(chatLiatt);
-		chatList.addAll(chatLiatu);
-		//合并后对chatLiat进行排序
-		Collections.sort(chatList, new Comparator<Map<String, Object>>(){ 
-			   public int compare(Map<String, Object> o1, Map<String, Object> o2) {
-			    long t1 = Long.parseLong(o1.get("createtime").toString());
-			    long t2 = Long.parseLong(o2.get("createtime").toString());
-			    if (t1>t2) {
-					return -1;
-				}else {
-					return 1;
+		try {
+			
+			//判空
+			if(token == null || token.equals("")){
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "-1");
+				jsonObject.put("msg", "token获取异常，请重新登录");
+				writer.write(jsonObject.toString());
+				return;
+			}
+			if(targetid == null || targetid.equals("")){
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "-1");
+				jsonObject.put("msg", "参数异常");
+				writer.write(jsonObject.toString());
+				return;
+			}
+			//是否登录
+			if(tokenDao.queryToken(token) == null){
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "-1");
+				jsonObject.put("msg", "未登录");
+				writer.write(jsonObject.toString());
+				return;
+			}
+			if(chatDao.queryUserById(targetid) == null){
+		    	jsonObject = new JSONObject();
+				jsonObject.put("code", "-3");
+				jsonObject.put("msg", "接受对象不存在");
+				writer.write(jsonObject.toJSONString());
+				return;
+		    }
+			//自己的id
+			String uid = tokenDao.queryUidByToken(token);
+			if(uid.equals(targetid)){
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "-1");
+				jsonObject.put("msg", "无法获取与自己的聊天");
+				writer.write(jsonObject.toJSONString());
+				return;
+			}
+			if(chatDao.queryFixById(uid, targetid).size() < 2){//不是互相关注
+		    	jsonObject = new JSONObject();
+				jsonObject.put("code", "-2");
+				jsonObject.put("msg", "接受对象不是好友关系");
+				writer.write(jsonObject.toJSONString());
+				return;
+		    }
+			//获取消息
+			List<Map<String, Object>> newsList = chatDao.queryNewsById(uid,targetid);
+			if(newsList == null || newsList.size() < 1){
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "-1");
+				jsonObject.put("msg", "暂无消息");
+				writer.write(jsonObject.toJSONString());
+				return;
+			}
+			else{
+				List<Map<String, Object>> data = new ArrayList<Map<String,Object>>();
+				for (Map<String, Object> map : newsList) {
+					Map<String, Object> map2 = new HashMap<String, Object>();
+					Map<String, Object> data2 = new HashMap<>();
+					Map<String, Object> contentJson = (Map<String, Object>)JSONObject.parseObject(map.get("content").toString());
+					data2.put("chatid", map.get("chatid").toString());
+					data2.put("data", contentJson.get("data").toString());
+					data2.put("type", contentJson.get("type").toString());
+					map2.put("data", data2);
+					if(map.get("resserid").toString().equals(uid)){//自己发的
+						map2.put("type", 0);
+					}
+					else{//对方发的
+						map2.put("type", 1);
+					}
+					data.add(map2);
 				}
-			    
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "200");
+				jsonObject.put("msg", "获取成功");
+				jsonObject.put("data", data);
+				writer.write(jsonObject.toString());
 			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			jsonObject = new JSONObject();
+			jsonObject.put("code", "-1");
+			jsonObject.put("msg", "请求异常");
+			writer.write(jsonObject.toJSONString());
+			return;
+		} finally {
+			writer.flush();
+			writer.close();
 		}
-		);
-		//创建返回的List
-		List<Map<String, Object>> dataList = new ArrayList<>(); 
-		
-		//向dataList中添加数据
-		for (Map<String, Object> map : chatList) {
-			Map<String, Object> dataP = new HashMap<>(); 
-			//这里是判断是谁给谁发送的
-			String resserid = map.get("resserid").toString();			
-			if (resserid.equals(uid)) {
-				dataP.put("type", "0");
-			}else {
-				dataP.put("type", "1");
-			}
-			JSONObject contenetJson = JSONObject.parseObject(map.get("content").toString());	
-			//添加聊天内容 这里存的就是 json 直接取就可以了
-			dataP.put("data", contenetJson);
-			//向datalist中添加数据
-			dataList.add(dataP);
-		}
-		data.put("data", dataList);
-		print(out, data, "200", "获取成功");
-		
 	}
 	
-	
-	/**
-	 * @Desc 返回json的封装
-	 * @param out
-	 * @param data
-	 * @param coed
-	 * @param msg
-	 */
-	public void print(PrintWriter out,Map<String, Object> data,String coed,String msg){
-		data.put("code", coed);
-		data.put("msg", msg);
-		out.print(JSON.toJSONString(data));
-		out.close();
-	}
 	
 }
