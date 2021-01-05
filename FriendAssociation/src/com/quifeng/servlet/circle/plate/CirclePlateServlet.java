@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSON;
 import com.quifeng.dao.circle.CircleDao;
 import com.quifeng.dao.token.TokenDao;
-import com.quifeng.utils.dao.DateUtils;
 /**
  * @desc   获取单个板块帖子
  * @author JZH
@@ -97,50 +96,20 @@ public class CirclePlateServlet {
 				else{
 					postmap.put("collect", false);
 				}
-				//文字帖
-				if(map.get("posttext") != null && map.get("postimg") == null && map.get("postvideo") == null ){
-					postmap.put("type", 1);
-				}
-				//图片帖
-				else if(map.get("postimg") != null && map.get("postvideo") == null ){
-					postmap.put("type", 2);
-				}
-				//视频帖
-				else if(map.get("postvideo") != null && map.get("postimg") == null ){
-					postmap.put("type", 3);
-				}
-				//混合帖
-				else{
-					postmap.put("type", 4);
-				}
-				//板块信息
-				Map<String, Object> placas = circleDao.queryPlacaById(map.get("placaid").toString());
-				Map<String, Object> placa = new HashMap<>();
-				placa.put("placaid", map.get("placaid"));
-				placa.put("placaname", placas.get("placaname").toString());
-				postmap.put("placa", placa);
+				postmap.put("type", map.get("1"));
+				postmap.put("placaid", map.get("placaid"));
 				postmap.put("postid", map.get("postid"));
-				postmap.put("createtime", DateUtils.MillToTime(map.get("createtime").toString()));
+				postmap.put("createtime", map.get("createtime"));
 				postmap.put("posttext", map.get("posttext"));
-				postmap.put("posttext", map.get("posttext"));
-				postmap.put("postzan", map.get("postzan"));
-				postmap.put("postaos", map.get("postaos"));
-				postmap.put("postshare", map.get("postshare"));
-				postmap.put("postos", map.get("postos"));
-				postmap.put("postos", map.get("postos"));
-				postmap.put("postsee", map.get("postsee"));
-				
-				
+				if (map.get("postimg")!=null ) {
+					postmap.put("postimg", map.get("postimg"));
+					postmap.put("type", map.get("2"));
+				}
 				if (map.get("postvideo")!=null ) {
 					postmap.put("postvideo", map.get("postvideo"));
+					postmap.put("type", map.get("3"));
 				}
-				else if (map.get("postimg")!=null ) {
-					postmap.put("postimg", map.get("postimg"));
-				}
-				else{
-					postmap.put("postimg", "");
-					postmap.put("postvideo", "");
-				}
+				System.out.println(postmap);
 				data.add(postmap);
 			}
 			

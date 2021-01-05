@@ -15,33 +15,51 @@ import com.alibaba.fastjson.JSON;
 import com.quifeng.dao.user.UserDao;
 import com.quifeng.dao.user.UserHomeDao;
 import com.quifeng.utils.dao.DateUtils;
-import com.tencentcloudapi.trtc.v20190722.models.UserInformation;
 
 /**
- * @Desc http：//127.0.0.1/api/user/userhome   代码怎么没有了 5555555555555
+ * @Desc  http：//127.0.0.1/api/user/userdynamiclist
  * @author 语录
  *
  */
-public class UserHomeServlet {
-	
+public class UserdynamiclistServlet {
+
 	UserDao userDao = new UserDao();
 	UserHomeDao userHome = new UserHomeDao();
+	
 	/**
-	 * @Desc 个人主页
+	 * @Desc 对个人主页下滑数据
 	 * @param request
 	 * @param response
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public void getUserHome(HttpServletRequest request, HttpServletResponse response) throws IOException{
+	public void userdynamiclist(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		//接收值
 		String token = request.getParameter("token");
 		String userid = request.getParameter("userid");
-		
+		String page = request.getParameter("page");
+		String size = request.getParameter("size");
 		//创建 PrintWriter 对象
 		PrintWriter out = response.getWriter();
 		//创建返回出错的Map
 		Map<String, Object> data = new LinkedHashMap<>();
-				
+			
+		int paeg1 = 0;
+		int size1 = 0;
+		try {
+			paeg1 = Integer.parseInt(page);
+			size1 = Integer.parseInt(page);
+		} catch (Exception e) {
+			// TODO: handle exception
+			print(out, data, "-5", "你是来找事的吧");
+		}
+
+		if (page==null||page.equals("")||size1<1||paeg1<1) {
+			page="1";			
+		}
+		if (size==null||size.equals("")) {
+			size="20";			
+		}
+			
 		//这里是防止非法调用的
 		if (userid==null||token==null||userid.equals("")||token.equals("")) {
 				print(out, data, "-5", "非法调用");
@@ -49,10 +67,10 @@ public class UserHomeServlet {
 		}
 		//这里是验证token的
 		Map<String, Object> userMap = userDao.getUserByToken(token);
-		if (userMap==null) {
-			print(out, data, "-1", "未登录");
-			return;
-		}
+			if (userMap==null) {
+				print(out, data, "-1", "未登录");
+				return;
+			}
 		//这里是先获取自己的uid在下面会用到'
 		String myUid = userMap.get("uid").toString();
 		//查询是否存在 也是防止非法调用 ----------- 可删
@@ -62,29 +80,9 @@ public class UserHomeServlet {
 			print(out, data, "-3", "请不要访问外星人的主页");
 			return;
 		}
-		//查询主页的内容了
-		//创建封装数据 map ------》用来存储基本的信息
-		Map<String, Object> dataP = new HashMap<String, Object>();
-		//获取用户的基本数据
-		//存入uid
-		dataP.put("userid", userid);
-		//存入名字
-		dataP.put("username", userTar.get("username"));
-		//存入签名  ---------->签名是有默认值得是 --》该用户什么都没有留下哦
-		dataP.put("uesrsign", "useras");
-		//我是否关注他
-		dataP.put("isconcern", userHome.isFixidez(myUid, userid));
-		//这里是获取总共获赞的数量
-		dataP.put("great", userHome.getUserZanSumBy(userid).get("count"));	
-		//这里是获取粉丝数的
-		dataP.put("fans", userHome.getUserFixidezCountById(userid).get("count"));
-		//这里是获取关注数量的
-		dataP.put("concern",userHome.getFixideById(userid).get("count"));
-		//这里是获取我发送的帖子的 点进去之后会先获取前20个
-		//先创建存数据的list
 		List<Map<String, Object>> dataList = new ArrayList<Map<String,Object>>();
 		//获取贴子的内容 --------->这里有写好的 以防修改 重新写到了 userHome中-->这里获取第一页20条
-		List<Map<String, Object>> postList = userHome.getUserPostById(userid,"1","20"); 
+		List<Map<String, Object>> postList = userHome.getUserPostById(userid,page,size); 
 		
 		for (Map<String, Object> map : postList) {
 			//创建存帖子的map
@@ -139,8 +137,8 @@ public class UserHomeServlet {
 		//返回数据
 		data.put("data", dataList);
 		print(out, data, "200", "请求成功");
+		
 	}
-	
 	
 	/**
 	 * @Desc 返回json的封装
@@ -155,5 +153,4 @@ public class UserHomeServlet {
 		out.print(JSON.toJSONString(data));
 		out.close();
 	}
-	
 }

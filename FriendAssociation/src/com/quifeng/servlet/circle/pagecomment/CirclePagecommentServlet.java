@@ -60,13 +60,6 @@ public class CirclePagecommentServlet {
 			count="10";
 		}
 		try {
-			if(circleDao.queryFiOsMessageById(comment, token) == null){
-				jsonObject = new JSONObject();
-				jsonObject.put("code", "-1");
-				jsonObject.put("msg", "无此评论");
-				writer.write(jsonObject.toString());
-				return;
-			}
 			//判断token
 			if(tokenDao.queryToken(token) == null){
 				jsonObject = new JSONObject();

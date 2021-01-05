@@ -1,242 +1,209 @@
 package com.quifeng.dao.chat;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 
-import com.quifeng.dao.token.TokenDao;
 import com.quifeng.utils.dao.Dao;
 import com.quifeng.utils.dao.DaoImpl;
+
 /**
- * @desc   聊天dao层
- * @author JZH
- * @time   2021-01-02
+ * @Desc 对聊天的操作
+ * @author 语录
+ *
  */
 public class ChatDao {
+
 	Dao dao = new DaoImpl();
-	TokenDao tokenDao = new TokenDao();
 	
 	/**
-	 * 根据token获取聊天列表
-	 * @param token
-	 * @return
-	 * @throws SQLException 
-	 * @throws ClassNotFoundException 
-	 * @throws NumberFormatException 
-	 */
-	public List<Map<String, Object>> queryMessListByToken(String token) throws NumberFormatException, ClassNotFoundException, SQLException {
-		//获取id
-		String uid = tokenDao.queryUidByToken(token);
-		String sql = "select * from "
-				+ "(select * from (select * FROM news where resserid=? or recipients=? ORDER BY createtime desc ) n "
-				+ "GROUP BY n.resserid) n1 "
-				+ "ORDER BY n1.createtime desc";
-		return dao.executeQueryForList(sql,
-				new int[]{
-						Types.INTEGER,
-						Types.INTEGER
-				},
-				new Object[]{
-						Integer.parseInt(uid),
-						Integer.parseInt(uid)
-				});
-	}
-	/**
-	 * 根据id获取用户信息
-	 * @param string
-	 * @return
-	 * @throws SQLException 
-	 * @throws ClassNotFoundException 
-	 * @throws NumberFormatException 
-	 */
-	public Map<String, Object> queryUserById(String id) throws NumberFormatException, ClassNotFoundException, SQLException {
-		return dao.executeQueryForMap("select * from user where uid=?",
-				new int[]{
-						Types.INTEGER
-				},
-				new Object[]{
-						Integer.parseInt(id)
-				});
-	}
-	/**
-	 * 根据自己id和对方id获取未读消息数量
-	 * @param token
-	 * @throws SQLException 
-	 * @throws ClassNotFoundException 
-	 * @throws NumberFormatException 
-	 */
-	public int queryUnReadMessCount(String id,String toId) throws NumberFormatException, ClassNotFoundException, SQLException {
-		String sql = "select count(*) count "
-				+ "from news where display=0 and isread=0 and "
-				+ "(resserid=? and recipients=?) or (resserid=? and recipients=?) ";
-		return Integer.parseInt(
-					dao.executeQueryForMap(sql,
-							new int[]{
-									Types.INTEGER,
-									Types.INTEGER,
-									Types.INTEGER,
-									Types.INTEGER
-							},
-							new Object[]{
-									Integer.parseInt(id),
-									Integer.parseInt(toId),
-									Integer.parseInt(toId),
-									Integer.parseInt(id)
-							}).get("count").toString()
-				);
-	}
-	/**
-	 * 查看是否为好友
-	 * @param token
-	 * @param targetid
-	 * @return
-	 * @throws SQLException 
-	 * @throws ClassNotFoundException 
-	 * @throws NumberFormatException 
-	 */
-	public Map<String, Object> queryFixById(String formid, String toid) throws NumberFormatException, ClassNotFoundException, SQLException {
-		String sql = "select * from fixidez where (formid=? and toid=?) or (formid=? and toid=?)";
-		return dao.executeQueryForMap(sql,
-				new int[]{
-						Types.INTEGER,
-						Types.INTEGER,
-						Types.INTEGER,
-						Types.INTEGER
-				},
-				new Object[]{
-						Integer.parseInt(formid),
-						Integer.parseInt(toid),
-						Integer.parseInt(toid),
-						Integer.parseInt(formid),
-				});
-	}
-	/**
-	 * 添加消息 返回此条消息信息
+	 * @Desc 获取自己聊天的人的信息 
 	 * @param uid
-	 * @param targetid
-	 * @param string
-	 * @throws IOException 
-	 * @throws SQLException 
-	 * @throws FileNotFoundException 
-	 * @throws ClassNotFoundException 
-	 * @throws NumberFormatException 
-	 */
-	public Map<String, Object> addMess(String uid, String targetid, String mess) throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
-		String mill = System.currentTimeMillis()+"";
-		dao.executeUpdate("insert into news values(0,?,?,?,0,?,0)",
-				new int[]{
-						Types.INTEGER,
-						Types.INTEGER,
-						Types.VARCHAR,
-						Types.VARCHAR
-				},
-				new Object[]{
-						Integer.parseInt(uid),
-						Integer.parseInt(targetid),
-						mess,
-						mill
-				});
-		return dao.executeQueryForMap("select * from news where resserid=? and recipients=? and createtime=?",
-				new int[]{
-						Types.INTEGER,
-						Types.INTEGER,
-						Types.VARCHAR
-				},
-				new Object[]{
-						Integer.parseInt(uid),
-						Integer.parseInt(targetid),
-						mill	
-				});
-	}
-	/**
-	 * 消息全部设为已读
-	 * @param uid
-	 * @param targetid
-	 * @throws IOException 
-	 * @throws SQLException 
-	 * @throws FileNotFoundException 
-	 * @throws ClassNotFoundException 
-	 * @throws NumberFormatException 
-	 */
-	public int updateIsRead(String uid, String targetid) throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
-		return dao.executeUpdate("update news set isread=1 where (resserid=? and recipients=?) or (resserid=? and recipients=?)",
-				new int[]{
-						Types.INTEGER,
-						Types.INTEGER,
-						Types.INTEGER,
-						Types.INTEGER
-				},
-				new Object[]{
-						Integer.parseInt(uid),
-						Integer.parseInt(targetid),
-						Integer.parseInt(targetid),
-						Integer.parseInt(uid)
-				});
-	}
-	/**
-	 * 单条消息已读
-	 * @param chatid
-	 * @throws IOException 
-	 * @throws SQLException 
-	 * @throws FileNotFoundException 
-	 * @throws ClassNotFoundException 
-	 * @throws NumberFormatException 
-	 */
-	public int updateIsReadById(String chatid) throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
-		return dao.executeUpdate("update news set isread=1 where chatid=?",
-				new int[]{
-						Types.INTEGER
-				},
-				new Object[]{
-						Integer.parseInt(chatid)
-				});
-	}
-	/**
-	 * 根据id查询消息
-	 * @param uid
-	 * @param targetid
 	 * @return
-	 * @throws SQLException 
-	 * @throws ClassNotFoundException 
-	 * @throws NumberFormatException 
 	 */
-	public List<Map<String, Object>> queryNewsById(String uid, String targetid) throws NumberFormatException, ClassNotFoundException, SQLException {
-		String sql="select * from news "
-				+ "where display=0 and (resserid=? and recipients=?) or (resserid=? and recipients=?) "
-				+ "ORDER BY createtime desc ";
-		return dao.executeQueryForList(sql,
-				new int[]{
-						Types.INTEGER,
-						Types.INTEGER,
-						Types.INTEGER,
-						Types.INTEGER
-				},
-				new Object[]{
-						Integer.parseInt(uid),
-						Integer.parseInt(targetid),
-						Integer.parseInt(targetid),
-						Integer.parseInt(uid)
-				});
+	public  List<Map<String, Object>> getChatMess(String uid){
+		List<Map<String, Object>> data = null;
+		try {
+			String sql = "SELECT  * FROM  chat  INNER JOIN user on recipientsid=uid WHERE resserid=? AND display=0   GROUP BY  recipientsid            ";
+			data=dao.executeQueryForList(sql , new int[]{
+					Types.INTEGER
+			}, new Object[]{
+					uid
+			});
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+		}
+		return data;
 	}
+	
 	/**
-	 * 查询是否有这条消息
+	 * @Desc 获取最后一条聊天信息
+	 * @param uid
+	 * @return
+	 */
+	public Map<String, Object> getEnd(String resserid,String recipientsid){
+		Map<String, Object> data = null;
+		try {
+			String sql = "SELECT * FROM chat  WHERE resserid =? ANd  recipientsid=? ANd display = 0 ORDER BY  createtime Desc  LIMIT 1";
+			data=dao.executeQueryForMap(sql , new int[]{
+					Types.INTEGER,
+					Types.INTEGER
+			}, new Object[]{
+					resserid,recipientsid
+			});
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+		}
+		return data;
+	}
+	
+
+	/**
+	 * @Desc 获取没有读消息的条数
+	 * @param recipientsid
+	 * @param resserid
+	 * @return
+	 */
+	public Map<String, Object> getCountZ(String recipientsid,String resserid){
+		Map<String, Object> data = null;
+		try {
+			String sql = "SELECT count(*) count FROM chat WHERE isread=0 And display=0 AND recipientsid=? AND resserid=?";
+			data=dao.executeQueryForMap(sql , new int[]{
+					Types.INTEGER,
+					Types.INTEGER
+			}, new Object[]{
+					recipientsid,resserid
+			});
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+		}
+		return data;
+	}
+	
+	/**
+	 * @Desc 相互关注就是好友
+	 * @param fixidezid
+	 * @param Befixidez
+	 * @return
+	 */
+	public Map<String, Object> isFixidez(String fixidezid,String Befixidez){
+		
+		Map<String, Object> data = null;
+		try {
+			String sql = "SELECT *	 FROM fixidez  WHERE fixidezid = ? AND  Befixidez = ? ANd display=0";			
+			data=dao.executeQueryForMap(sql , new int[]{
+					Types.INTEGER,
+					Types.INTEGER
+			}, new Object[]{
+					fixidezid,Befixidez
+			});
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+		}
+		return data;
+	}
+	
+
+	/**
+	 * @Desc 发送消息
+	 * @param resserid
+	 * @param recipientsid
+	 * @param content
+	 * @param createtime
+	 * @return
+	 */
+	public int addChat(String chatid,String resserid,String recipientsid,String content ,String createtime){
+		int count = 0;
+		String sql = "INSERT INTO chat(chatid,resserid,recipientsid,content,createtime) VALUES(?,?,?,?,?)";
+		try {
+			count=dao.executeUpdate(sql , new int[]{
+					Types.VARCHAR,Types.INTEGER,Types.INTEGER,Types.VARCHAR,Types.VARCHAR
+			}, new Object[]{
+					chatid,resserid,recipientsid,content,createtime
+			});
+		} catch (ClassNotFoundException | SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+		}
+		
+		return count;
+	}
+	
+	/**
+	 * @Desc 一条消息标记为已读
 	 * @param chatid
 	 * @return
-	 * @throws SQLException 
-	 * @throws ClassNotFoundException 
-	 * @throws NumberFormatException 
 	 */
-	public Map<String, Object> queryNewsById(String chatid) throws NumberFormatException, ClassNotFoundException, SQLException {
-		return dao.executeQueryForMap("select * from news where chatid=?",
-				new int[]{
-						Types.INTEGER
-				},
-				new Object[]{
-						Integer.parseInt(chatid)
-				});
+	public int updateChatByID(String chatid){
+		int count = 0;
+		
+		try {
+			count =dao.executeUpdate("UPDATE chat SET isread=1 WHERE chatid=?",new  int[]{
+				Types.VARCHAR
+			}, new Object[]{
+					chatid
+			});
+		} catch (ClassNotFoundException | SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return count;
 	}
+	
+	/**
+	 * @Desc 设置全部
+	 * @param resserid
+	 * @param recipientsid
+	 * @return
+	 */
+	public int updateChatAll(String resserid,String recipientsid){
+		int count = 0;
+		
+		try {
+			count =dao.executeUpdate("UPDATE chat SET isread=1 WHERE resserid=? AND recipientsid=?",new  int[]{
+				Types.INTEGER,Types.INTEGER
+			}, new Object[]{
+				resserid,recipientsid
+			});
+		} catch (ClassNotFoundException | SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return count;
+	}
+
+	/**
+	 * @Desc 获取聊天信息
+	 * @param resserid
+	 * @param recipientsid
+	 * @return
+	 */
+	public List<Map<String, Object>> getThisTory(String resserid,String recipientsid) {
+		// TODO Auto-generated method stub
+		List<Map<String, Object>> data = null;
+		try {
+			String sql = "SELECT  *	FROM chat  WHERE resserid=? AND recipientsid=? AND display=0";			
+			data=dao.executeQueryForList(sql , new int[]{
+					Types.INTEGER,
+					Types.INTEGER
+			}, new Object[]{
+					resserid,recipientsid
+			});
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+		}
+		return data;
+	}
+	
+	
 	
 }

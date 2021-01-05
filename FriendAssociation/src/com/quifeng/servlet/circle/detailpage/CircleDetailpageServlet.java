@@ -15,7 +15,6 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.quifeng.dao.circle.CircleDao;
 import com.quifeng.dao.token.TokenDao;
 import com.quifeng.utils.dao.Dao;
-import com.quifeng.utils.dao.DateUtils;
 /**
  * @desc   获取一级评论+帖子的详细信息 -- 修改增加了 osfirstid   评论id     是否点赞   是否收藏
  * @author JZH
@@ -116,11 +115,11 @@ public class CircleDetailpageServlet {
 					detailpage.put("type", 1);
 				}
 				//图片帖
-				else if(mapPost.get("postimg") != null && mapPost.get("postvideo") == null ){
+				else if(mapPost.get("postimg") != null && mapPost.get("posttext") == null && mapPost.get("postvideo") == null ){
 					detailpage.put("type", 2);
 				}
 				//视频帖
-				else if(mapPost.get("postvideo") != null && mapPost.get("postimg") == null ){
+				else if(mapPost.get("postvideo") != null && mapPost.get("posttext") == null && mapPost.get("postimg") == null ){
 					detailpage.put("type", 3);
 				}
 				//混合帖
@@ -128,13 +127,15 @@ public class CircleDetailpageServlet {
 					detailpage.put("type", 4);
 				}
 				detailpage.put("placaid", mapPost.get("placaid"));
-				detailpage.put("createtime", DateUtils.MillToHourAndMin(mapPost.get("createtime").toString()));
+				detailpage.put("createtime", mapPost.get("createtime"));
 				detailpage.put("posttext", mapPost.get("posttext"));
-				//详细信息图片视频全部显示
-				
-				detailpage.put("postvideo", mapPost.get("postvideo"));
-				detailpage.put("postimg", mapPost.get("postimg"));
-				
+				//如果有视频
+				if(mapPost.get("postvideo") != null){
+					detailpage.put("postvideo", mapPost.get("postvideo"));
+				}
+				else{
+					detailpage.put("postimg", mapPost.get("postimg"));
+				}
 				detailpage.put("postzan", mapPost.get("postzan"));
 				detailpage.put("postshare", mapPost.get("postshare"));
 				detailpage.put("postaos", mapPost.get("postaos"));

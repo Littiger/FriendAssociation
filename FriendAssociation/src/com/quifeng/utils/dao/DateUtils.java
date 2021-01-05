@@ -86,18 +86,13 @@ public class DateUtils {
 		else if(System.currentTimeMillis()-time > 3600000){
 			return Math.abs((System.currentTimeMillis()-time)/1000/60/60)+"小时前";
 		}
-		return "不到1小时前";
-
+		return "不到1小时前";     
 	}
-	/**
-	 * 根据毫秒返回具体时间
-	 * @param lo
-	 * @return
-	 */
-	public static String MillToHourAndMin(String lo){
-		long time = Long.parseLong(lo);
-		Date date = new Date(time);
-        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return sd.format(date);
+	
+	public static String getForMat(String data){
+		long tiem = Long.parseLong(data);
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    String sd = sdf.format(new Date(Long.parseLong(String.valueOf(tiem))));      // 时间戳转换成时间
+	    return sd;
 	}
 }

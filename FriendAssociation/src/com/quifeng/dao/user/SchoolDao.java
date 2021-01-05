@@ -76,7 +76,4 @@ public class SchoolDao {
 		return data;
 	}
 	
-	
-	
-	
 }

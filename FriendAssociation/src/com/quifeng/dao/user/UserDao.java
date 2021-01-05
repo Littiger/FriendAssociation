@@ -57,6 +57,27 @@ public class UserDao {
 		return data;
 	}
 	
+	/**
+	 * @Derc 查询User根据id
+	 * @param uid
+	 * @return
+	 */
+	public Map<String, Object> getUserById(String uid){
+		String sql =" SELECT * FROM `user` WHERE uid=? ";
+		Map<String, Object> data =null;
+		try {
+			data=dao.executeQueryForMap(sql, new int[]{
+					Types.INTEGER
+			}, new Object[]{
+					uid
+			});
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return data;
+	}
+	
 	
 	/**
 	 * @Desc 验证登录
@@ -80,6 +101,4 @@ public class UserDao {
 		
 		return data;	
 	}
-	
-	
 }
