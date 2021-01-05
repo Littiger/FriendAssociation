@@ -12,20 +12,16 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.coyote.UpgradeToken;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
 
 import com.alibaba.fastjson.JSON;
+
 import com.ndktools.javamd5.Mademd5;
-import com.ndktools.javamd5.core.MD5;
 import com.quifeng.dao.login.FaceDao;
 import com.quifeng.dao.login.LoginDao;
-import com.quifeng.dao.token.TokenDao;
 import com.quifeng.dao.user.SchoolDao;
 import com.quifeng.dao.user.UserDao;
 import com.quifeng.utils.face.Base64Utils;
-import com.quifeng.utils.face.FaceUtils;
+import com.quifeng.utils.face.FaceEngineUtils;
 import com.quifeng.utils.generate.TokenUtils;
 import com.quifeng.utils.state.StateUtils;
 import com.quifeng.utils.state.UserType;
@@ -136,31 +132,60 @@ public class loginServlet {
 			
 			//转mat
 			BufferedImage buff = Base64Utils.base642BufferedImage(faceBase);
-			Mat mat_1=Base64Utils.BufImg2Mat(buff,BufferedImage.TYPE_3BYTE_BGR, CvType.CV_8UC3);
+			//这里是活体检测
+			double isprocount = FaceEngineUtils.isPreson(buff);	
+			//官网给出是  0.5 
+			if (isprocount>0.4) {
+				print(out, dataP, "-2", "请您动一下");
+				return;
+			}
+			
+//			Mat mat_1=Base64Utils.BufImg2Mat(buff,BufferedImage.TYPE_3BYTE_BGR, CvType.CV_8UC3);
 			//查询数据库 
 			String uid = userMap.get("uid").toString().trim();
 			List<Map<String, Object>> faceList = faceDao.queryFaceByUid(uid);
 			if (faceList.size()<8) {
 				print(out, dataP, "-1", "请先录入人脸");
+				return;
 			}
 			for (Map<String, Object> map : faceList) {
-				String base64f = map.get("facebase").toString();
-				BufferedImage buff64 = Base64Utils.base642BufferedImage(base64f);
-				Mat mat_0=Base64Utils.BufImg2Mat(buff64,BufferedImage.TYPE_3BYTE_BGR, CvType.CV_8UC3);
-				//比较
-				double countx = FaceUtils.compare_image(mat_0, mat_1);
-				if (countx>0.9) {
-					String newtoken = TokenUtils.getToken(userMap.get("userphone").toString());
-					TokenUtils.updateTokenByU(userMap.get("uid").toString(),newtoken);
-					data.put("token", newtoken);
-					dataP.put("data", data);
-					print(out, dataP, "200", "登录成功");
-					return;
-				}else {
-					print(out, dataP, "-1", "请再次尝试");
-					return;
-				}
-				
+				//这里是以前写的
+//				String base64f = map.get("facebase").toString();
+//				BufferedImage buff64 = Base64Utils.base642BufferedImage(base64f);
+//				Mat mat_0=Base64Utils.BufImg2Mat(buff64,BufferedImage.TYPE_3BYTE_BGR, CvType.CV_8UC3);
+//				//比较
+//				double countx = FaceUtils.compare_image(mat_0, mat_1);
+//				if (countx>0.9) {
+//					String newtoken = TokenUtils.getToken(userMap.get("userphone").toString());
+//					TokenUtils.updateTokenByU(userMap.get("uid").toString(),newtoken);
+//					data.put("token", newtoken);
+//					dataP.put("data", data);
+//					print(out, dataP, "200", "登录成功");
+//					return;
+//				}else {
+//					print(out, dataP, "-1", "请再次尝试");
+//					return;
+//				}
+
+			//获取数据   buff :是传过来的人脸  	 buff2  : 数据库中存的人脸	 
+			String base64f = map.get("facebase").toString();
+			BufferedImage buff2 = Base64Utils.base642BufferedImage(base64f);
+			//获取相差值
+			double countx = FaceEngineUtils.face(buff, buff2);
+			
+			//这里是判定的  官网给出 0.8 
+			if (countx>0.8) {
+				String newtoken = TokenUtils.getToken(userMap.get("userphone").toString());
+				TokenUtils.updateTokenByU(userMap.get("uid").toString(),newtoken);
+				data.put("token", newtoken);
+				dataP.put("data", data);
+				print(out, dataP, "200", "登录成功");
+				return;	
+			}else {
+				print(out, dataP, "-1", "请再次尝试");
+				return;
+			}
+		
 			}
 			
 		}
