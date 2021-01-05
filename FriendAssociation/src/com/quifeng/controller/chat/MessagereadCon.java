@@ -9,21 +9,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.fastjson.JSONObject;
-import com.quifeng.servlet.chat.MessageReadServlet;
-/**
- * @desc   聊天-消息置为已读
- * @author JZH
- * @time   2021-01-02
- */
+import com.quifeng.servlet.chat.Messageread;
+import com.quifeng.utils.error.ErrorUtils;
+
 @SuppressWarnings("serial")
 @WebServlet("/api/chat/messageread")
-public class Messageread extends HttpServlet{
-	
-	MessageReadServlet readServlet = new MessageReadServlet();
-	
+public class MessagereadCon  extends HttpServlet{
+	Messageread  messageread = new Messageread();
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		readServlet.isRead(request,response);
+		// TODO Auto-generated method stub
+		PrintWriter out = response.getWriter();
+		try {
+			messageread.messageread(request, response);
+			
+		} catch (Exception e) {
+			out.print(ErrorUtils.errorTomCat());
+		}finally {
+			out.close();
+		}
 	}
 }

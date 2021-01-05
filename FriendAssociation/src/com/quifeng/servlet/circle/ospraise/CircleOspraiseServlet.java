@@ -60,6 +60,7 @@ public class CircleOspraiseServlet {
 			//判断是否点过赞
 			Map<String, Object> isOsZan = circleDao.isOsZan(commentid,token);
 			if(isOsZan == null){//未点过赞
+				System.out.println("11111111111111111111");
 				//zan表添加数据
 				circleDao.addOsZan(commentid,token);
 				jsonObject = new JSONObject();
