@@ -111,22 +111,21 @@ public class CircleDetailpageServlet {
 				else{
 					detailpage.put("collect", false);
 				}
-				//文字帖
-				if(mapPost.get("posttext") != null && mapPost.get("postimg") == null && mapPost.get("postvideo") == null ){
-					detailpage.put("type", 1);
-				}
-				//图片帖
-				else if(mapPost.get("postimg") != null && mapPost.get("postvideo") == null ){
-					detailpage.put("type", 2);
-				}
+				
+				//帖子类型
 				//视频帖
-				else if(mapPost.get("postvideo") != null && mapPost.get("postimg") == null ){
+				if(mapPost.get("postvideo") != null){
 					detailpage.put("type", 3);
 				}
-				//混合帖
-				else{
-					detailpage.put("type", 4);
+				//图片帖
+				else if(mapPost.get("postimg") != null ){
+					detailpage.put("type", 2);
 				}
+				//文字帖
+				else if(mapPost.get("posttext") != null ){
+					detailpage.put("type", 1);
+				}
+				
 				detailpage.put("placaid", mapPost.get("placaid"));
 				detailpage.put("createtime", DateUtils.MillToHourAndMin(mapPost.get("createtime").toString()));
 				detailpage.put("posttext", mapPost.get("posttext"));

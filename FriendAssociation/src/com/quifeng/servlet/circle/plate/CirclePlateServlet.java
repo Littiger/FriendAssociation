@@ -97,21 +97,18 @@ public class CirclePlateServlet {
 				else{
 					postmap.put("collect", false);
 				}
-				//文字帖
-				if(map.get("posttext") != null && map.get("postimg") == null && map.get("postvideo") == null ){
-					postmap.put("type", 1);
-				}
-				//图片帖
-				else if(map.get("postimg") != null && map.get("postvideo") == null ){
-					postmap.put("type", 2);
-				}
+				//帖子类型
 				//视频帖
-				else if(map.get("postvideo") != null && map.get("postimg") == null ){
+				if(map.get("postvideo") != null  ){
 					postmap.put("type", 3);
 				}
-				//混合帖
-				else{
-					postmap.put("type", 4);
+				//图片帖
+				else if(map.get("postimg") != null  ){
+					postmap.put("type", 2);
+				}
+				//文字帖
+				else if(map.get("posttext") != null  ){
+					postmap.put("type", 1);
 				}
 				//板块信息
 				Map<String, Object> placas = circleDao.queryPlacaById(map.get("placaid").toString());
@@ -126,7 +123,6 @@ public class CirclePlateServlet {
 				postmap.put("postzan", map.get("postzan"));
 				postmap.put("postaos", map.get("postaos"));
 				postmap.put("postshare", map.get("postshare"));
-				postmap.put("postos", map.get("postos"));
 				postmap.put("postos", map.get("postos"));
 				postmap.put("postsee", map.get("postsee"));
 				
