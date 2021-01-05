@@ -122,22 +122,18 @@ public class CircleHotServlet {
 				else{
 					mapPost.put("collect", false);
 				}
-				
-				//文字帖
-				if(mapPostArr.get("posttext") != null && mapPostArr.get("postimg") == null && mapPostArr.get("postvideo") == null ){
-					mapPost.put("type", 1);
-				}
-				//图片帖
-				else if(mapPostArr.get("postimg") != null && mapPostArr.get("postvideo") == null ){
-					mapPost.put("type", 2);
-				}
+				//帖子类型
 				//视频帖
-				else if(mapPostArr.get("postvideo") != null && mapPostArr.get("postimg") == null ){
+				if(mapPostArr.get("postvideo") != null ){
 					mapPost.put("type", 3);
 				}
-				//混合帖
-				else{
-					mapPost.put("type", 4);
+				//图片帖
+				else if(mapPostArr.get("postimg") != null ){
+					mapPost.put("type", 2);
+				}
+				//文字帖
+				else if(mapPostArr.get("posttext") != null){
+					mapPost.put("type", 1);
 				}
 				//如果有视频只显示视频
 				if(mapPostArr.get("postvideo") != null){
@@ -161,7 +157,6 @@ public class CircleHotServlet {
 				mapPost.put("postzan", mapPostArr.get("postzan"));
 				mapPost.put("postaos", mapPostArr.get("postaos"));
 				mapPost.put("postshare", mapPostArr.get("postshare"));
-				mapPost.put("postos", mapPostArr.get("postos"));
 				mapPost.put("postos", mapPostArr.get("postos"));
 				mapPost.put("postsee", mapPostArr.get("postsee"));
 				
