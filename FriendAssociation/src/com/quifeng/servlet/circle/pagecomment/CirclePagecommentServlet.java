@@ -90,6 +90,7 @@ public class CirclePagecommentServlet {
 				//获取当前评论信息
 				Map<String, Object> map = new HashMap<>();
 				Map<String, Object> userinfo = new HashMap<>();
+				userinfo.put("uid", os.get("uid").toString());
 				userinfo.put("uname",os.get("username").toString());
 				userinfo.put("useravatar", os.get("useravatar").toString());
 				map.put("userinfo", userinfo);
@@ -129,6 +130,7 @@ public class CirclePagecommentServlet {
 					Map<String, Object> superior = new HashMap<>();
 					//用户信息
 					Map<String, Object> userinfo2 = new HashMap<>();
+					userinfo2.put("uid", upOs.get("uid").toString());
 					userinfo2.put("uname", upOs.get("username").toString());
 					userinfo2.put("useravatar", upOs.get("useravatar").toString());
 					superior.put("userinfo", userinfo2);

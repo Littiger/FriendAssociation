@@ -93,6 +93,7 @@ public class CircleDetailpageServlet {
 				Map<String, Object> detailpage = new HashMap<>();
 				Map<String, Object> userinfo = new HashMap<>();
 				Map<String, Object> placa = new HashMap<>();
+				userinfo.put("uid", mapPost.get("uid").toString());
 				userinfo.put("uname", mapPost.get("username"));
 				userinfo.put("useravatar", mapPost.get("useravatar"));
 				detailpage.put("userinfo", userinfo);
@@ -154,6 +155,7 @@ public class CircleDetailpageServlet {
 						Map<String,Object> userinfo2 =new HashMap<String, Object>();
 						//查看该评论是否被点赞
 						Map<String, Object> zan = circleDao.queryOsZan(postId,map.get("osfirstid").toString() ,token);
+						userinfo2.put("uid", map.get("uid").toString());
 						userinfo2.put("uname", map.get("username"));
 						userinfo2.put("useravatar", map.get("useravatar"));
 						map2.put("userinfo", userinfo2);
@@ -195,6 +197,7 @@ public class CircleDetailpageServlet {
 						Map<String,Object> userinfo3 =new HashMap<String, Object>();
 						//查看该帖子是否点赞或收藏
 						Map<String, Object> zan = circleDao.queryOsZan(postId,map.get("osfirstid").toString() , token);
+						userinfo3.put("uid", map.get("uid").toString());
 						userinfo3.put("uname", map.get("username"));
 						userinfo3.put("useravatar", map.get("useravatar"));
 						map2.put("userinfo", userinfo3);
