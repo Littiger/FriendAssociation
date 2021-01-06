@@ -60,6 +60,7 @@ public class CircleDetailpageServlet {
 					writer.write(jsonObject.toString());
 					return;
 				}
+				
 				//初始化json
 				jsonObject = new JSONObject();
 				//获取热评
@@ -240,7 +241,15 @@ public class CircleDetailpageServlet {
 				String jString = JSON.toJSONString(jsonObject, SerializerFeature.DisableCircularReferenceDetect);
 				writer.write(jString);
 				return;
-			} finally {
+			}catch (Exception e) {
+				e.printStackTrace();
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "-1");
+				jsonObject.put("msg", "获取失败");
+				writer.write(jsonObject.toString());
+				return;
+			} 
+			finally {
 				writer.flush();
 				writer.close();
 			}
