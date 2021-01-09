@@ -105,7 +105,7 @@ public class FaceServlet {
 			
 			for (String string : faceJpegPath) {
 				System.out.println(string);
-				String faceBase64 = Base64Utils.GetImgBase(string);
+				String faceBase64 = Base64Utils.imageToBase64Str(string);
 				faceDao.addFace(uid, faceBase64, System.currentTimeMillis()+"");	
 			}
 			data.put("isover", false);
