@@ -90,13 +90,75 @@ public class RegisteredServlet {
 				print(out, data, "-2", "用户已经有人注册过了");
 				return;
 			}
-				
+						
+			
 			//验证手机号是否注册过
 			if (phoneMap!=null) {
+	
+		
+					
+				//这里判断是是否手机号没有验证
+				if (phoneMap.get("userzt").toString().equals("6")) {
+					String code = SMSUtils.createdCode();
+					String smsJson=SMSUtils.sendSms(code,new String[]{
+						"86"+phone
+					});							
+					if (smsJson!=null||(!(smsJson.equals("")))) {
+						System.out.println(1);
+						org.json.JSONObject jObject = new org.json.JSONObject(smsJson);
+						org.json.JSONObject SendStatusSet = jObject.getJSONArray("SendStatusSet").getJSONObject(0);
+						if(SendStatusSet.getString("SerialNo") != null || (!SendStatusSet.getString("SerialNo").equals(""))){													
+								try {
+									Map<String, Object> dataMap = userDao.getUserByPhone(phone);						
+//									//向code表中存入验证码
+									login.addCode(dataMap.get("uid").toString(), code, "1");
+									Map<String, Object> datap = new HashMap<>();
+									String uid = phoneMap.get("uid").toString();
+
+									Map<String, Object> userlog = tokenDao.getTokenByID(uid);	
+
+									String token = userlog.get("utoken").toString();
+									
+									datap.put("token", token);
+									datap.put("state", "6");
+									data.put("data", datap);
+									print(out, data, "200", "没有认证手机号码验证码已发送");
+									
+								} catch (Exception e) {
+									// TODO: handle exception
+									print(out, data, "-5", "插入验证码失败");
+								}
+							
+							return;
+						}
+						return;
+					}else {
+						print(out, data, "-1", "验证码发送失败");
+						return;
+					}				
+				}
+					   
 				print(out, data, "-2", isPhone(phoneMap,phone));
 				return;
 			}
 			
+			
+
+			
+			
+			//这里是增加用户生成token
+			
+			System.out.println(1);
+			int count = login.addUser(phone, username, userpwd);
+			String token = TokenUtils.getToken(phone); //获取token
+			Map<String, Object> user = login.isPhone(phone);
+			int isC = tokenDao.addToken(user.get("uid").toString(), token,System.currentTimeMillis()+"", request.getRemoteAddr().toString());
+			if (isC<1) {
+				print(out, data, "-1", "插入token失败");
+				return;
+			}
+			
+	
 			//这里是发送验证码
 			String code = SMSUtils.createdCode();
 
@@ -108,9 +170,7 @@ public class RegisteredServlet {
 				org.json.JSONObject jObject = new org.json.JSONObject(smsJson);
 				org.json.JSONObject SendStatusSet = jObject.getJSONArray("SendStatusSet").getJSONObject(0);
 				if(SendStatusSet.getString("SerialNo") != null || (!SendStatusSet.getString("SerialNo").equals(""))){
-					
-					int count = login.addUser(phone, username, userpwd);
-					
+									
 					if (count>0) {
 						try {
 				
@@ -131,9 +191,7 @@ public class RegisteredServlet {
 			}else {
 				print(out, data, "-1", "验证码发送失败");
 			}
-			
-			//存入数据  设置状态为 注册什么都没有验证  这里是不用生成token的等待手机认证成功验证
-			
+
 		} catch (TencentCloudSDKException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -187,28 +245,22 @@ public class RegisteredServlet {
 				if (codeCount<=7) {
 					//返回值
 					Map<String, String> data1 = new HashMap<>();
-					String token = TokenUtils.getToken(phone); //获取token
+		
 					Map<String, Object> userMap = userDao.getUserByPhone(phone);
-					String uid = userMap.get("uid").toString();
-				
-					//认证成功 将token 插入 log 中
-					int isC = tokenDao.addToken(uid, token,System.currentTimeMillis()+"", request.getRemoteAddr().toString());
-					
-					if (isC>0) {
-						data1.put("token", token);
+						String uid = userMap.get("uid").toString();
+						//认证成功 将token 插入 log 中
+						Map<String, Object> userlog = tokenDao.getTokenByID(uid);
+						String token = userlog.get("utoken").toString();
+						data1.put("token", token );
 						data.put("data", data1);
 						data.put("msg", "认证成功");
 						data.put("code", "200");
-						out.print(JSON.toJSONString(data));
+						out.print(JSON.toJSONString(data)); 
 						out.close();
 						//修改用户状态 USERFIVE 没有认证人脸
 						StateUtils.queryType(phone, UserType.USERFIVE);
 						return;
-					}
-					else{
-						print(out, data, "-5", "插入失败");
-						return;
-					}
+		
 					
 				}
 				else {
@@ -232,6 +284,7 @@ public class RegisteredServlet {
 			Map<String, Object> codeM=login.queryCodeByU(phone);
 			int count = Integer.parseInt(codeM.get("count").toString());
 			count++;
+			System.out.println(codeM.get("codeid").toString());
 			//更新
 			login.uadateCodeByCount(codeM.get("codeid").toString(), count+"");
 			print(out, data, "-1", "验证码错误，请重新验证");
@@ -249,12 +302,10 @@ public class RegisteredServlet {
 		if (data.get("userzt").toString().equals("0")) {
 			return "手机号已经注册过了";
 		}
-		else if (data.get("userzt").toString().equals("6")) {
+		else if (data.get("userzt").toString().equals("5")) {
 			return "请认证人脸";
 		}
-		else if (data.get("userzt").toString().equals("5")) {
-			return "请认证手机号";
-		}else {
+	else {
 			return "用户异常";
 		}
 		

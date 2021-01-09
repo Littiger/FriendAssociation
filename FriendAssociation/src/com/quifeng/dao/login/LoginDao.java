@@ -22,7 +22,7 @@ public class LoginDao {
 	Dao dao = new DaoImpl();
 
 	/**
-	 * @Desc 第一次注册  对应接口 http：//127.0.0.1/api/user/sign  注册完成后用户状态为4(注册没有验证)  对用户密码经行加密
+	 * @Desc 第一次注册  对应接口 http：//127.0.0.1/api/user/sign  注册完成后用户状态为(注册没有验证)  对用户密码经行加密
 	 * @param phone
 	 * @param userName
 	 * @param userpwd
@@ -32,7 +32,7 @@ public class LoginDao {
 		int count =0;
 		//对密码经行加密
 		String userpwd1=new Mademd5().toMd5(userpwd);
-		String sql ="INSERT INTO user(userphone,username, password,userzt) VALUES (?,?,?,5)";
+		String sql ="INSERT INTO user(userphone,username, password,userzt) VALUES (?,?,?,6)";
 		try {
 			count = dao.executeUpdate(sql, new int[]{
 					Types.VARCHAR,Types.VARCHAR,Types.VARCHAR
@@ -45,6 +45,7 @@ public class LoginDao {
 		}
 		return count;
 	}
+	
 	
 	
 	/**
@@ -176,6 +177,7 @@ public class LoginDao {
 		String sql = " UPDATE `code` SET count=? WHERE codeid=?";
 		try {
 			count = dao.executeUpdate(sql , new int[]{
+					Types.INTEGER,
 					Types.INTEGER
 			}, new Object[]{
 					cou,codeid

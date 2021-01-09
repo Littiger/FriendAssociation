@@ -26,7 +26,7 @@ public class UserHomeDao {
 		
 		Map<String, Object>  data = null;
 		
-		String sql = "SELECT *	 FROM fixidez  WHERE formid = ? AND  toid = ? ANd display=0";
+		String sql = "SELECT *	 FROM fixidez  WHERE fixidezid = ? AND  Befixidez = ? ANd display=0";
 		try {
 			data = dao.executeQueryForMap(sql,new int[]{
 					Types.INTEGER,
