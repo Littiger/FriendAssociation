@@ -199,6 +199,9 @@ public class FaceEngineUtils {
         errorCode = faceEngine.process(imageInfo.getImageData(), imageInfo.getWidth(), imageInfo.getHeight(), imageInfo.getImageFormat(), faceInfoList, configuration);
         //活体检测
         List<LivenessInfo> livenessInfoList = new ArrayList<LivenessInfo>();
+        if (livenessInfoList.size()==0) {
+			return 0;
+		}
         errorCode = faceEngine.getLiveness(livenessInfoList);
         return  livenessInfoList.get(0).getLiveness();
     }

@@ -127,37 +127,30 @@ public class Base64Utils {
 
 	
 	
-	/**
-	 * @Desc 将图片转为base64
-	 * @param imgPath
-	 * @return
-	 */
-	public static String GetImgBase(String imgPath){
-		 System.load(OPENCV_DLL_PATH);
-		String imgFile = imgPath;
-       InputStream in = null;
-       byte[] data = null;
-       String encode = null; 
-      
-      BASE64Encoder encoder = new BASE64Encoder();
-      try {
-              
-               in = new FileInputStream(imgFile);
-               data = new byte[in.available()];in.read(data);
-               encode = encoder.encode(data);
-      } catch (IOException e) {
-               e.printStackTrace();
-      } finally {
-               try { 
-            	   in.close();
-               	} catch (IOException e) {
-               		e.printStackTrace();
-                     }
-            }
-       return encode;
-	}
+	 
 
 	
+   /**
+    * 图片转base64字符串
+    * @param imgFile 图片路径
+    * @return
+    */
+   public static String imageToBase64Str(String imgFile) {
+       InputStream inputStream = null;
+       byte[] data = null;
+       try {
+           inputStream = new FileInputStream(imgFile);
+           data = new byte[inputStream.available()];
+           inputStream.read(data);
+           inputStream.close();
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+       // 加密
+       BASE64Encoder encoder = new BASE64Encoder();
+       return encoder.encode(data);
+   }
+
 	
 	/**
 	 * @Desc 将图片转为base64
