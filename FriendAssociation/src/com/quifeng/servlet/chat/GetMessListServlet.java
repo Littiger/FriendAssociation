@@ -95,7 +95,12 @@ public class GetMessListServlet {
 					}
 					map2.put("lastonetime", DateUtils.MillToHourAndMin(map.get("createtime").toString()));
 					Map<String, Object> contentJson = (Map<String, Object>)JSONObject.parseObject(map.get("content").toString());
-					map2.put("lastone", contentJson.get("data").toString());
+					if(contentJson.get("type").toString().equals("2")){
+						map2.put("lastone", "[图片]");
+					}
+					else{
+						map2.put("lastone", contentJson.get("data").toString());
+					}
 					//获取未读消息数
 					int unMessCount = chatDao.queryUnReadMessCount(id,map.get("recipients").toString());
 					map2.put("unread", unMessCount);
@@ -114,7 +119,14 @@ public class GetMessListServlet {
 					}
 					
 					map2.put("lastonetime", DateUtils.MillToHourAndMin(map.get("createtime").toString()));
-					map2.put("lastone", map.get("content").toString());
+					Map<String, Object> contentJson = (Map<String, Object>)JSONObject.parseObject(map.get("content").toString());
+					System.out.println(contentJson);
+					if(contentJson.get("type").toString().equals("2")){
+						map2.put("lastone", "[图片]");
+					}
+					else{
+						map2.put("lastone", contentJson.get("data").toString());
+					}
 					//获取未读消息数
 					int unMessCount = chatDao.queryUnReadMessCount(id,map.get("resserid").toString());
 					map2.put("unread", unMessCount);
@@ -129,6 +141,7 @@ public class GetMessListServlet {
 			writer.write(jsonObject.toString());
 			return;
 		}catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("异常---->"+e.getMessage());
 			jsonObject = new JSONObject();
 			jsonObject.put("code", "-1");

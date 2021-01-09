@@ -83,6 +83,7 @@ public class CirclePostpraiseServlet {
 				return;
 			}
 		}catch (Exception e) {
+			e.printStackTrace();
 			System.out.println(e.getMessage());
 			jsonObject = new JSONObject();
 			jsonObject.put("code", "-1");

@@ -89,6 +89,7 @@ public class CircleTopcommentServlet extends HttpServlet{
 				Map<String, Object> userinfo = new HashMap<String , Object>();
 				//查看该帖子是否点赞或收藏
 				Map<String, Object> zan = circleDao.queryOsZan(postId,map.get("osfirstid").toString() , token);
+				userinfo.put("uid", map.get("uid").toString());
 				userinfo.put("uname", map.get("username"));
 				userinfo.put("useravatar", map.get("useravatar"));
 				postmap.put("userinfo", userinfo);

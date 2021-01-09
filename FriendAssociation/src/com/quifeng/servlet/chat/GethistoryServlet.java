@@ -77,7 +77,7 @@ public class GethistoryServlet {
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
-			if(chatDao.queryFixById(uid, targetid).size() < 2){//不是互相关注
+			if(chatDao.queryFixById(uid, targetid) == null  || chatDao.queryFixById(uid, targetid).size() < 2){//不是互相关注
 		    	jsonObject = new JSONObject();
 				jsonObject.put("code", "-2");
 				jsonObject.put("msg", "接受对象不是好友关系");
