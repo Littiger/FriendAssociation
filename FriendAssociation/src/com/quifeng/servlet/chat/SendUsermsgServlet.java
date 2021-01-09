@@ -141,7 +141,8 @@ public class SendUsermsgServlet {
 				writer.write(jsonObject.toJSONString());
 				return;
 		    }
-		    if(chatDao.queryFixById(uid, targetid).size() < 2){//不是互相关注
+		    System.out.println(chatDao.queryFixById(uid, targetid));
+		    if(chatDao.queryFixById(uid, targetid) == null || chatDao.queryFixById(uid, targetid).size() < 2){//不是互相关注
 		    	jsonObject = new JSONObject();
 				jsonObject.put("code", "-2");
 				jsonObject.put("msg", "接受对象不是好友关系");
@@ -243,8 +244,8 @@ public class SendUsermsgServlet {
 			    	text.put("data",  contenttext.toString());
 			    	text.put("type", 1);
 			    	JSONObject messageJson2 = new JSONObject();
-			    	messageJson.put("data", contenttext.toString());
-			    	messageJson.put("type", 1);
+			    	messageJson2.put("data", contenttext.toString());
+			    	messageJson2.put("type", 1);
 			    	
 			    	//存入数据库
 			    	Map<String, Object> newsImg = chatDao.addMess(uid,targetid,messageJson.toString());

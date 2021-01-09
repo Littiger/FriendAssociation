@@ -30,10 +30,7 @@ public class ChatDao {
 	public List<Map<String, Object>> queryMessListByToken(String token) throws NumberFormatException, ClassNotFoundException, SQLException {
 		//获取id
 		String uid = tokenDao.queryUidByToken(token);
-		String sql = "select * from "
-				+ "(select * from (select * FROM news where resserid=? or recipients=? ORDER BY createtime desc ) n "
-				+ "GROUP BY n.resserid) n1 "
-				+ "ORDER BY n1.createtime desc";
+		String sql = "select * from (select * FROM news where resserid=? or recipients=? ORDER BY createtime desc ) n1 ORDER BY n1.createtime desc";
 		return dao.executeQueryForList(sql,
 				new int[]{
 						Types.INTEGER,
@@ -97,9 +94,9 @@ public class ChatDao {
 	 * @throws ClassNotFoundException 
 	 * @throws NumberFormatException 
 	 */
-	public Map<String, Object> queryFixById(String formid, String toid) throws NumberFormatException, ClassNotFoundException, SQLException {
+	public List<Map<String, Object>> queryFixById(String formid, String toid) throws NumberFormatException, ClassNotFoundException, SQLException {
 		String sql = "select * from fixidez where (formid=? and toid=?) or (formid=? and toid=?)";
-		return dao.executeQueryForMap(sql,
+		return dao.executeQueryForList(sql,
 				new int[]{
 						Types.INTEGER,
 						Types.INTEGER,
@@ -162,16 +159,12 @@ public class ChatDao {
 	 * @throws NumberFormatException 
 	 */
 	public int updateIsRead(String uid, String targetid) throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
-		return dao.executeUpdate("update news set isread=1 where (resserid=? and recipients=?) or (resserid=? and recipients=?)",
+		return dao.executeUpdate("update news set isread=1 where resserid=? and recipients=?",
 				new int[]{
-						Types.INTEGER,
-						Types.INTEGER,
 						Types.INTEGER,
 						Types.INTEGER
 				},
 				new Object[]{
-						Integer.parseInt(uid),
-						Integer.parseInt(targetid),
 						Integer.parseInt(targetid),
 						Integer.parseInt(uid)
 				});
