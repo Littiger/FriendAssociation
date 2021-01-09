@@ -175,11 +175,13 @@ public class SendUsermsgServlet {
 			    	//存入数据库
 			    	Map<String, Object> newsTemp = chatDao.addMess(uid,targetid,messageJson.toString());
 			    	news.put("chatid", newsTemp.get("chatid").toString());
+			    	news.put("uid", uid);
 			    	data.add(news);
 			    	//发送消息
 			    	JSONObject js = new JSONObject();
 			    	js.put("data", data);
-			    	SendInfo.pushInfo(targetid,js.toString());
+			    	
+			    	SendInfo.pushInfo(chatDao.queryTokenByid(targetid),js.toString());
 			    	
 			    	jsonObject = new JSONObject();
 			    	jsonObject.put("code", "200");
@@ -212,11 +214,12 @@ public class SendUsermsgServlet {
 			    	//存入数据库
 			    	Map<String, Object> newsTemp = chatDao.addMess(uid,targetid,messageJson.toString());
 			    	news.put("chatid", newsTemp.get("chatid").toString());
+			    	news.put("uid", uid);
 			    	data.add(news);
 			    	//发送消息
 			    	JSONObject js = new JSONObject();
 			    	js.put("data", data);
-			    	SendInfo.pushInfo(targetid,js.toString());
+			    	SendInfo.pushInfo(chatDao.queryTokenByid(targetid),js.toString());
 			    	
 			    	jsonObject = new JSONObject();
 			    	jsonObject.put("code", "200");
@@ -253,13 +256,15 @@ public class SendUsermsgServlet {
 			    	//获取id
 			    	img.put("chatid", newsImg.get("chatid").toString());
 			    	text.put("chatid", newsImg.get("chatid").toString());
-			    	
+			    	img.put("uid", uid);
+			    	text.put("uid", uid);
 			    	data.add(img);
 			    	data.add(text);
+			    	
 			    	//发送消息
 			    	JSONObject js = new JSONObject();
 			    	js.put("data", data);
-			    	SendInfo.pushInfo(targetid,js.toJSONString());
+			    	SendInfo.pushInfo(chatDao.queryTokenByid(targetid),js.toJSONString());
 			    	
 			    	jsonObject = new JSONObject();
 			    	jsonObject.put("code", "200");

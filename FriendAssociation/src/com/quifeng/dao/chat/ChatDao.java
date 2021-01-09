@@ -68,18 +68,14 @@ public class ChatDao {
 	public int queryUnReadMessCount(String id,String toId) throws NumberFormatException, ClassNotFoundException, SQLException {
 		String sql = "select count(*) count "
 				+ "from news where display=0 and isread=0 and "
-				+ "(resserid=? and recipients=?) or (resserid=? and recipients=?) ";
+				+ "resserid=? and recipients=? ";
 		return Integer.parseInt(
 					dao.executeQueryForMap(sql,
 							new int[]{
 									Types.INTEGER,
-									Types.INTEGER,
-									Types.INTEGER,
 									Types.INTEGER
 							},
 							new Object[]{
-									Integer.parseInt(id),
-									Integer.parseInt(toId),
 									Integer.parseInt(toId),
 									Integer.parseInt(id)
 							}).get("count").toString()
@@ -230,6 +226,23 @@ public class ChatDao {
 				new Object[]{
 						Integer.parseInt(chatid)
 				});
+	}
+	/**
+	 * 根据id查询token
+	 * @param targetid
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 */
+	public String queryTokenByid(String targetid) throws NumberFormatException, ClassNotFoundException, SQLException {
+		return dao.executeQueryForMap("select * from userlogin where uid=?",
+				new int[]{
+						Types.INTEGER
+				},
+				new Object[]{
+						Integer.parseInt(targetid)
+				}).get("utoken").toString();
 	}
 	
 }
