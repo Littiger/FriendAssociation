@@ -52,7 +52,7 @@ public class loginServlet {
 		Map<String, Object> data = new HashMap<>();
 		Map<String, Object> dataP = new HashMap<String, Object>();
 		
-		if (username==null||username.equals("")) {			
+		if ("".equals(username)) {			
 			print(out, data, "-1", "请输入用户名");
 			return;
 		}
@@ -84,7 +84,7 @@ public class loginServlet {
 		
 		
 		//登录
-		if (type.equals("2")) {
+		if (type==null||type.equals("2")) {
 			
 			if (userzt.equals("6")) {	
 				print(out, dataP, "-1", "请先认证手机号");
@@ -93,15 +93,20 @@ public class loginServlet {
 				return;
 			}
 			
-
+			
 			String userpwd = request.getParameter("userpwd");
+			System.out.println("userpwd ： " + userpwd);
+			System.out.println("userpwd isempty ： " + userpwd != null ? "不为空" : "为空");
+			if (userpwd==null||"".equals(userpwd)) {
+				print(out, data, "-1", "请输密码");
+				return;
+			}
 			Mademd5 md = new Mademd5();
 			userpwd=md.toMd5(userpwd);
 
 			String pwd = userMap.get("password").toString().trim();
 			
 			if (userpwd.equals(pwd)) {
-				
 	
 				//这里是更新token的
 				String newtoken = TokenUtils.getToken(userMap.get("userphone").toString());
@@ -124,13 +129,13 @@ public class loginServlet {
 		}
 		
 		else if (type.equals("1")) {
-			String faceBase = request.getParameter("basedata");
-			if (faceBase.equals("")) {
+			String faceBase = request.getParameter("basedata").replace(" ", ""); ;
+			if (faceBase==null||"".equals(faceBase)) {
 				print(out, dataP, "-5", "非法请求");
 				return;
 			}
 			
-			//转mat
+
 			BufferedImage buff = Base64Utils.base642BufferedImage(faceBase);
 			//这里是活体检测
 			double isprocount = FaceEngineUtils.isPreson(buff);	
