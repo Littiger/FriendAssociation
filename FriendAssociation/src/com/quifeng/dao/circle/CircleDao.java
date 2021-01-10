@@ -479,6 +479,26 @@ public class CircleDao {
 				});
 	}
 	/**
+	 * 根据id获取一级评论详细信息
+	 * @param comment
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 */
+	public Map<String, Object> queryFiOsMessageById(String comment) throws NumberFormatException, ClassNotFoundException, SQLException {
+
+		String sql = "select * from osfirst LEFT JOIN user on osfirst.uid=user.uid where osfirst.osfirstid=?";
+		return dao.executeQueryForMap(sql,
+				new int[]{
+						Types.INTEGER
+						
+				},
+				new Object[]{
+					Integer.parseInt(comment)
+				});
+	}
+	/**
 	 * 查看是否点赞该评论
 	 * @param string
 	 * @param token
