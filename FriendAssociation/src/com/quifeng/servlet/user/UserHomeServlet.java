@@ -70,6 +70,8 @@ public class UserHomeServlet {
 		dataP.put("userid", userid);
 		//存入名字
 		dataP.put("username", userTar.get("username"));
+		//存入头像
+		dataP.put("useravatar", userTar.get("useravatar"));
 		//存入签名  ---------->签名是有默认值得是 --》该用户什么都没有留下哦
 		dataP.put("uesrsign", "useras");
 		//我是否关注他
@@ -93,6 +95,7 @@ public class UserHomeServlet {
 			Map<String, Object> userInfo = new HashMap<>();
 			//存用户数据
 			userInfo.put("uname", userTar.get("username"));
+			userInfo.put("uid", userTar.get("uid"));
 			userInfo.put("useravatar", userTar.get("useravatar"));
 			//存入帖子的数据
 			postMap.put("postid", map.get("postid"));
@@ -134,10 +137,12 @@ public class UserHomeServlet {
 			//存入数据
 			postMap.put("userinfo", userInfo);
 			dataList.add(postMap);
+			
 		}
-
+		System.out.println(data);
 		//返回数据
-		data.put("data", dataList);
+		dataP.put("dynamiclist", dataList);
+		data.put("data", dataP);
 		print(out, data, "200", "请求成功");
 	}
 	

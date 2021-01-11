@@ -33,6 +33,23 @@ public class UserDao {
 	}
 	
 	
+	public Map<String, Object> getUserTokenByUid(Object uid){
+		String sql = "select * from userlogin where uid = ?";
+		Map<String, Object> data = null;
+		try {
+			data=dao.executeQueryForMap(sql,new int[]{
+					Types.INTEGER
+			},new Object[]{
+					uid
+			});
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return data;
+	}
+	
 	
 	
 	/**

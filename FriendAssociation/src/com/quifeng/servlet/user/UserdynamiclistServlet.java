@@ -83,6 +83,11 @@ public class UserdynamiclistServlet {
 		List<Map<String, Object>> dataList = new ArrayList<Map<String,Object>>();
 		//获取贴子的内容 --------->这里有写好的 以防修改 重新写到了 userHome中-->这里获取第一页20条
 		List<Map<String, Object>> postList = userHome.getUserPostById(userid,page,size); 
+		//帖子数据没有了
+		if (postList.size()==0) {
+			print(out, data, "200", "没有更多的数据了");
+			return;
+		}
 		
 		for (Map<String, Object> map : postList) {
 			//创建存帖子的map
@@ -92,6 +97,7 @@ public class UserdynamiclistServlet {
 			//存用户数据
 			userInfo.put("uname", userTar.get("username"));
 			userInfo.put("useravatar", userTar.get("useravatar"));
+			userInfo.put("uid", userTar.get("uid"));
 			//存入帖子的数据
 			postMap.put("postid", map.get("postid"));
 			//是否点赞

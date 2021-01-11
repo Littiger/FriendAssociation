@@ -90,7 +90,7 @@ public class UserHomeDao {
 		// TODO Auto-generated method stub
 		Map<String, Object>  data = null;
 				
-		String sql = "SELECT  count(*) count FROM fixidez  WHERE  fixidezid = ?  And display = 0";
+		String sql = "SELECT  count(*) count FROM fixidez  WHERE  formid = ?  And display = 0";
 		try {
 			data = dao.executeQueryForMap(sql,new int[]{
 					Types.INTEGER
@@ -113,7 +113,7 @@ public class UserHomeDao {
 	public Map<String, Object> getFixideById(String userid) {
 		// TODO Auto-generated method stub
 		Map<String, Object>  data = null;
-		String sql = "SELECT count(*) count FROM fixidez  WHERE  Befixidez = ?  And display = 0";
+		String sql = "SELECT count(*) count FROM fixidez  WHERE  toid = ?  And display = 0";
 			try {
 				data = dao.executeQueryForMap(sql,new int[]{
 						Types.INTEGER
