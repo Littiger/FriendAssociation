@@ -26,7 +26,7 @@ public class CircleDao {
 		String uid = tokenDao.queryUidByToken(token);
 		System.out.println(uid);
 		String sql = "SELECT u.username,p.posttext,p.createtime,p.placaid,p.postid,p.postimg,p.postvideo,u.useravatar,p.schoolid,p2.postzan,p2.postshare,p2.postaos,p2.postos,p2.postsee"
-				+ " from user u , (select post.* from post,user where not exists (SELECT postid from user , trilha where user.uid=? and user.uid=trilha.uid and post.postid=postid )and user.uid=? and post.schoolid=user.schoolid) p ,"
+				+ " from user u , (select post.* from post,user where not exists (SELECT postid from user , trilha where user.uid=? and user.uid=trilha.uid and post.postid=postid ) and post.schoolid=user.schoolid) p ,"
 				+ " postinfo p2 , postbk pb"
 				+ " where u.uid=p.uid and p.postid=p2.postid and p.display=0 and p.placaid=pb.placaid  and p2.isexamina=1 and pb.isschool=?"
 				+ " ORDER BY RAND() LIMIT ?";
@@ -42,11 +42,9 @@ public class CircleDao {
 				new int[]{
 						Types.INTEGER,
 						Types.INTEGER,
-						Types.INTEGER,
 						Types.INTEGER
 				},
 				new Object[]{
-						Integer.parseInt(uid),
 						Integer.parseInt(uid),
 						temp,
 						new Integer(size)
@@ -199,7 +197,7 @@ public class CircleDao {
 		
 		if (page1==0) page1=1;
 		page1=(page1-1)*size1;
-		String sql="select * from post p LEFT JOIN user u on p.uid=u.uid left join postinfo p2 on p2.postid=p.postid where p.display=0 and p.placaid=? ORDER BY CAST(p.createtime as SIGNED) desc LIMIT?,?"; 
+		String sql="select * from post p LEFT JOIN user u on p.uid=u.uid left join postinfo p2 on p2.postid=p.postid where p.display=0 and p.placaid=? and p2.isexamina=1 ORDER BY CAST(p.createtime as SIGNED) desc LIMIT?,?"; 
 		List<Map<String, Object>>  list=null;
 		try {
 			 list = dao.executeQueryForList(sql, new int[]{
@@ -240,7 +238,7 @@ public class CircleDao {
 	public List<Map<String, Object>> queryPtOs(String postId) throws NumberFormatException, ClassNotFoundException, SQLException {
 		return dao.executeQueryForList("select osfirst.*,user.username,user.useravatar "
 				+ "from osfirst LEFT JOIN user on osfirst.uid=user.uid "
-				+ "where display=0 and postid=? "
+				+ "where osfirst.display=0 and osfirst.postid=? "
 				+ "ORDER BY CAST(createtime as SIGNED) desc LIMIT 10",
 				new int[]{
 						Types.INTEGER
@@ -910,7 +908,7 @@ public class CircleDao {
 		String sql = "select * from osother "
 				+ "LEFT JOIN user on osother.uid=user.uid "
 				+ "LEFT JOIN (select zan.osid,count(*) zcount from zan GROUP BY osid) z on osother.osotherid=z.osid "
-				+ "where osother.osfirstid=? ORDER BY CAST(osother.createtime as SIGNED) desc";
+				+ "where osother.osfirstid=? and osother.display=0 ORDER BY CAST(osother.createtime as SIGNED) desc";
 		return dao.executeQueryForList(sql,
 				new int[]{
 						Types.INTEGER
@@ -1091,7 +1089,7 @@ public class CircleDao {
 		String sql = "select * from osother "
 				+ "LEFT JOIN user on osother.uid=user.uid "
 				+ "LEFT JOIN (select zan.osid,count(*) zcount from zan GROUP BY osid) z on osother.osotherid=z.osid "
-				+ "where osother.osfirstid=? ORDER BY CAST(osother.createtime as SIGNED) desc limit ?,?";
+				+ "where osother.osfirstid=? and osother.display=0 ORDER BY CAST(osother.createtime as SIGNED) desc limit ?,?";
 		return dao.executeQueryForList(sql,
 				new int[]{
 						Types.INTEGER,
