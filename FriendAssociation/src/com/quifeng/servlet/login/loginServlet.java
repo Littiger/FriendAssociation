@@ -52,7 +52,7 @@ public class loginServlet {
 		Map<String, Object> data = new HashMap<>();
 		Map<String, Object> dataP = new HashMap<String, Object>();
 		
-		if ("".equals(username)) {			
+		if (username==null||"".equals(username)) {			
 			print(out, data, "-1", "请输入用户名");
 			return;
 		}
@@ -66,18 +66,14 @@ public class loginServlet {
 		}
 		
 		//用户存在
-		
 		String userzt = userMap.get("userzt").toString().trim();
-		if (userzt.equals("4")) {
-			print(out, dataP, "-1", "请先进行验证");
-			return;
-		}
 		if (userzt.equals("5")) {
 			print(out, dataP, "-1", "请先认证人脸");
 			return;
 		}
 		if (userzt.equals("6")) {	
 			print(out, dataP, "-1", "请先认证手机号");
+			new RegisteredServlet().signverify(request, response);		
 			return;
 		}
 
@@ -88,7 +84,7 @@ public class loginServlet {
 			
 			if (userzt.equals("6")) {	
 				print(out, dataP, "-1", "请先认证手机号");
-//				new RegisteredServlet().signverify(request, response);				
+		
 				//这里是获取token
 				return;
 			}
@@ -180,10 +176,11 @@ public class loginServlet {
 			
 			//这里是判定的  官网给出 0.8 
 			if (countx>0.8) {
-				String newtoken = TokenUtils.getToken(userMap.get("userphone").toString());
-				TokenUtils.updateTokenByU(userMap.get("uid").toString(),newtoken);
-				data.put("token", newtoken);
+				String newtoken = TokenUtils.getToken(userMap.get("userphone").toString());  //这是新的token
+				TokenUtils.updateTokenByU(userMap.get("uid").toString(),newtoken);  // 这里是修改token
+				data.put("token", newtoken);   //返回的token数据
 				dataP.put("data", data);
+
 				print(out, dataP, "200", "登录成功");
 				return;	
 			}else {

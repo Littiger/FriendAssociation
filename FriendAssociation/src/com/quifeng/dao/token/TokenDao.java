@@ -115,7 +115,27 @@ public class TokenDao {
 		
 		return count;
 	}
-	
+	/**
+	 * @Desc 获取token根据uid
+	 * @param uid
+	 * @return
+	 */
+	public Map<String, Object> getTokenByID(String uid){
+		String sql = "SELECT  * FROM userlogin WHERE uid=?";
+		Map<String, Object> data=null;
+		try {
+			data = dao.executeQueryForMap(sql , new int[]{
+					Types.VARCHAR
+			}, new Object[]{
+					uid
+			});
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return data;
+	}
 	
 	
 	
