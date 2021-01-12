@@ -84,14 +84,14 @@ public class CirclePlateServlet {
 				userinfo.put("useravatar", map.get("useravatar"));
 				postmap.put("userinfo", userinfo);
 				//是否点赞或收藏
-				if(!zanAos.get("zuid").toString().equals("0")){
+				if(zanAos != null && !zanAos.get("zuid").toString().equals("0")){
 					System.out.println(map.get("zuid"));
 					postmap.put("isgreat", true);
 				}
 				else{
 					postmap.put("isgreat", false);
 				}
-				if(!zanAos.get("auid").toString().equals("0")){
+				if(zanAos != null && !zanAos.get("auid").toString().equals("0")){
 					postmap.put("collect", true);
 				}
 				else{
