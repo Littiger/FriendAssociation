@@ -153,7 +153,14 @@ public class CircleHotServlet {
 				placa.put("placaname", placas.get("placaname").toString());
 				mapPost.put("placa", placa);
 				mapPost.put("createtime", DateUtils.MillToHourAndMin(mapPostArr.get("createtime").toString()));
-				mapPost.put("posttext", mapPostArr.get("posttext"));
+				//判断是否有文本信息
+				if(mapPostArr.get("posttext") == null){
+					mapPost.put("posttext", "");
+				}
+				else{
+					mapPost.put("posttext", mapPostArr.get("posttext"));
+				}
+				
 				mapPost.put("postzan", mapPostArr.get("postzan"));
 				mapPost.put("postaos", mapPostArr.get("postaos"));
 				mapPost.put("postshare", mapPostArr.get("postshare"));

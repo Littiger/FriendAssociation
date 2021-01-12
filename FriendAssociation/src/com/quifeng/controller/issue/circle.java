@@ -8,21 +8,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.quifeng.servlet.issue.dynamicServlet;
+import com.quifeng.servlet.issue.circleServlet;
 
 /**
- * @desc   发布帖子
+ * @desc   获取圈子信息
  * @author JZH
  * @time   2021-01-12
  */
 @SuppressWarnings("serial")
-@WebServlet("/api/issue/dynamic")
-public class dynamic extends HttpServlet{
+@WebServlet("/api/issue/circle")
+public class circle extends HttpServlet{
 	
-	dynamicServlet dynamicServlet = new dynamicServlet();
+	circleServlet circleServlet = new circleServlet();
 	
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		dynamicServlet.pushPost(request,response);
+		circleServlet.queryCircleMessage(request,response);
 	}
 }

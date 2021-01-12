@@ -118,8 +118,13 @@ public class CirclePlateServlet {
 				postmap.put("placa", placa);
 				postmap.put("postid", map.get("postid"));
 				postmap.put("createtime", DateUtils.MillToTime(map.get("createtime").toString()));
-				postmap.put("posttext", map.get("posttext"));
-				postmap.put("posttext", map.get("posttext"));
+				//判断是否有文本信息
+				if(map.get("posttext") == null){
+					postmap.put("posttext", "");
+				}
+				else{
+					postmap.put("posttext", map.get("posttext"));
+				}
 				postmap.put("postzan", map.get("postzan"));
 				postmap.put("postaos", map.get("postaos"));
 				postmap.put("postshare", map.get("postshare"));

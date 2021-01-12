@@ -130,7 +130,13 @@ public class CircleDetailpageServlet {
 				
 				detailpage.put("placaid", mapPost.get("placaid"));
 				detailpage.put("createtime", DateUtils.MillToHourAndMin(mapPost.get("createtime").toString()));
-				detailpage.put("posttext", mapPost.get("posttext"));
+				//判断是否有文本信息
+				if(mapPost.get("posttext") == null){
+					detailpage.put("posttext", "");
+				}
+				else{
+					detailpage.put("posttext", mapPost.get("posttext"));
+				}
 				//详细信息图片视频全部显示
 				
 				detailpage.put("postvideo", mapPost.get("postvideo"));
