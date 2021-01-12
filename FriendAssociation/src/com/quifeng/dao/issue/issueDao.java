@@ -84,7 +84,7 @@ public class issueDao {
 					});
 		}
 		//只有视频
-		else if(content == null && video != null && image.equals("[]")){
+		else if((content == null || content.equals("")) && video != null && image.equals("[]")){
 			dao.executeUpdate("insert into post values(0,?,?,?,0,null,null,?,?,0)",
 					new int[]{
 							Types.INTEGER,
@@ -102,7 +102,7 @@ public class issueDao {
 					});
 		}
 		//只有图片
-		else if(content == null && video == null && !image.equals("[]")){
+		else if((content == null || content.equals("")) && video == null && !image.equals("[]")){
 			dao.executeUpdate("insert into post values(0,?,?,?,0,null,?,null,?,0)",
 					new int[]{
 							Types.INTEGER,

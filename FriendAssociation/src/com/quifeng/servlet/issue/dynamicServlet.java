@@ -100,7 +100,7 @@ public class dynamicServlet {
 							
 						}
 						//视频
-						else if(prifix.equals("mp4") || prifix.equals("avi")){
+						else if(prifix.equals("mp4") || prifix.equals("avi") || prifix.equals("flv") || prifix.equals("wmv")){
 							//超出视频上传个数
 							if (vCount >= 1) {
 								jsonObject = new JSONObject();
@@ -113,6 +113,9 @@ public class dynamicServlet {
 							video = putfile.Putimgs(Item.getInputStream(), prifix);
 							//视频个数+1
 							vCount++;
+						}
+						else if(prifix == null || prifix.equals("")){
+							continue;
 						}
 						else{
 							jsonObject = new JSONObject();
@@ -155,6 +158,13 @@ public class dynamicServlet {
 		    }
 		    
 		    if(placaid == null || placaid.equals("")){
+		    	jsonObject = new JSONObject();
+				jsonObject.put("code", "-1");
+				jsonObject.put("msg", "参数异常");
+				writer.write(jsonObject.toJSONString());
+				return;
+		    }
+		    if(placaid.equals("0")){
 		    	jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
 				jsonObject.put("msg", "参数异常");
