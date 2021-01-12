@@ -31,7 +31,9 @@ public class SetfaceController extends HttpServlet {
 		try {
 			faceServlet.signFace(request,response);
 		} catch (Exception e) {
+			e.printStackTrace();
 			out.print(ErrorUtils.errorTomCat());
+			System.out.println(e.getMessage());
 		}finally {
 			out.close();
 		}

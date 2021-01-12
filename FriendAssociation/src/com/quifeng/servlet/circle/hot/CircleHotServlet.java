@@ -108,14 +108,14 @@ public class CircleHotServlet {
 				mapPost.put("postid", mapPostArr.get("postid"));
 				
 				//是否点赞或收藏
-				if(map != null && !map.get("zuid").toString().equals("0")){
+				if(!map.get("zuid").toString().equals("0")){
 					System.out.println("zzz"+map.get("zuid").toString());
 					mapPost.put("isgreat", true);
 				}
 				else{
 					mapPost.put("isgreat", false);
 				}
-				if(map != null && !map.get("auid").toString().equals("0")){
+				if(!map.get("auid").toString().equals("0")){
 					System.out.println("aaa"+map.get("auid").toString());
 					mapPost.put("collect", true);
 				}

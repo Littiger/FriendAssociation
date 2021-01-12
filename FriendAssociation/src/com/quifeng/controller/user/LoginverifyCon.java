@@ -30,7 +30,9 @@ public class LoginverifyCon extends HttpServlet{
 		try {
 			lohin.loginverify(request, response);
 		} catch (Exception e) {
+			e.printStackTrace();
 			out.print(ErrorUtils.errorTomCat());
+			System.out.println(e.getMessage());
 		}finally {
 			out.close();
 		}

@@ -23,8 +23,8 @@ import sun.misc.BASE64Encoder;
 
 public class Base64Utils {
 	
-    private static final String OPENCV_DLL_PATH ="D:\\java\\opencv\\opencv\\build\\java\\x64\\opencv_java3412.dll";
-
+//    private static final String OPENCV_DLL_PATH ="D:\\java\\opencv\\opencv\\build\\java\\x64\\opencv_java3412.dll";
+	private static final String OPENCV_DLL_PATH ="C:\\Users\\Administrator\\Desktop\\opencv\\build\\java\\x64\\opencv_java3412.dll";
     static {
     	//加载 opencv_java401.dll
     	 System.load(OPENCV_DLL_PATH);
@@ -40,7 +40,7 @@ public class Base64Utils {
      * @throws IOException
      */
     public static Mat imagePath2Mat(String imagePath) throws IOException {
-       
+    	System.load(OPENCV_DLL_PATH);
         BufferedImage image = ImageIO.read(new FileInputStream(imagePath));
         Mat matImage = Base64Utils.BufImg2Mat(image, BufferedImage.TYPE_3BYTE_BGR, CvType.CV_8UC3);// CvType.CV_8UC3
         return matImage;

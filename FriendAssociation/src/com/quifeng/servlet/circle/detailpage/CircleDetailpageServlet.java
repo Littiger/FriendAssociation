@@ -101,13 +101,13 @@ public class CircleDetailpageServlet {
 				placa.put("placaname",mapPost.get("placaname"));
 				detailpage.put("placa", placa);
 				//是否点赞或收藏
-				if(zanAos != null && !zanAos.get("zuid").toString().equals("0")){
+				if(!zanAos.get("zuid").toString().equals("0")){
 					detailpage.put("isgreat", true);
 				}
 				else{
 					detailpage.put("isgreat", false);
 				}
-				if(zanAos != null && !zanAos.get("auid").toString().equals("0")){
+				if(!zanAos.get("auid").toString().equals("0")){
 					detailpage.put("collect", true);
 				}
 				else{
