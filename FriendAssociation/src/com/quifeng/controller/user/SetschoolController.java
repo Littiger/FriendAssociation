@@ -25,6 +25,7 @@ public class SetschoolController extends HttpServlet{
 		try {
 			loginServlet.setSchool(request, response);
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			out.print(ErrorUtils.errorTomCat());
 		}finally {
 			out.close();

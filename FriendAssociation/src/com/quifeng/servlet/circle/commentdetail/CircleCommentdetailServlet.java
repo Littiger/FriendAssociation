@@ -54,7 +54,7 @@ public class CircleCommentdetailServlet {
 		}
 		
 		try {
-			if(circleDao.queryFiOsMessageById(comment) == null){
+			if(circleDao.queryFiOsMessageById(comment, token) == null){
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
 				jsonObject.put("msg", "无此评论");
@@ -71,7 +71,7 @@ public class CircleCommentdetailServlet {
 				return;
 			}
 			//获取一级评论信息
-			Map<String, Object> FiOsMessage = circleDao.queryFiOsMessageById(comment);
+			Map<String, Object> FiOsMessage = circleDao.queryFiOsMessageById(comment,token);
 			//存储data
 			Map<String, Object> data = new HashMap<>();
 			if(FiOsMessage != null){

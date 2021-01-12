@@ -30,6 +30,7 @@ public class LoginController  extends HttpServlet{
 			lohin.login(request, response);
 		} catch (Exception e) {
 			out.print(ErrorUtils.errorTomCat());
+			System.out.println(e.getMessage());
 		}finally {
 			out.close();  
 		}

@@ -33,7 +33,9 @@ public class SignController extends HttpServlet{
 		try {
 			recompile.registered(request, response);
 		} catch (Exception e) {
+			e.printStackTrace();
 			out.print(ErrorUtils.errorTomCat());
+			System.out.println(e.getMessage());
 		}finally {
 			out.close();
 		}

@@ -31,6 +31,7 @@ public class UserhomeController extends HttpServlet {
 			userHomeServlet.getUserHome(request, response);
 		} catch (Exception e) {
 			out.print(ErrorUtils.errorTomCat());
+			System.out.println(e.getMessage());
 		}finally {
 			out.close();
 		}

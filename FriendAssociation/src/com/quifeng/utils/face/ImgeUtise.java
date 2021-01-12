@@ -16,8 +16,9 @@ import java.util.UUID;
 
 public class ImgeUtise {
 	
-    private static final String OPENCV_DLL_PATH ="D:\\java\\opencv\\opencv\\build\\java\\x64\\opencv_java3412.dll";
-    private static final String OPENCV_XML_PATH = "D:\\java\\opencv\\opencv\\sources\\data\\haarcascades\\haarcascade_frontalface_alt.xml";
+    private static final String OPENCV_DLL_PATH = "C:\\Users\\Administrator\\Desktop\\opencv\\build\\java\\x64\\opencv_java3412.dll";
+//    private static final String OPENCV_XML_PATH = "D:\\java\\opencv\\opencv\\sources\\data\\haarcascades\\haarcascade_frontalface_alt.xml";
+    private static final String OPENCV_XML_PATH  = "C:\\Users\\Administrator\\Desktop\\opencv\\sources\\data\\haarcascades\\haarcascade_frontalface_alt.xml";
 
 	
     /**

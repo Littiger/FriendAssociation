@@ -31,6 +31,7 @@ public class UserdynamiclistController extends HttpServlet {
 			userdynamiclistServlet.userdynamiclist(request, response);
 		} catch (Exception e) {
 			out.print(ErrorUtils.errorTomCat());
+			System.out.println(e.getMessage());
 		}finally {
 			out.close();
 		}
