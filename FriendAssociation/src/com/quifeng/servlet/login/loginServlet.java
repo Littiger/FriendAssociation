@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 import com.alibaba.fastjson.JSON;
-
+import com.alibaba.fastjson.JSONException;
 import com.ndktools.javamd5.Mademd5;
 import com.quifeng.dao.login.FaceDao;
 import com.quifeng.dao.login.LoginDao;
@@ -23,8 +23,10 @@ import com.quifeng.dao.user.UserDao;
 import com.quifeng.utils.face.Base64Utils;
 import com.quifeng.utils.face.FaceEngineUtils;
 import com.quifeng.utils.generate.TokenUtils;
+import com.quifeng.utils.sms.SMSUtils;
 import com.quifeng.utils.state.StateUtils;
 import com.quifeng.utils.state.UserType;
+import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 
 /**
  * @Desc 登录使用
@@ -125,8 +127,8 @@ public class loginServlet {
 		}
 		
 		else if (type.equals("1")) {
-			String faceBase = request.getParameter("basedata").replace(" ", ""); ;
-			if (faceBase==null||"".equals(faceBase)) {
+			String faceBase = request.getParameter("basedata");
+			if (faceBase==null||"".equals(faceBase)) {				
 				print(out, dataP, "-5", "非法请求");
 				return;
 			}
@@ -134,21 +136,22 @@ public class loginServlet {
 
 			BufferedImage buff = Base64Utils.base642BufferedImage(faceBase);
 			//这里是活体检测
-			double isprocount = FaceEngineUtils.isPreson(buff);	
-			//官网给出是  0.5 
-			if (isprocount>0.4) {
-				print(out, dataP, "-2", "请您动一下");
-				return;
-			}
+//			double isprocount = FaceEngineUtils.isPreson(buff);	
+//			//官网给出是  0.5 
+//			if (isprocount>0.4) {
+//				print(out, dataP, "-2", "请您动一下");
+//				return;
+//			}
 			
 //			Mat mat_1=Base64Utils.BufImg2Mat(buff,BufferedImage.TYPE_3BYTE_BGR, CvType.CV_8UC3);
 			//查询数据库 
-			String uid = userMap.get("uid").toString().trim();
+			String uid = userMap.get("uid").toString();
 			List<Map<String, Object>> faceList = faceDao.queryFaceByUid(uid);
 			if (faceList.size()<8) {
-				print(out, dataP, "-1", "请先录入人脸");
+				print(out, dataP, "-1", "请先完成录入人脸");
 				return;
 			}
+			System.out.println("人脸数量"+faceList.size());
 			for (Map<String, Object> map : faceList) {
 				//这里是以前写的
 //				String base64f = map.get("facebase").toString();
@@ -173,21 +176,22 @@ public class loginServlet {
 			BufferedImage buff2 = Base64Utils.base642BufferedImage(base64f);
 			//获取相差值
 			double countx = FaceEngineUtils.face(buff, buff2);
-			
+			System.out.println("-----------------");
+			System.out.println(userMap);
 			//这里是判定的  官网给出 0.8 
 			if (countx>0.8) {
 				String newtoken = TokenUtils.getToken(userMap.get("userphone").toString());  //这是新的token
 				TokenUtils.updateTokenByU(userMap.get("uid").toString(),newtoken);  // 这里是修改token
 				data.put("token", newtoken);   //返回的token数据
 				dataP.put("data", data);
-
+				System.out.println("返回"+dataP);	
 				print(out, dataP, "200", "登录成功");
 				return;	
 			}else {
 				print(out, dataP, "-1", "请再次尝试");
 				return;
 			}
-		
+				
 			}
 			
 		}
@@ -240,50 +244,59 @@ public class loginServlet {
 	 * @Desc 登录验证 http：//127.0.0.1/api/user/loginverify
 	 * @param request
 	 * @param response
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public void loginverify(HttpServletRequest request, HttpServletResponse response) throws IOException{
+	public void loginverify(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String userT = request.getParameter("username");
 		PrintWriter out = response.getWriter();
 		Map<String, Object> data = new HashMap<String, Object>();
 
-		if (userT==null||userT.trim().equals("")) {
+		// 校验username参数
+		if (userT == null || userT.trim().equals("")) {
 			print(out, data, "-1", "请输入用户名");
 			return;
 		}
-		
-		//
-		Map<String, Object> userMap = userDao.getUserByPhone(userT);				
+
+		// 通过username获取手机号或邮箱
+		Map<String, Object> userMap = userDao.getUserByPhone(userT);
 		Map<String, Object> dataP = new HashMap<String, Object>();
-		
-		if (userMap==null) {
+
+		// 查询结果 : 没有查询到时
+		if (userMap == null) {
 			print(out, dataP, "-1", "请先进行注册");
 			return;
 		}
-		 String userzt = userMap.get("userzt").toString().trim();
-		data.put("state", userzt);
-		data.put("img", userMap.get("useravatar"));
-		data.put("sex",userMap.get("usersex"));
-		
-		
+
+		// 查询结果 : 查询到时
+		String token = userDao.getUserTokenByUid(userMap.get("uid")).get("utoken").toString();// 通过uid获取用户token
+		String phone = userMap.get("userphone").toString();// 获取用户手机号码
+
+		String userzt = userMap.get("userzt").toString().trim();// 获取用户状态
+		data.put("state", userzt);// 用户状态
+		data.put("img", userMap.get("useravatar"));// 用户头像
+		data.put("sex", userMap.get("usersex"));// 用户性别
+		data.put("token", token);
+
 		dataP.put("data", data);
-		
+
+		/**
+		 * 获取用户状态 5未验证人脸 6未验证手机 7未选择学校
+		 */
 		if (userzt.equals("5")) {
 			print(out, dataP, "200", "人脸没有录入");
-		}
-		else if (userzt.equals("6")) {
-			print(out, dataP, "200", "手机号没有验证");
-		}
-		else if (userzt.equals("7")) {
+		} else if (userzt.equals("6")) {
+			// 补发手机验证码
+			postMessage(phone,userMap,dataP);
+			
+			print(out, dataP, "200", "未验证手机,已补发验证码");
+		} else if (userzt.equals("7")) {
 			print(out, dataP, "200", "没有选择学校");
-		}else {
+		} else {
 			print(out, dataP, "200", "获取成功");
-
 		}
-		
-		
+
 	}
-	
+
 	
 	
 	/**
@@ -353,6 +366,46 @@ public class loginServlet {
 	
 	
 	
+	
+	
+	
+	/**
+	 * 补发验证码
+	 * @param phone 手机号
+	 * @param dataMap userMap
+	 * @param dataP	dataP对象
+	 */
+	public void postMessage(String phone,Map<String, Object> dataMap,Map<String, Object> dataP) {
+		// 这里是发送验证码
+		String code = SMSUtils.createdCode();
+
+		try {
+			String smsJson = SMSUtils.sendSms(code, new String[] { "86" + phone });
+			System.out.println(smsJson);
+			if (smsJson != null || (!(smsJson.equals("")))) {
+				org.json.JSONObject jObject = new org.json.JSONObject(smsJson);
+				org.json.JSONObject SendStatusSet = jObject.getJSONArray("SendStatusSet").getJSONObject(0);
+				if (SendStatusSet.getString("SerialNo") != null || (!SendStatusSet.getString("SerialNo").equals(""))) {
+					try {
+						//向code表中存入验证码
+						login.addCode(dataMap.get("uid").toString(), code, "1");
+					} catch (Exception e) {
+						// TODO: handle exception
+						System.out.println("插入验证码失败");
+					}
+				}
+				dataP.put("postresult", "发送验证码成功");
+			} else {
+				dataP.put("postresult", "发送验证码失败");
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TencentCloudSDKException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	
 	
