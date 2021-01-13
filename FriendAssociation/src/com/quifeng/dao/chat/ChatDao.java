@@ -235,14 +235,14 @@ public class ChatDao {
 	 * @throws ClassNotFoundException 
 	 * @throws NumberFormatException 
 	 */
-	public String queryTokenByid(String targetid) throws NumberFormatException, ClassNotFoundException, SQLException {
+	public Map<String, Object> queryTokenByid(String targetid) throws NumberFormatException, ClassNotFoundException, SQLException {
 		return dao.executeQueryForMap("select * from userlogin where uid=?",
 				new int[]{
 						Types.INTEGER
 				},
 				new Object[]{
 						Integer.parseInt(targetid)
-				}).get("utoken").toString();
+				});
 	}
 	
 }

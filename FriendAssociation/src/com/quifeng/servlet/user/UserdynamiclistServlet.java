@@ -85,7 +85,7 @@ public class UserdynamiclistServlet {
 		List<Map<String, Object>> postList = userHome.getUserPostById(userid,page,size); 
 		//帖子数据没有了
 		if (postList.size()==0) {
-			print(out, data, "200", "没有更多的数据了");
+			print(out, data, "-1", "没有更多的数据了");
 			return;
 		}
 		

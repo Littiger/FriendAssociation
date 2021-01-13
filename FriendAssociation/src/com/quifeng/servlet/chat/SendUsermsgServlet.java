@@ -142,10 +142,10 @@ public class SendUsermsgServlet {
 				return;
 		    }
 		    System.out.println(chatDao.queryFixById(uid, targetid));
-		    if(chatDao.queryFixById(uid, targetid) == null || chatDao.queryFixById(uid, targetid).size() < 2){//不是互相关注
+		    if(chatDao.queryFixById(uid, targetid) == null || chatDao.queryFixById(uid, targetid).size() < 1){//没关系
 		    	jsonObject = new JSONObject();
 				jsonObject.put("code", "-2");
-				jsonObject.put("msg", "接受对象不是好友关系");
+				jsonObject.put("msg", "接收对象不是关注人或粉丝");
 				writer.write(jsonObject.toJSONString());
 				return;
 		    }
@@ -180,8 +180,15 @@ public class SendUsermsgServlet {
 			    	//发送消息
 			    	JSONObject js = new JSONObject();
 			    	js.put("data", data);
-			    	
-			    	SendInfo.pushInfo(chatDao.queryTokenByid(targetid),js.toString());
+			    	//接收用户没登陆过   没有生成过token
+			    	if(chatDao.queryTokenByid(targetid) == null){
+			    		jsonObject = new JSONObject();
+						jsonObject.put("code", "-1");
+						jsonObject.put("msg", "接收用户未登录过");
+						writer.write(jsonObject.toJSONString());
+						return;
+			    	}
+			    	SendInfo.pushInfo(chatDao.queryTokenByid(targetid).get("utoken").toString(),js.toString());
 			    	
 			    	jsonObject = new JSONObject();
 			    	jsonObject.put("code", "200");
@@ -219,7 +226,15 @@ public class SendUsermsgServlet {
 			    	//发送消息
 			    	JSONObject js = new JSONObject();
 			    	js.put("data", data);
-			    	SendInfo.pushInfo(chatDao.queryTokenByid(targetid),js.toString());
+			    	//接收用户没登陆过   没有生成过token
+			    	if(chatDao.queryTokenByid(targetid) == null){
+			    		jsonObject = new JSONObject();
+						jsonObject.put("code", "-1");
+						jsonObject.put("msg", "接收用户未登录过");
+						writer.write(jsonObject.toJSONString());
+						return;
+			    	}
+			    	SendInfo.pushInfo(chatDao.queryTokenByid(targetid).get("utoken").toString(),js.toString());
 			    	
 			    	jsonObject = new JSONObject();
 			    	jsonObject.put("code", "200");
@@ -264,7 +279,15 @@ public class SendUsermsgServlet {
 			    	//发送消息
 			    	JSONObject js = new JSONObject();
 			    	js.put("data", data);
-			    	SendInfo.pushInfo(chatDao.queryTokenByid(targetid),js.toJSONString());
+			    	//接收用户没登陆过   没有生成过token
+			    	if(chatDao.queryTokenByid(targetid) == null){
+			    		jsonObject = new JSONObject();
+						jsonObject.put("code", "-1");
+						jsonObject.put("msg", "接收用户未登录过");
+						writer.write(jsonObject.toJSONString());
+						return;
+			    	}
+			    	SendInfo.pushInfo(chatDao.queryTokenByid(targetid).get("utoken").toString(),js.toString());
 			    	
 			    	jsonObject = new JSONObject();
 			    	jsonObject.put("code", "200");

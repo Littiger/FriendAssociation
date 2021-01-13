@@ -49,6 +49,9 @@ public class dynamicServlet {
 			String video = null;
 			List image = new ArrayList();//只能存9张图片
 			List<FileItem> imageItems = new ArrayList<>();
+			
+			FileItem videoItem = null;//存储视频流
+			String videoPrifix = "";
 			List<String> prifixList = new ArrayList<>();
 			
 			List<FileItem> formItemList;
@@ -68,6 +71,7 @@ public class dynamicServlet {
 		    	
 		    	//视频个数索引
 		    	int vCount = 0;
+		    	
 			    for (FileItem Item : formItemList) {
 			    	if(!Item.isFormField()){//如果不是表单（筛选出文件）
 			    		//获取文件名字
@@ -109,8 +113,12 @@ public class dynamicServlet {
 								writer.write(jsonObject.toJSONString());
 								return;
 							}
+							//添加视频流
+							videoItem = Item;
+							//视频后缀
+							videoPrifix += prifix;
 							//上传视频 获取url 地址
-							video = putfile.Putimgs(Item.getInputStream(), prifix);
+							//video = putfile.Putimgs(Item.getInputStream(), prifix);
 							//视频个数+1
 							vCount++;
 						}
@@ -188,7 +196,7 @@ public class dynamicServlet {
 				return;
 		    }
 		    //判断是否同时用视频和图片
-		    if(video != null && imageItems.size() > 0){
+		    if(videoItem != null && imageItems.size() > 0){
 		    	jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
 				jsonObject.put("msg", "不能同时上传视频和图片");
@@ -215,10 +223,15 @@ public class dynamicServlet {
 				writer.write(jsonObject.toJSONString());
 				return;
 		    }
+		    
 		    //优化----都判断无误了再上传到服务器
 		    for(int i = 0 ; i<imageItems.size();i++){
 		    	image.add(putfile.Putimgs(imageItems.get(i).getInputStream(), prifixList.get(i)));
 		    }
+		    if(videoItem != null){
+		    	 video = putfile.Putimgs(videoItem.getInputStream(), videoPrifix);
+		    }
+		   
 		    //图片数组转json串
 		    JSONArray jsonArray = new JSONArray(image);
 		    //post表+数据
