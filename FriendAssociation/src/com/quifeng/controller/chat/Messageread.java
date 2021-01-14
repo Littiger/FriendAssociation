@@ -11,19 +11,21 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONObject;
 import com.quifeng.servlet.chat.MessageReadServlet;
+
 /**
- * @desc   聊天-消息置为已读
+ * @desc 聊天-消息置为已读
  * @author JZH
- * @time   2021-01-02
+ * @time 2021-01-02
  */
 @SuppressWarnings("serial")
 @WebServlet("/api/chat/messageread")
-public class Messageread extends HttpServlet{
-	
+public class Messageread extends HttpServlet {
+
 	MessageReadServlet readServlet = new MessageReadServlet();
-	
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		readServlet.isRead(request,response);
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		readServlet.isRead(request, response);
 	}
 }

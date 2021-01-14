@@ -14,14 +14,16 @@ import javax.servlet.http.HttpServletResponse;
  */
 
 import com.quifeng.servlet.search.HotServlet;
+
 @SuppressWarnings("serial")
 @WebServlet("/api/search/hot")
-public class hot extends HttpServlet{
-	
+public class hot extends HttpServlet {
+
 	HotServlet HotServlet = new HotServlet();
-	
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HotServlet.getHotWord(request,response);
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		HotServlet.getHotWord(request, response);
 	}
 }

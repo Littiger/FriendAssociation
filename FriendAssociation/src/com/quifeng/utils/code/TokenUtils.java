@@ -1,11 +1,10 @@
 package com.quifeng.utils.code;
 
 /**
- * @Desc 
+ * @Desc
  * @author 语录
  *
  */
 public class TokenUtils {
 
-	
 }

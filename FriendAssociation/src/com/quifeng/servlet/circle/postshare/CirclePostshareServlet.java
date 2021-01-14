@@ -1,4 +1,5 @@
 package com.quifeng.servlet.circle.postshare;
+
 /**
  * @desc   分享帖子
  * @author JZH
@@ -20,6 +21,7 @@ import com.quifeng.dao.token.TokenDao;
 public class CirclePostshareServlet {
 	CircleDao circleDao = new CircleDao();
 	TokenDao tokenDao = new TokenDao();
+
 	public void SharePost(HttpServletRequest request, HttpServletResponse response) {
 		JSONObject jsonObject = null;
 		PrintWriter writer = null;
@@ -28,44 +30,44 @@ public class CirclePostshareServlet {
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
-		//接值
+		// 接值
 		String token = request.getParameter("token");
 		String postid = request.getParameter("postid");
 		try {
-			//判空
-			if(token == null || token.equals("")){
+			// 判空
+			if (token == null || token.equals("")) {
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
 				jsonObject.put("msg", "token异常，请重新登录");
 				writer.write(jsonObject.toString());
 				return;
 			}
-			if(postid == null || postid.equals("")){
+			if (postid == null || postid.equals("")) {
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
 				jsonObject.put("msg", "参数异常");
 				writer.write(jsonObject.toString());
 				return;
 			}
-			//判断token是否有效
-			if(tokenDao.queryToken(token) == null){
+			// 判断token是否有效
+			if (tokenDao.queryToken(token) == null) {
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
 				jsonObject.put("msg", "未登录");
 				writer.write(jsonObject.toString());
 				return;
 			}
-			//share 表添加数据
-			circleDao.addShare(postid,token);
-			//postinfo分享列+1
+			// share 表添加数据
+			circleDao.addShare(postid, token);
+			// postinfo分享列+1
 			circleDao.updateShare(postid);
 			jsonObject = new JSONObject();
 			jsonObject.put("code", "200");
 			jsonObject.put("msg", "分享成功");
 			writer.write(jsonObject.toString());
 			return;
-			
-		}catch (Exception e) {
+
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			jsonObject = new JSONObject();
 			jsonObject.put("code", "-1");
@@ -77,5 +79,5 @@ public class CirclePostshareServlet {
 			writer.close();
 		}
 	}
-	
+
 }

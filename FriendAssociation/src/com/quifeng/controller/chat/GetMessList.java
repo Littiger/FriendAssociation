@@ -11,18 +11,19 @@ import javax.servlet.http.HttpServletResponse;
 import com.quifeng.servlet.chat.GetMessListServlet;
 
 /**
- * @desc   获取消息列表
+ * @desc 获取消息列表
  * @author JZH
- * @time   2021-01-02
+ * @time 2021-01-02
  */
 @SuppressWarnings("serial")
 @WebServlet("/api/chat/getmesslist")
-public class GetMessList extends HttpServlet{
-	
+public class GetMessList extends HttpServlet {
+
 	GetMessListServlet getmesslistServlet = new GetMessListServlet();
-	
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		getmesslistServlet.getMessList(request,response);
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		getmesslistServlet.getMessList(request, response);
 	}
 }

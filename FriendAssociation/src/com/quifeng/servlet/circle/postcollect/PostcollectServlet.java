@@ -14,18 +14,18 @@ import com.quifeng.dao.circle.CircleDao;
 import com.quifeng.dao.token.TokenDao;
 
 /**
- * @desc   帖子收藏
+ * @desc 帖子收藏
  * @author Littiger
- * @time 
+ * @time
  */
 @SuppressWarnings("serial")
 public class PostcollectServlet extends HttpServlet {
 
 	CircleDao circleDao = new CircleDao();
 	TokenDao tokenDao = new TokenDao();
-	
+
 	public void addAos(HttpServletRequest request, HttpServletResponse response) {
-		
+
 		JSONObject jsonObject = null;
 		PrintWriter writer = null;
 		try {
@@ -33,40 +33,40 @@ public class PostcollectServlet extends HttpServlet {
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
-		
-		//获取值ֵ
+
+		// 获取值ֵ
 		String token = request.getParameter("token");
 		String postid = request.getParameter("postid");
-		
+
 		try {
-			if (token == null || token.equals("")){
+			if (token == null || token.equals("")) {
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
 				jsonObject.put("msg", "token获取异常，请重新登陆");
 				writer.write(jsonObject.toString());
 				return;
 			}
-			if (postid == null || postid.equals("")){
+			if (postid == null || postid.equals("")) {
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
 				jsonObject.put("msg", "token获取异常，请重新登陆");
 				writer.write(jsonObject.toString());
 				return;
 			}
-			
-			//判断token
-			if(tokenDao.queryToken(token) == null){
+
+			// 判断token
+			if (tokenDao.queryToken(token) == null) {
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
 				jsonObject.put("msg", "未登录");
 				writer.write(jsonObject.toString());
 				return;
 			}
-			
-			//收藏帖子
-			circleDao.addPostAos(postid,token);
-			
-			//查询收藏
+
+			// 收藏帖子
+			circleDao.addPostAos(postid, token);
+
+			// 查询收藏
 			Map<String, Object> map = circleDao.queryPostAos(postid, token);
 			if (map != null) {
 				String display = map.get("display").toString();
@@ -76,15 +76,14 @@ public class PostcollectServlet extends HttpServlet {
 					jsonObject.put("msg", "收藏成功");
 					writer.write(jsonObject.toString());
 					return;
-				}else {
+				} else {
 					jsonObject = new JSONObject();
 					jsonObject.put("code", "200");
 					jsonObject.put("msg", "取消收藏");
 					writer.write(jsonObject.toString());
 					return;
 				}
-			}
-			else{
+			} else {
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "200");
 				jsonObject.put("msg", "收藏失败");
@@ -102,10 +101,7 @@ public class PostcollectServlet extends HttpServlet {
 			writer.flush();
 			writer.close();
 		}
-		
-		
+
 	}
-	
-	
-	
+
 }

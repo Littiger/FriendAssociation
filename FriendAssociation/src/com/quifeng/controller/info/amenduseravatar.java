@@ -11,18 +11,19 @@ import javax.servlet.http.HttpServletResponse;
 import com.quifeng.servlet.info.amenduseravatarServlet;
 
 /**
- * @desc   修改头像
+ * @desc 修改头像
  * @author JZH
- * @time   2021-01-12
+ * @time 2021-01-12
  */
 @SuppressWarnings("serial")
 @WebServlet("/api/info/amenduseravatar")
-public class amenduseravatar extends HttpServlet{
+public class amenduseravatar extends HttpServlet {
 	amenduseravatarServlet amenduseravatarServlet = new amenduseravatarServlet();
-	
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		amenduseravatarServlet.updateHeadImg(request,response);
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		amenduseravatarServlet.updateHeadImg(request, response);
 	}
-	
+
 }

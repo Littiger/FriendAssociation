@@ -11,17 +11,19 @@ import javax.servlet.http.HttpServletResponse;
 import com.quifeng.servlet.circle.ospraise.CircleOspraiseServlet;
 
 /**
- * @desc   评论点赞
+ * @desc 评论点赞
  * @author JZH
- * @time   2020-12-27
+ * @time 2020-12-27
  */
 @SuppressWarnings("serial")
 @WebServlet("/api/circle/ospraise")
-public class CircleOspraise extends HttpServlet{
-	
+public class CircleOspraise extends HttpServlet {
+
 	CircleOspraiseServlet osPraiseServlet = new CircleOspraiseServlet();
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		osPraiseServlet.AddOsZan(request,response);
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		osPraiseServlet.AddOsZan(request, response);
 	}
 }

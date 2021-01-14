@@ -9,19 +9,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.quifeng.servlet.circle.postpraise.CirclePostpraiseServlet;
+
 /**
- * @desc   帖子点赞
+ * @desc 帖子点赞
  * @author JZH
- * @time   2020-12-27
+ * @time 2020-12-27
  */
 @SuppressWarnings("serial")
 @WebServlet("/api/circle/postpraise")
-public class CirclePostpraise extends HttpServlet{
-	
+public class CirclePostpraise extends HttpServlet {
+
 	CirclePostpraiseServlet postpariseServlet = new CirclePostpraiseServlet();
-	
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		postpariseServlet.postAddZan(request,response);
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		postpariseServlet.postAddZan(request, response);
 	}
 }

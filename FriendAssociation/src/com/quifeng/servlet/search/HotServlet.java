@@ -13,17 +13,18 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSONObject;
 import com.quifeng.dao.search.searchDao;
 import com.quifeng.dao.token.TokenDao;
+
 /**
- * @desc   获取热词
+ * @desc 获取热词
  * @author JZH
- * @time   2021-01-05
+ * @time 2021-01-05
  */
 public class HotServlet {
 	searchDao searchDao = new searchDao();
 	TokenDao tokenDao = new TokenDao();
-	
+
 	public void getHotWord(HttpServletRequest request, HttpServletResponse response) {
-		//json对象
+		// json对象
 		JSONObject jsonObject = null;
 		PrintWriter writer = null;
 		try {
@@ -31,30 +32,30 @@ public class HotServlet {
 		} catch (IOException e) {
 			System.out.println("printwriter获取异常");
 		}
-		//接值
+		// 接值
 		String token = request.getParameter("token");
 		try {
-			//判空
-			if(token == null || token.equals("")){
+			// 判空
+			if (token == null || token.equals("")) {
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
 				jsonObject.put("msg", "token获取异常，请重新登录");
 				writer.write(jsonObject.toString());
 				return;
 			}
-			//判断是否登录
-			if(tokenDao.queryToken(token) == null){
+			// 判断是否登录
+			if (tokenDao.queryToken(token) == null) {
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
 				jsonObject.put("msg", "未登录");
 				writer.write(jsonObject.toString());
 				return;
 			}
-			//查询热词
+			// 查询热词
 			List<Map<String, Object>> hotWord = searchDao.queryHotWord();
-			if(hotWord != null){
+			if (hotWord != null) {
 				List<String> data = new ArrayList<String>();
-				//添加热词
+				// 添加热词
 				for (Map<String, Object> map : hotWord) {
 					data.add(map.get("word").toString());
 				}
@@ -65,7 +66,7 @@ public class HotServlet {
 				writer.write(jsonObject.toString());
 				return;
 			}
-			//没获取到
+			// 没获取到
 			else {
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
@@ -73,8 +74,8 @@ public class HotServlet {
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
-			
-		}catch (Exception e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 			jsonObject = new JSONObject();
 			jsonObject.put("code", "-1");
@@ -85,9 +86,7 @@ public class HotServlet {
 			writer.flush();
 			writer.close();
 		}
-		
-		
-		
+
 	}
-	
+
 }

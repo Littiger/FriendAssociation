@@ -14,14 +14,16 @@ import javax.servlet.http.HttpServletResponse;
  */
 
 import com.quifeng.servlet.search.GetDataServlet;
+
 @SuppressWarnings("serial")
 @WebServlet("/api/search/getdata")
-public class GetData extends HttpServlet{
-	
+public class GetData extends HttpServlet {
+
 	GetDataServlet dataServlet = new GetDataServlet();
-	
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		dataServlet.querySearch(request,response);
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		dataServlet.querySearch(request, response);
 	}
 }

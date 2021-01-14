@@ -17,27 +17,26 @@ public class TokenUtils {
 	 * @param phone
 	 * @return
 	 */
-	public static String getToken(String phone){
+	public static String getToken(String phone) {
 		Mademd5 md = new Mademd5();
-		String data = UUID.randomUUID().toString()+phone;
+		String data = UUID.randomUUID().toString() + phone;
 		return md.toMd5(data);
 	}
-	
+
 	/**
 	 * @Desc 更新 token
 	 * @param token
 	 */
-	public static void updateToken(String token,String phone){
+	public static void updateToken(String token, String phone) {
 		TokenDao t = new TokenDao();
 		t.updateToken(token, getToken(phone));
 	}
-	
-	
+
 	/**
 	 * @Desc 更新 token
 	 * @param token
 	 */
-	public static void updateTokenByU(String token,String newtoken){
+	public static void updateTokenByU(String token, String newtoken) {
 		TokenDao t = new TokenDao();
 		t.updateToken(token, newtoken);
 	}
