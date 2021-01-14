@@ -40,8 +40,10 @@ public class amenduseravatarServlet {
 		try {
 			
 			String token = null;
-			String useravatar = null;
+			String useravatar = null;//头像地址
 			List<FileItem> formItemList;
+			FileItem useravatarItem = null;//头像流
+			String prifixTemp = null;//后缀
 			//设定类型和编码
 			//response.setContentType("text/html;charset=utf-8");
 		    
@@ -60,18 +62,30 @@ public class amenduseravatarServlet {
 			    	if(!Item.isFormField()){//如果不是表单（筛选出文件）
 			    		//获取文件名字
 			    		String fileName = Item.getName();
-						System.out.println("上传文件的名字:" + fileName);
+						
 			    		// 获取后缀
 						String prifix = fileName.substring(fileName.lastIndexOf(".") + 1);
 						// 后缀全部转小写 防止后缀大小写不统一
 						prifix = prifix.toLowerCase();
-						System.out.println("上传文件的后缀:" + prifix);
+						
 						// bmp,,png,tif,gif和JPEG
 						if (prifix.equals("png") || prifix.equals("jpg") || prifix.equals("bmp") || prifix.equals("tif") || prifix.equals("gif")
 								|| prifix.equals("jpeg")) {
 							
-							// 上传图片 获取url 地址
-							useravatar = putfile.Putimgs(Item.getInputStream(), prifix);
+							//如果已经获取过
+							if(useravatarItem != null){
+								jsonObject = new JSONObject();
+								jsonObject.put("code", "-1");
+								jsonObject.put("msg", "只能上传一张头像");
+								writer.write(jsonObject.toJSONString());
+								return;
+							}
+							
+							//获取图片流
+							useravatarItem = Item;
+							//获取图片后缀
+							prifixTemp = prifix; 
+							
 							
 						}
 						
@@ -108,13 +122,20 @@ public class amenduseravatarServlet {
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
-			if(useravatar == null){
+			
+			if(useravatarItem == null){
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
 				jsonObject.put("msg", "请选择头像");
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
+			
+			System.out.println("上传文件的名字:" + useravatarItem.getName());
+			System.out.println("上传文件的后缀:" + prifixTemp);
+			//判断完毕再上传头像--优化
+			useravatar = putfile.Putimgs(useravatarItem.getInputStream(), prifixTemp);
+			
 			//自己的id
 			String uid = tokenDao.queryUidByToken(token);
 			//修改头像
