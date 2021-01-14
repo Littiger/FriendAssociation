@@ -36,19 +36,30 @@ public class searchDao {
 	 * @throws SQLException 
 	 * @throws ClassNotFoundException 
 	 */
-	public List<Map<String, Object>> queryPostByText(String wd) throws ClassNotFoundException, SQLException {
+	public List<Map<String, Object>> queryPostByText(String wd,String page,String size) throws ClassNotFoundException, SQLException {
+		
+		int size1 = Integer.parseInt(size);
+		int page1 = Integer.parseInt(page);
+		
+		if (page1==0) page1=1;
+		page1=(page1-1)*size1;
+		
 		wd = "%"+wd+"%";
 		String sql = "select * from post p "
 				+ "LEFT JOIN postinfo p2 on p.postid=p2.postid "
 				+ "LEFT JOIN user u on p.uid=u.uid "
 				+ "LEFT JOIN postbk p3 on p.placaid=p3.placaid "
-				+ "where p.display=0 and p2.isexamina=1 and p.posttext like ?";
+				+ "where p.display=0 and p2.isexamina=1 and p.posttext like ?  LIMIT ?,?";
 		return dao.executeQueryForList(sql,
 				new int[]{
-						Types.VARCHAR
+						Types.VARCHAR,
+						Types.INTEGER,
+						Types.INTEGER
 				},
 				new Object[]{
-						wd
+						wd,
+						page1,
+						size1
 				});
 	}
 	/**
@@ -58,15 +69,25 @@ public class searchDao {
 	 * @throws SQLException 
 	 * @throws ClassNotFoundException 
 	 */
-	public List<Map<String, Object>> queryUserByName(String wd) throws ClassNotFoundException, SQLException {
+	public List<Map<String, Object>> queryUserByName(String wd,String page,String size) throws ClassNotFoundException, SQLException {
+		int size1 = Integer.parseInt(size);
+		int page1 = Integer.parseInt(page);
+		
+		if (page1==0) page1=1;
+		page1=(page1-1)*size1;
+		
 		wd = "%"+wd+"%";
-		String sql = "select * from user u where username like ?";
+		String sql = "select * from user u where username like ? limit ?,?";
 		return dao.executeQueryForList(sql,
 				new int[]{
-						Types.VARCHAR
+						Types.VARCHAR,
+						Types.INTEGER,
+						Types.INTEGER
 				},
 				new Object[]{
-						wd
+						wd,
+						page1,
+						size1
 				});
 	}
 	/**
@@ -76,22 +97,31 @@ public class searchDao {
 	 * @throws SQLException 
 	 * @throws ClassNotFoundException 
 	 */
-	public List<Map<String, Object>> querybkBynName(String wd) throws ClassNotFoundException, SQLException {
+	public List<Map<String, Object>> querybkBynName(String wd,String page,String size) throws ClassNotFoundException, SQLException {
+		int size1 = Integer.parseInt(size);
+		int page1 = Integer.parseInt(page);
+		
+		if (page1==0) page1=1;
+		page1=(page1-1)*size1;
 		wd = "%"+wd+"%";
 		String sql = "select * from postbk p "
 				+ "LEFT JOIN (select *,count(*) pdynamic from post  GROUP BY placaid ) s on p.placaid=s.placaid "
 				+ "LEFT JOIN (select *,count(*)  puser from (select p2.placaid  from post p "
 				+ "LEFT JOIN postbk p2 on p.placaid=p2.placaid where p2.placaname like ? GROUP BY uid) z) z1 "
 				+ "on z1.placaid=p.placaid "
-				+ "where p.placaname like ?";
+				+ "where p.placaname like ? limit ?,?";
 		return dao.executeQueryForList(sql,
 				new int[]{
 						Types.VARCHAR,
-						Types.VARCHAR
+						Types.VARCHAR,
+						Types.INTEGER,
+						Types.INTEGER
 				},
 				new Object[]{
 						wd,
-						wd
+						wd,
+						page1,
+						size1
 				});
 	}
 	/**
@@ -155,6 +185,22 @@ public class searchDao {
 						wd,
 						Integer.parseInt(tokenDao.queryUidByToken(token)),
 						System.currentTimeMillis()
+				});
+	}
+	/**
+	 * 根据词找热词
+	 * @param wd
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 */
+	public Map<String, Object> queryHotWordByWd(String wd) throws ClassNotFoundException, SQLException {
+		return dao.executeQueryForMap("select * from search where word=?",
+				new int[]{
+						Types.VARCHAR
+				},
+				new Object[]{
+						wd
 				});
 	}
 	

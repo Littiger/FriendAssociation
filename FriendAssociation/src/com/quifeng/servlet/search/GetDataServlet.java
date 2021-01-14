@@ -40,6 +40,8 @@ public class GetDataServlet {
 		String token = request.getParameter("token");
 		String wd = request.getParameter("wd");
 		String type = request.getParameter("type");
+		String page = request.getParameter("page");
+		String size = request.getParameter("size");
 		try {
 			
 			//判空
@@ -74,14 +76,35 @@ public class GetDataServlet {
 				writer.write(jsonObject.toString());
 				return;
 			}
-			//类型不等于空  可以直接添加搜索记录
-			//添加搜索记录
-			searchDao.addSearchJiLu(wd,token);
+			//页数默认为1
+			if(page == null || page.equals("")){
+				page = "1";
+			}
+			//长度默认为10
+			if(size == null || size.equals("")){
+				size = "10";
+			}
+			//搜索热词库  判断是未找到还是没有更多数据
+			String errorMsg = "";
+			if(searchDao.queryHotWordByWd(wd) == null){
+				errorMsg = "未找到";
+			}
+			else{
+				errorMsg = "没有更多数据了";
+			}
+			
 			//搜索全部
 			if(type.equals("all")){
 				List<Map<String, Object>> data = new ArrayList();
 				//根据内容
-				List<Map<String, Object>> contentPostList = searchDao.queryPostByText(wd);
+				List<Map<String, Object>> contentPostList = null;
+				if(size.equals("1") || size.equals("2")){
+					contentPostList = searchDao.queryPostByText(wd,page,size);
+				}
+				else{
+					contentPostList = searchDao.queryPostByText(wd,page,Integer.parseInt(Integer.parseInt(size)/3+"")+"");
+				}
+				
 				if(contentPostList != null){
 					for (Map<String, Object> map : contentPostList) {
 						//获取信息
@@ -89,8 +112,16 @@ public class GetDataServlet {
 						data.add(getPostMessageByList(map,token,1));
 					}
 				}
+				
 				//根据用户
-				List<Map<String, Object>> userPostList = searchDao.queryUserByName(wd);
+				List<Map<String, Object>> userPostList = null;
+				if(size.equals("1") || size.equals("2")){
+					userPostList = searchDao.queryUserByName(wd,page,size);
+				}
+				else{
+					userPostList = searchDao.queryUserByName(wd,page,Integer.parseInt(Integer.parseInt(size)/3+"")+"");
+				}
+				
 				if(userPostList != null){
 					for (Map<String, Object> map : userPostList) {
 						Map<String, Object> map2 = new HashMap<>();
@@ -137,7 +168,14 @@ public class GetDataServlet {
 					}
 				}
 				//根据圈子
-				List<Map<String, Object>> bkPostList = searchDao.querybkBynName(wd);
+				List<Map<String, Object>> bkPostList  = null;
+				if(size.equals("1") || size.equals("2")){
+					bkPostList = searchDao.querybkBynName(wd,page,size);
+				}
+				else{
+					bkPostList = searchDao.querybkBynName(wd,page,Integer.parseInt(Integer.parseInt(size)/3+"")+"");
+				}
+				
 				if(bkPostList != null){
 					for (Map<String, Object> map : bkPostList) {
 						Map<String, Object> map2 = new HashMap<>();
@@ -165,14 +203,17 @@ public class GetDataServlet {
 						
 				
 				}
-				//如果没搜到
+				//如果没数据
 				if(data == null || data.size() < 1){
 					jsonObject = new JSONObject();
 					jsonObject.put("code", "-1");
-					jsonObject.put("msg", "未找到");
+					jsonObject.put("msg", errorMsg);
 					writer.write(jsonObject.toJSONString());
 					return;
 				}
+				System.out.println(data.size());
+				//添加搜索记录
+				searchDao.addSearchJiLu(wd,token);
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "200");
 				jsonObject.put("msg", "获取成功");
@@ -185,7 +226,7 @@ public class GetDataServlet {
 			else if(type.equals("user")){
 				List<Map<String, Object>> data = new ArrayList();
 				//根据用户
-				List<Map<String, Object>> userPostList = searchDao.queryUserByName(wd);
+				List<Map<String, Object>> userPostList = searchDao.queryUserByName(wd,page,size);
 				if(userPostList != null){
 					for (Map<String, Object> map : userPostList) {
 						Map<String, Object> map2 = new HashMap<>();
@@ -230,14 +271,16 @@ public class GetDataServlet {
 						}
 						data.add(map2);
 					}
-					//如果没搜到
+					//如果没数据
 					if(data == null || data.size() < 1){
 						jsonObject = new JSONObject();
 						jsonObject.put("code", "-1");
-						jsonObject.put("msg", "未找到");
+						jsonObject.put("msg", errorMsg);
 						writer.write(jsonObject.toJSONString());
 						return;
 					}
+					//添加搜索记录
+					searchDao.addSearchJiLu(wd,token);
 					jsonObject = new JSONObject();
 					jsonObject.put("code", "200");
 					jsonObject.put("msg", "获取成功");
@@ -251,7 +294,7 @@ public class GetDataServlet {
 			else if(type.equals("dyn")){
 				List<Map<String, Object>> data = new ArrayList();
 				//根据内容
-				List<Map<String, Object>> contentPostList = searchDao.queryPostByText(wd);
+				List<Map<String, Object>> contentPostList = searchDao.queryPostByText(wd,page,size);
 				if(contentPostList != null){
 					for (Map<String, Object> map : contentPostList) {
 						//获取信息
@@ -259,14 +302,16 @@ public class GetDataServlet {
 						data.add(getPostMessageByList(map,token,1));
 					}
 				}
-				//如果没搜到
+				//如果没数据
 				if(data == null || data.size() < 1){
 					jsonObject = new JSONObject();
 					jsonObject.put("code", "-1");
-					jsonObject.put("msg", "未找到");
+					jsonObject.put("msg", errorMsg);
 					writer.write(jsonObject.toJSONString());
 					return;
 				}
+				//添加搜索记录
+				searchDao.addSearchJiLu(wd,token);
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "200");
 				jsonObject.put("msg", "获取成功");
@@ -278,7 +323,7 @@ public class GetDataServlet {
 			else if(type.equals("cir")){
 				List<Map<String, Object>> data = new ArrayList();
 				//根据圈子
-				List<Map<String, Object>> bkPostList = searchDao.querybkBynName(wd);
+				List<Map<String, Object>> bkPostList = searchDao.querybkBynName(wd,page,size);
 				if(bkPostList != null){
 					for (Map<String, Object> map : bkPostList) {
 						Map<String, Object> map2 = new HashMap<>();
@@ -304,14 +349,16 @@ public class GetDataServlet {
 						data.add(map2);
 					}
 				}
-				//如果没搜到
+				//如果没数据
 				if(data == null || data.size() < 1){
 					jsonObject = new JSONObject();
 					jsonObject.put("code", "-1");
-					jsonObject.put("msg", "未找到");
+					jsonObject.put("msg", errorMsg);
 					writer.write(jsonObject.toJSONString());
 					return;
 				}
+				//添加搜索记录
+				searchDao.addSearchJiLu(wd,token);
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "200");
 				jsonObject.put("msg", "获取成功");
@@ -361,7 +408,7 @@ public class GetDataServlet {
 		//查看该帖子是否点赞或收藏
 		Map<String, Object> zan = circleDao.queryUserZanAndAos(map.get("postid").toString(),token);
 		//是否点赞
-		if(!zan.get("zuid").toString().equals("0")){
+		if(zan != null && !zan.get("zuid").toString().equals("0")){
 			map2.put("isgreat", true);
 		}
 		else{
