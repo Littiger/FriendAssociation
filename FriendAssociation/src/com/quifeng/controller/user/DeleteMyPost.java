@@ -9,14 +9,23 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.quifeng.servlet.login.loginServlet;
+import com.quifeng.servlet.user.DeleteMyPostServlet;
 import com.quifeng.utils.error.ErrorUtils;
 
+/**
+ * APi : 删除我的帖子 URL : /api/info/getmepost
+ * 
+ * @param : token
+ * @param : postid
+ * 
+ * @author 梦伴
+ *
+ */
 @SuppressWarnings("serial")
-@WebServlet("/api/user/setschool")
-public class SetschoolController extends HttpServlet {
+@WebServlet("/api/info/deletemepost")
+public class DeleteMyPost extends HttpServlet {
 
-	loginServlet loginServlet = new loginServlet();
+	DeleteMyPostServlet DeleteMyPostServlet = new DeleteMyPostServlet();
 
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -24,13 +33,12 @@ public class SetschoolController extends HttpServlet {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		try {
-			loginServlet.setSchool(request, response);
+			DeleteMyPostServlet.deleteMyPost(request, response);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 			out.print(ErrorUtils.errorTomCat());
 		} finally {
 			out.close();
 		}
 	}
-
 }

@@ -14,9 +14,8 @@ import com.quifeng.servlet.login.RegisteredServlet;
 import com.quifeng.utils.error.ErrorUtils;
 
 /**
- * @Desc 人脸的录入 
- * @author 语录
- * 1. http：//127.0.0.1/api/user/setface
+ * @Desc 人脸的录入
+ * @author 语录 1. http：//127.0.0.1/api/user/setface
  * 
  */
 @SuppressWarnings("serial")
@@ -24,17 +23,19 @@ import com.quifeng.utils.error.ErrorUtils;
 public class SetfaceController extends HttpServlet {
 
 	FaceServlet faceServlet = new FaceServlet();
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		try {
-			faceServlet.signFace(request,response);
+			faceServlet.signFace(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
 			out.print(ErrorUtils.errorTomCat());
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			out.close();
 		}
 	}

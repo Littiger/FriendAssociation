@@ -20,11 +20,13 @@ import com.quifeng.utils.error.ErrorUtils;
  */
 @SuppressWarnings("serial")
 @WebServlet("/api/user/loginverify")
-public class LoginverifyCon extends HttpServlet{
+public class LoginverifyCon extends HttpServlet {
 
 	loginServlet lohin = new loginServlet();
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		try {
@@ -33,7 +35,7 @@ public class LoginverifyCon extends HttpServlet{
 			e.printStackTrace();
 			out.print(ErrorUtils.errorTomCat());
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			out.close();
 		}
 	}

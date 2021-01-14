@@ -16,18 +16,20 @@ import com.quifeng.utils.error.ErrorUtils;
 import com.sun.org.apache.regexp.internal.recompile;
 
 /**
- * @Desc 注册 api     url： http://127.0.0.1/api/user/sign 
- *  
+ * @Desc 注册 api url： http://127.0.0.1/api/user/sign
+ * 
  * @author 语录
  *
  */
 @SuppressWarnings("serial")
 @WebServlet("/api/user/sign")
-public class SignController extends HttpServlet{
+public class SignController extends HttpServlet {
 
 	RegisteredServlet recompile = new RegisteredServlet();
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		try {
@@ -36,7 +38,7 @@ public class SignController extends HttpServlet{
 			e.printStackTrace();
 			out.print(ErrorUtils.errorTomCat());
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			out.close();
 		}
 	}

@@ -19,12 +19,13 @@ import com.quifeng.utils.error.ErrorUtils;
  */
 @SuppressWarnings("serial")
 @WebServlet("/api/user/signverify")
-public class SignverifyController extends HttpServlet{
+public class SignverifyController extends HttpServlet {
 
 	RegisteredServlet recompile = new RegisteredServlet();
-	
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		try {
@@ -32,7 +33,7 @@ public class SignverifyController extends HttpServlet{
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			out.print(ErrorUtils.errorTomCat());
-		}finally {
+		} finally {
 			out.close();
 		}
 	}

@@ -9,14 +9,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.quifeng.servlet.login.loginServlet;
 import com.quifeng.utils.error.ErrorUtils;
+import com.quifeng.servlet.user.GetMyUserHistoryServlet;
 
+/**
+ * APi : 获取浏览历史记录 URL : /api/info/history
+ * 
+ * @param : token
+ * @param : page
+ * @param : size
+ * 
+ * @author 梦伴
+ *
+ */
 @SuppressWarnings("serial")
-@WebServlet("/api/user/setschool")
-public class SetschoolController extends HttpServlet {
+@WebServlet("/api/info/history")
+public class GetMyUserHistoryController extends HttpServlet {
 
-	loginServlet loginServlet = new loginServlet();
+	GetMyUserHistoryServlet GetMyUserHistoryServlet = new GetMyUserHistoryServlet();
 
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -24,13 +34,12 @@ public class SetschoolController extends HttpServlet {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		try {
-			loginServlet.setSchool(request, response);
+			GetMyUserHistoryServlet.getMyUserHistory(request, response);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 			out.print(ErrorUtils.errorTomCat());
 		} finally {
 			out.close();
 		}
 	}
-
 }

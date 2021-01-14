@@ -14,8 +14,7 @@ import com.quifeng.servlet.login.loginServlet;
 import com.quifeng.utils.error.ErrorUtils;
 
 /**
- * @Desc 
- * 	1.	http：//127.0.0.1/api/user/getuserinfo
+ * @Desc 1. http：//127.0.0.1/api/user/getuserinfo
  * @author 语录
  *
  */
@@ -26,14 +25,15 @@ public class GetUserinfoController extends HttpServlet {
 	loginServlet lohin = new loginServlet();
 
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		try {
 			lohin.getUserinfo(request, response);
 		} catch (Exception e) {
 			out.print(ErrorUtils.errorTomCat());
-		}finally {
+		} finally {
 			out.close();
 		}
 	}

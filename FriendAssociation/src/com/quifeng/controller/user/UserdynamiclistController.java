@@ -14,7 +14,7 @@ import com.quifeng.servlet.user.UserdynamiclistServlet;
 import com.quifeng.utils.error.ErrorUtils;
 
 /**
- * @Desc 
+ * @Desc
  * @author 语录
  *
  */
@@ -23,8 +23,10 @@ import com.quifeng.utils.error.ErrorUtils;
 public class UserdynamiclistController extends HttpServlet {
 
 	UserdynamiclistServlet userdynamiclistServlet = new UserdynamiclistServlet();
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		try {
@@ -32,10 +34,9 @@ public class UserdynamiclistController extends HttpServlet {
 		} catch (Exception e) {
 			out.print(ErrorUtils.errorTomCat());
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			out.close();
 		}
 	}
-	
-}
 
+}

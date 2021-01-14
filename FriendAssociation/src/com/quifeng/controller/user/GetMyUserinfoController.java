@@ -9,14 +9,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.quifeng.servlet.login.loginServlet;
 import com.quifeng.utils.error.ErrorUtils;
+import com.quifeng.servlet.user.GetMyUserinfoServlet;
 
+/**
+ * APi : 获取个人信息 URL : /api/info/getmyuserinfo
+ * 
+ * @param : token
+ * 
+ * @author 梦伴
+ *
+ */
 @SuppressWarnings("serial")
-@WebServlet("/api/user/setschool")
-public class SetschoolController extends HttpServlet {
+@WebServlet("/api/user/getmyuserinfo")
+public class GetMyUserinfoController extends HttpServlet {
 
-	loginServlet loginServlet = new loginServlet();
+	GetMyUserinfoServlet GetMyUserinfoServlet = new GetMyUserinfoServlet();
 
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -24,13 +32,11 @@ public class SetschoolController extends HttpServlet {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		try {
-			loginServlet.setSchool(request, response);
+			GetMyUserinfoServlet.getinfo(request, response);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
 			out.print(ErrorUtils.errorTomCat());
 		} finally {
 			out.close();
 		}
 	}
-
 }

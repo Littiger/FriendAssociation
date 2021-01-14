@@ -13,26 +13,28 @@ import com.quifeng.servlet.login.loginServlet;
 import com.quifeng.utils.error.ErrorUtils;
 
 /**
- * @Desc 
+ * @Desc
  * @author 语录
  *
  */
 @SuppressWarnings("serial")
 @WebServlet("/api/user/login")
-public class LoginController  extends HttpServlet{
+public class LoginController extends HttpServlet {
 
 	loginServlet lohin = new loginServlet();
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		try {
 			lohin.login(request, response);
 		} catch (Exception e) {
+			e.printStackTrace();
 			out.print(ErrorUtils.errorTomCat());
-			System.out.println(e.getMessage());
-		}finally {
-			out.close();  
+		} finally {
+			out.close();
 		}
 	}
 }

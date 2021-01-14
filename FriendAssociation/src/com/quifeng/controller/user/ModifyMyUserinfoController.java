@@ -9,14 +9,28 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.quifeng.servlet.login.loginServlet;
+import com.quifeng.servlet.user.ModifyMyUserinfoServlet;
 import com.quifeng.utils.error.ErrorUtils;
 
+/**
+ * APi : 修改个人信息 URL : /api/info/modify
+ * 
+ * @param : token
+ * @param : uname
+ * @param : usigntext
+ * @param : usex
+ * @param : umajor
+ * @param : ubir
+ * @param : ugraduate
+ * 
+ * @author 梦伴
+ *
+ */
 @SuppressWarnings("serial")
-@WebServlet("/api/user/setschool")
-public class SetschoolController extends HttpServlet {
+@WebServlet("/api/info/modify")
+public class ModifyMyUserinfoController extends HttpServlet {
 
-	loginServlet loginServlet = new loginServlet();
+	ModifyMyUserinfoServlet modifyMyUserinfoServlet = new ModifyMyUserinfoServlet();
 
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -24,13 +38,12 @@ public class SetschoolController extends HttpServlet {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		try {
-			loginServlet.setSchool(request, response);
+			modifyMyUserinfoServlet.modify(request, response);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 			out.print(ErrorUtils.errorTomCat());
 		} finally {
 			out.close();
 		}
 	}
-
 }

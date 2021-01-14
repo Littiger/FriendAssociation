@@ -14,7 +14,7 @@ import com.quifeng.servlet.user.UserHomeServlet;
 import com.quifeng.utils.error.ErrorUtils;
 
 /**
- * @Desc  http：//127.0.0.1/api/user/userhome
+ * @Desc http：//127.0.0.1/api/user/userhome
  * @author 语录
  *
  */
@@ -23,8 +23,10 @@ import com.quifeng.utils.error.ErrorUtils;
 public class UserhomeController extends HttpServlet {
 
 	UserHomeServlet userHomeServlet = new UserHomeServlet();
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		try {
@@ -32,9 +34,9 @@ public class UserhomeController extends HttpServlet {
 		} catch (Exception e) {
 			out.print(ErrorUtils.errorTomCat());
 			System.out.println(e.getMessage());
-		}finally {
+		} finally {
 			out.close();
 		}
 	}
-	
+
 }

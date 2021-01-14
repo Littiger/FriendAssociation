@@ -12,26 +12,28 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.quifeng.servlet.login.loginServlet;
 import com.quifeng.utils.error.ErrorUtils;
+
 /**
- * @desc   加载学校
+ * @desc 加载学校
  * @author 语录
- * @time   2021-01-02
+ * @time 2021-01-02
  */
 @SuppressWarnings("serial")
 @WebServlet("/api/user/getschool")
-public class GetschoolController extends HttpServlet{
+public class GetschoolController extends HttpServlet {
 
 	loginServlet loginServlet = new loginServlet();
-	
+
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void service(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		try {
 			loginServlet.getSchool(request, response);
 		} catch (Exception e) {
 			out.print(ErrorUtils.errorTomCat());
-		}finally {
+		} finally {
 			out.close();
 		}
 	}
