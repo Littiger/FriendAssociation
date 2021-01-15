@@ -74,7 +74,7 @@ public class UserHomeServlet {
 		// 存入头像
 		dataP.put("useravatar", userTar.get("useravatar"));
 		// 存入签名 ---------->签名是有默认值得是 --》该用户什么都没有留下哦
-		dataP.put("uesrsign", "useras");
+		dataP.put("uesrsign", userTar.get("useras"));
 		// 我是否关注他
 		dataP.put("isconcern", userHome.isFixidez(myUid, userid));
 		// 这里是获取总共获赞的数量
