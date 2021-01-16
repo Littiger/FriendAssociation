@@ -186,8 +186,7 @@ public class dynamicServlet {
 			}
 			
 			// 判断是否没输入
-			System.out.println(video);
-			if ((content == null || content.equals("")) && (video == null || "".equals(video)) && imageItems.size() < 1) {
+			if ((content == null || content.equals("")) && (videoItem == null || videoItem.equals("")) && imageItems.size() < 1) {
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
 				jsonObject.put("msg", "请输入");
