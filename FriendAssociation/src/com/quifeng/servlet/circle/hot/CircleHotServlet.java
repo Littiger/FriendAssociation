@@ -103,6 +103,7 @@ public class CircleHotServlet {
 				// 获取用户信息
 				mapUser.put("uname", mapPostArr.get("username").toString());
 				mapUser.put("useravatar", mapPostArr.get("useravatar").toString());
+				mapUser.put("uid", mapPostArr.get("uid").toString());
 				// 帖子信息
 				mapPost.put("userinfo", mapUser);
 				mapPost.put("postid", mapPostArr.get("postid"));

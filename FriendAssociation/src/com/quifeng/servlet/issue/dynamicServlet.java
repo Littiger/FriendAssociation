@@ -117,7 +117,7 @@ public class dynamicServlet {
 							// 视频后缀
 							videoPrifix += prifix;
 							// 上传视频 获取url 地址
-							// video = putfile.Putimgs(Item.getInputStream(), prifix);
+							video = putfile.Putimgs(Item.getInputStream(), prifix);
 							// 视频个数+1
 							vCount++;
 						} else if (prifix == null || prifix.equals("")) {
@@ -168,6 +168,7 @@ public class dynamicServlet {
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
+			
 			if (placaid.equals("0")) {
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
@@ -183,8 +184,10 @@ public class dynamicServlet {
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
+			
 			// 判断是否没输入
-			if ((content == null || content.equals("")) && video == null && imageItems.size() < 1) {
+			System.out.println(video);
+			if ((content == null || content.equals("")) && (video == null || "".equals(video)) && imageItems.size() < 1) {
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
 				jsonObject.put("msg", "请输入");

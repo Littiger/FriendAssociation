@@ -27,7 +27,7 @@ public class CircleDao {
 			throws ClassNotFoundException, SQLException {
 		String uid = tokenDao.queryUidByToken(token);
 		System.out.println(uid);
-		String sql = "SELECT u.username,p.posttext,p.createtime,p.placaid,p.postid,p.postimg,p.postvideo,u.useravatar,p.schoolid,p2.postzan,p2.postshare,p2.postaos,p2.postos,p2.postsee"
+		String sql = "SELECT u.username,u.uid,p.posttext,p.createtime,p.placaid,p.postid,p.postimg,p.postvideo,u.useravatar,p.schoolid,p2.postzan,p2.postshare,p2.postaos,p2.postos,p2.postsee"
 				+ " from user u , (select post.* from post,user where not exists (SELECT postid from user , trilha where user.uid=? and user.uid=trilha.uid and post.postid=postid ) and post.schoolid=user.schoolid) p ,"
 				+ " postinfo p2 , postbk pb"
 				+ " where u.uid=p.uid and p.postid=p2.postid and p.display=0 and p.placaid=pb.placaid  and p2.isexamina=1 and pb.isschool=?"

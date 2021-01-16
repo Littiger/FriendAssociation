@@ -81,6 +81,7 @@ public class CirclePlateServlet {
 				Map<String, Object> postmap = new HashMap<String, Object>();
 				Map<String, Object> userinfo = new HashMap<String, Object>();
 				userinfo.put("uname", map.get("username"));
+				userinfo.put("uid", map.get("uid"));
 				userinfo.put("useravatar", map.get("useravatar"));
 				postmap.put("userinfo", userinfo);
 				// 是否点赞或收藏

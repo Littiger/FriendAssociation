@@ -23,6 +23,11 @@ public class dynamic extends HttpServlet{
 	
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		dynamicServlet.pushPost(request,response);
+		try {
+			dynamicServlet.pushPost(request,response);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
