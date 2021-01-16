@@ -69,9 +69,9 @@ public class circleServlet {
 			for (Map<String, Object> map : circleMessage) {
 				// 单个圈子
 				Map<String, Object> circleMap = new HashMap<String, Object>();
-				circleMap.put("placaid", map.get("placaid").toString());
+				circleMap.put("value", map.get("placaid").toString());
 				// isschool字段是1 校内 否则 校外
-				circleMap.put("placaname",
+				circleMap.put("text",
 						map.get("isschool").toString().equals("1") ? "校内-" + map.get("placaname").toString()
 								: "校外-" + map.get("placaname").toString());
 				// 加到data集合
