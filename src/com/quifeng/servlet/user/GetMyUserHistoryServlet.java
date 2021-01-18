@@ -96,6 +96,7 @@ public class GetMyUserHistoryServlet {
 
 			String createtime = map.get("historytime").toString();// 此历史记录访问时间
 //			String posttext = map.get("posttext") == null ? "null" : map.get("posttext").toString();// 文本
+//			String posttext = map.get("posttext") == null ? "null" : map.get("posttext").toString();// 文本
 			String posttext = map.get("posttext") == null ? "null" : map.get("posttext").toString();// 文本
 			String postimg = map.get("postimg") == null ? "null" : map.get("postimg").toString();// 图片地址
 			String postvideo = map.get("postvideo") == null ? "null" : map.get("postvideo").toString();// 视频地址
