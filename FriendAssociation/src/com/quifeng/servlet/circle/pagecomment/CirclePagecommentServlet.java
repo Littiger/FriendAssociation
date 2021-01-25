@@ -99,7 +99,7 @@ public class CirclePagecommentServlet {
 				map.put("osfirstid", -Integer.parseInt(os.get("osotherid").toString()));
 				// 是否点赞
 				System.out.println(circleDao.queryOsZan(-Integer.parseInt(os.get("osotherid").toString()) + "", token));
-				if (circleDao.queryOsZan(os.get("osotherid").toString(), token) == null) {
+				if (circleDao.queryOsZan(-Integer.parseInt(os.get("osotherid").toString()) + "", token) == null) {
 					map.put("isgreat", false);
 				} else {
 					map.put("isgreat", true);

@@ -428,6 +428,7 @@ public class CircleDao {
 	 */
 	public Map<String, Object> queryOsZan(String osid, String token)
 			throws NumberFormatException, ClassNotFoundException, SQLException {
+		System.out.println(osid);
 		String uid = tokenDao.queryUidByToken(token);
 		return dao.executeQueryForMap("select * from zan where osid=? and uid=? and display=0",
 				new int[] { Types.INTEGER, Types.INTEGER },
@@ -757,7 +758,7 @@ public class CircleDao {
 				dao.executeUpdate("update postinfo set postaos=postaos-1 where postid=?", new int[] { Types.INTEGER },
 						new Object[] { Integer.parseInt(postid) });
 			}
-			// 收藏
+			//  收藏
 			else if (display.equals("1")) {
 				dao.executeUpdate("update aos set display='0' where postid=? and uid=?",
 						new int[] { Types.INTEGER, Types.INTEGER },
