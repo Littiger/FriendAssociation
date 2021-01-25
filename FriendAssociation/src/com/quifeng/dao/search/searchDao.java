@@ -45,7 +45,7 @@ public class searchDao {
 		page1=(page1-1)*size1;
 		
 		wd = "%"+wd+"%";
-		String sql = "select * from post p "
+		String sql = "select *,p.createtime ptime,p3.createtime placatime from post p "
 				+ "LEFT JOIN postinfo p2 on p.postid=p2.postid "
 				+ "LEFT JOIN user u on p.uid=u.uid "
 				+ "LEFT JOIN postbk p3 on p.placaid=p3.placaid "

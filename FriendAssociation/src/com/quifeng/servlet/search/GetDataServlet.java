@@ -386,6 +386,7 @@ public class GetDataServlet {
 		map2.put("searchdata", type);
 		// userinfo
 		Map<String, Object> userinfo = new HashMap<>();
+		userinfo.put("uid", map.get("uid").toString());//uid
 		userinfo.put("uname", map.get("username").toString());// 发帖人姓名
 		userinfo.put("useravatar", map.get("useravatar").toString());// 头像
 		map2.put("userinfo", userinfo);
@@ -429,7 +430,7 @@ public class GetDataServlet {
 			map2.put("postvideo", "");
 		}
 		// 各种信息
-		map2.put("createtime", DateUtils.MillToHourAndMin(map.get("createtime").toString()));
+		map2.put("createtime", DateUtils.MillToHourAndMin(map.get("ptime").toString()));
 		map2.put("posttext", map.get("posttext"));
 		map2.put("great", map.get("postzan"));
 		// map2.put("postaos", map.get("postaos"));
@@ -438,9 +439,14 @@ public class GetDataServlet {
 		map2.put("postsee", map.get("postsee"));
 		// 板块信息
 		Map<String, Object> placa = new HashMap<>();
-		placa.put("placaid", map.get("placaid"));
+		placa.put("placaid", map.get("placaid"));//id
+		placa.put("createtime",DateUtils.MillToHourAndMin(map.get("placatime").toString()));//创建帖子时间
+		placa.put("pavatar", map.get("pavatar").toString());//帖子头像
+		String isschool = map.get("isschool").toString();
+		placa.put("isschool", isschool);//是否校内
+		placa.put("pinfo", map.get("pinfo").toString());//详细信息
 		System.out.println(map.get("placaid").toString());
-		placa.put("placaname", map.get("placaname").toString());
+		placa.put("placaname", map.get("placaname").toString());//帖子名
 		map2.put("placa", placa);
 
 		return map2;
