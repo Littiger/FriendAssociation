@@ -138,8 +138,9 @@ public class SendUsermsgServlet {
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
-			System.out.println(chatDao.queryFixById(uid, targetid));
-			if (chatDao.queryFixById(uid, targetid) == null || chatDao.queryFixById(uid, targetid).size() < 1) {// 没关系
+			List<Map<String, Object>> yanZheng = chatDao.queryFixById(uid, targetid);
+			System.out.println(yanZheng);
+			if (yanZheng == null || yanZheng.size() < 1) {// 没关系
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-2");
 				jsonObject.put("msg", "接收对象不是关注人或粉丝");
