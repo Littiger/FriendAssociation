@@ -545,7 +545,7 @@ public class CircleDao {
 						new Object[] { Integer.parseInt(postid) });
 			}
 			// 点赞
-			else if (display.equals("1")) {
+			else if (display.get("display").toString().equals("1")) {
 				dao.executeUpdate("update zan set display=0 where postid=? and uid=? and osid is null",
 						new int[] { Types.INTEGER, Types.INTEGER },
 						new Object[] { Integer.parseInt(postid), Integer.parseInt(uid) });
