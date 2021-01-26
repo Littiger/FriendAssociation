@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONException;
 import com.ndktools.javamd5.Mademd5;
 import com.quifeng.dao.login.FaceDao;
 import com.quifeng.dao.login.LoginDao;
+import com.quifeng.dao.token.TokenDao;
 import com.quifeng.dao.user.SchoolDao;
 import com.quifeng.dao.user.UserDao;
 import com.quifeng.utils.face.Base64Utils;
@@ -38,6 +39,7 @@ public class loginServlet {
 	LoginDao login = new LoginDao();
 	FaceDao faceDao = new FaceDao();
 	SchoolDao schoolDao = new SchoolDao();
+	TokenDao tokenDao = new TokenDao();
 
 	/**
 	 * @Desc 登录 http：//127.0.0.1/api/user/login
@@ -48,8 +50,9 @@ public class loginServlet {
 	 */
 	public void login(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
 		PrintWriter out = response.getWriter();
-		String username = request.getParameter("username");
-		String type = request.getParameter("type").trim();
+		String username = request.getParameter("username");//手机
+		String type = request.getParameter("type");
+		System.out.println(username + " --- " + type);
 		Map<String, Object> data = new HashMap<>();
 		Map<String, Object> dataP = new HashMap<String, Object>();
 
@@ -66,14 +69,25 @@ public class loginServlet {
 		}
 
 		// 用户存在
+		//查询用户token
+		Map<String, Object> tokenMap = tokenDao.getTokenByID(userMap.get("uid").toString());
+		String token = tokenMap.get("utoken").toString();//用户token
+		
 		String userzt = userMap.get("userzt").toString().trim();
 		if (userzt.equals("5")) {
-			print(out, dataP, "-1", "请先认证人脸");
+			data.put("token", token);
+			data.put("state", 5);
+			dataP.put("data", data);
+			print(out, dataP, "200", "请先认证人脸");
 			return;
 		}
 		if (userzt.equals("6")) {
-			print(out, dataP, "-1", "请先认证手机号");
-			new RegisteredServlet().signverify(request, response);
+			data.put("token", token);
+			data.put("state", 6);
+			dataP.put("data", data);
+			print(out, dataP, "200", "未验证手机 验证码已发送");
+			// 补发手机验证码
+			postMessage(username, userMap, dataP);
 			return;
 		}
 
@@ -81,9 +95,10 @@ public class loginServlet {
 		if (type == null || type.equals("2")) {
 
 			if (userzt.equals("6")) {
-				print(out, dataP, "-1", "请先认证手机号");
-
-				// 这里是获取token
+				data.put("token", token);
+				data.put("state", 6);
+				dataP.put("data", data);
+				print(out, dataP, "200", "请先认证手机号");
 				return;
 			}
 
@@ -109,6 +124,9 @@ public class loginServlet {
 				dataP.put("data", data);
 
 				if (userzt.equals("7")) {
+					data.put("token", token);
+					data.put("state", 7);
+					dataP.put("data", data);
 					print(out, dataP, "200", "请先认证学校");
 				} else {
 					print(out, dataP, "200", "登录成功");
@@ -140,8 +158,9 @@ public class loginServlet {
 			// 查询数据库
 			String uid = userMap.get("uid").toString();
 			List<Map<String, Object>> faceList = faceDao.queryFaceByUid(uid);
+			System.out.println("faceList.size() : " + faceList.size());
 			if (faceList.size() < 8) {
-				print(out, dataP, "-1", "请先完成录入人脸");
+				print(out, dataP, "200", "请先完成录入人脸");
 				return;
 			}
 			System.out.println("人脸数量" + faceList.size());
@@ -274,7 +293,6 @@ public class loginServlet {
 		} else if (userzt.equals("6")) {
 			// 补发手机验证码
 			postMessage(phone, userMap, dataP);
-
 			print(out, dataP, "200", "未验证手机,已补发验证码");
 		} else if (userzt.equals("7")) {
 			print(out, dataP, "200", "没有选择学校");
@@ -388,6 +406,7 @@ public class loginServlet {
 		data.put("code", coed);
 		data.put("msg", msg);
 		out.print(JSON.toJSONString(data));
-		out.close();
+		System.out.println(JSON.toJSONString(data));
+		out.close(); 
 	}
 }

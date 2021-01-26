@@ -66,6 +66,7 @@ public class dynamicServlet {
 			// 设定中文处理
 			upload.setHeaderEncoding("utf-8");
 			formItemList = upload.parseRequest(request);
+			System.out.println("formItemList : " + formItemList);
 			if ((formItemList != null) || (formItemList.size() > 0)) {
 
 				// 视频个数索引

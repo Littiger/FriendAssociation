@@ -61,6 +61,7 @@ public class SendUsermsgServlet {
 			// 设定中文处理
 			upload.setHeaderEncoding("utf-8");
 			formItemList = upload.parseRequest(request);
+			System.out.println("formItemList : " + formItemList);
 			if ((formItemList != null) || (formItemList.size() > 0)) {
 				for (FileItem Item : formItemList) {
 					if (!Item.isFormField()) {// 如果不是表单（筛选出文件）
@@ -138,9 +139,8 @@ public class SendUsermsgServlet {
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
-			List<Map<String, Object>> yanZheng = chatDao.queryFixById(uid, targetid);
-			System.out.println(yanZheng);
-			if (yanZheng == null || yanZheng.size() < 1) {// 没关系
+			System.out.println(chatDao.queryFixById(uid, targetid));
+			if (chatDao.queryFixById(uid, targetid) == null || chatDao.queryFixById(uid, targetid).size() < 1) {// 没关系
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-2");
 				jsonObject.put("msg", "接收对象不是关注人或粉丝");
