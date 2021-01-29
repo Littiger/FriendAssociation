@@ -46,6 +46,23 @@ public class DateUtils {
 		curTime = formatter.format(currentDate);
 		return curTime;
 	}
+	/**
+	 * 获取当前时间 格式：yyyyMMdd
+	 * 
+	 * @return
+	 */
+	public static final String CurrentyyyymmddTime() {
+		String curTime = "";
+		// 格式化时间开始
+		SimpleDateFormat formatter;
+		java.util.Date currentDate = new java.util.Date();
+		formatter = new SimpleDateFormat("yyyyMMdd");
+		currentDate = Calendar.getInstance().getTime();
+		// 格式化时间结束
+		curTime = formatter.format(currentDate);
+		return curTime;
+	}
+	
 
 	/**
 	 * 判断是否超过指定分钟
