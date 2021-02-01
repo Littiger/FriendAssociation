@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,15 +49,13 @@ public class dynamicServlet {
 			String content = null;
 			String video = null;
 			List image = new ArrayList();// 只能存9张图片
-			List<FileItem> imageItems = new ArrayList<>();
+			List<FileItem> imageItems = new ArrayList<>();//图片流
 
 			FileItem videoItem = null;// 存储视频流
-			String videoPrifix = "";
-			List<String> prifixList = new ArrayList<>();
-
+			String videoPrifix = "";//视频后缀
+			List<String> prifixList = new ArrayList<>();//图片后缀
 			List<FileItem> formItemList;
-			// 设定类型和编码
-			// response.setContentType("text/html;charset=utf-8");
+			
 
 			// 将请求消息实体中每一个项目封装成单独的DiskFileItem(FileItem接口的实现)对象的任务
 			// 将本次请求的request封装成DiskFileItemFactory对象
@@ -66,7 +65,7 @@ public class dynamicServlet {
 			// 设定中文处理
 			upload.setHeaderEncoding("utf-8");
 			formItemList = upload.parseRequest(request);
-			System.out.println("formItemList : " + formItemList);
+			//System.out.println("formItemList : " + formItemList);
 			if ((formItemList != null) || (formItemList.size() > 0)) {
 
 				// 视频个数索引
@@ -81,7 +80,7 @@ public class dynamicServlet {
 						String prifix = fileName.substring(fileName.lastIndexOf(".") + 1);
 						// 后缀全部转小写 防止后缀大小写不统一
 						prifix = prifix.toLowerCase();
-						System.out.println("上传文件的后缀:" + prifix);
+						//System.out.println("上传文件的后缀:" + prifix);
 						// bmp,,png,tif,gif和JPEG
 						if (prifix.equals("png") || prifix.equals("jpg") || prifix.equals("bmp") || prifix.equals("tif")
 								|| prifix.equals("gif") || prifix.equals("jpeg")) {
@@ -98,8 +97,7 @@ public class dynamicServlet {
 							// 添加图片流
 							imageItems.add(Item);
 							prifixList.add(prifix);
-							// 上传图片 获取url 地址
-							// image.add(putfile.Putimgs(Item.getInputStream(), prifix));
+							
 
 						}
 						// 视频
@@ -117,11 +115,11 @@ public class dynamicServlet {
 							videoItem = Item;
 							// 视频后缀
 							videoPrifix += prifix;
-							// 上传视频 获取url 地址
-							video = putfile.Putimgs(Item.getInputStream(), prifix);
+							
 							// 视频个数+1
 							vCount++;
-						} else if (prifix == null || prifix.equals("")) {
+							
+						} else if (prifix == null || prifix.equals("")){
 							continue;
 						} else {
 							jsonObject = new JSONObject();
@@ -202,6 +200,18 @@ public class dynamicServlet {
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
+			//限制视频大小
+			//设置大小
+			int maxSize = 1024*1024*100;
+			if(videoItem.getSize() > maxSize){
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "-1");
+				jsonObject.put("msg", "视频大小超出100MB");
+				writer.write(jsonObject.toJSONString());
+				return;
+			}
+			
+			
 			// 获取自己的id
 			String uid = tokenDao.queryUidByToken(token);
 			// 判断是否被封禁
@@ -222,39 +232,24 @@ public class dynamicServlet {
 				return;
 			}
 
-			// 优化----都判断无误了再上传到服务器
-			for (int i = 0; i < imageItems.size(); i++) {
-				image.add(putfile.Putimgs(imageItems.get(i).getInputStream(), prifixList.get(i)));
-			}
-			if (videoItem != null) {
-				video = putfile.Putimgs(videoItem.getInputStream(), videoPrifix);
-			}
 
-			// 图片数组转json串
-			JSONArray jsonArray = new JSONArray(image);
-			// post表+数据
-			Map<String, Object> PostMessage = issueDao.addPost(uid, placaid, content, video, jsonArray.toString());
-			System.out.println(PostMessage);
-			// 根据返回的帖子信息添加postinfo
-			if (PostMessage != null) {
-				String postid = PostMessage.get("postid").toString();
-				String schoolid = PostMessage.get("schoolid").toString();
-				int count = issueDao.addPostInfo(postid, schoolid);
-				System.out.println(count);
-				if (count > 0) {
-					jsonObject = new JSONObject();
-					jsonObject.put("code", "200");
-					jsonObject.put("msg", "发布成功");
-					writer.write(jsonObject.toJSONString());
-					return;
-				}
-
+			
+			//不为空 开启线程
+			if(imageItems != null || videoItem != null){
+				System.out.println("================================");
+				SendPostThread sendPostThread = 
+						new SendPostThread(video, videoItem, videoPrifix, image, imageItems, prifixList, uid, placaid, content, issueDao);
+				Thread thread = new Thread(sendPostThread);
+				thread.start();
 			}
+			
 			jsonObject = new JSONObject();
-			jsonObject.put("code", "-1");
-			jsonObject.put("msg", "发布失败");
+			jsonObject.put("code", "200");
+			jsonObject.put("msg", "发布成功");
 			writer.write(jsonObject.toJSONString());
 			return;
+			
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
