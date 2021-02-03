@@ -115,7 +115,7 @@ public class issueDao {
 	 */
 	public int addPostInfo(String postid, String schoolid)
 			throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
-		return dao.executeUpdate("insert into postinfo values(0,?,0,0,0,0,0,1,0,?)",
+		return dao.executeUpdate("insert into postinfo values(0,?,0,0,0,0,0,0,0,?)",
 				new int[] { Types.INTEGER, Types.INTEGER },
 				new Object[] { Integer.parseInt(postid), Integer.parseInt(schoolid) });
 	}
