@@ -1,8 +1,9 @@
-package com.yvlu.servlet.posts;
+package com.yvlu.servlet.user;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,20 +11,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONObject;
-import com.yvlu.dao.posts.getPostInfoUtil;
-import com.yvlu.dao.posts.postsDao;
 import com.yvlu.dao.posts.tokenUtils;
+import com.yvlu.dao.user.GetUserInfoUtil;
+import com.yvlu.dao.user.userDao;
 
 /**
- * @desc   搜索部分未审核的帖子信息
+ * @desc   获取所有用户
  * @author JZH
  * @time   2021年2月3日
  */
-public class getInfoPartServlet {
+public class getInfoServlet{
 
-	postsDao postsDao = new postsDao();
+	userDao userDao = new userDao();
 	
-	public void getInfoPart	(HttpServletRequest request, HttpServletResponse response) {
+	public void getInfo(HttpServletRequest request, HttpServletResponse response) {
 		// json对象
 		JSONObject jsonObject = null;
 		PrintWriter writer = null;
@@ -35,7 +36,6 @@ public class getInfoPartServlet {
 		
 		//接值
 		String token = request.getParameter("token");
-		String word = request.getParameter("word");//可以为空，空的话查询全部
 		
 		try {
 			//判空
@@ -43,13 +43,6 @@ public class getInfoPartServlet {
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
 				jsonObject.put("msg", "非法请求");
-				writer.write(jsonObject.toJSONString());
-				return;
-			}
-			if(word == null || word.equals("")){
-				jsonObject = new JSONObject();
-				jsonObject.put("code", "-1");
-				jsonObject.put("msg", "参数异常");
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
@@ -63,24 +56,29 @@ public class getInfoPartServlet {
 				return;
 			}
 			
-			//获取帖子
-			List<Map<String, Object>> posts = postsDao.getPosts(word);
-			if(posts == null || posts.size() == 0){
+			//获取数据
+			List<Map<String, Object>> userList = userDao.getAllUser();
+			if(userList == null || userList.size() == 0){
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
-				jsonObject.put("msg", "暂无帖子");
+				jsonObject.put("msg", "暂无用户");
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
 			//data
-			List<Map<String, Object>> data = new ArrayList<Map<String,Object>>();
-			for (Map<String, Object> map : posts) {
-				data.add(getPostInfoUtil.getInfo(map));
+			Map<String, Object> data = new HashMap<String, Object>();
+			//users
+			List<Map<String, Object>> users = new ArrayList<Map<String,Object>>();
+			//提取信息
+			for (Map<String, Object> map : userList) {
+				users.add(GetUserInfoUtil.getUserInfo(map));
 			}
+			data.put("users", users);
+			
 			if(data != null || data.size() != 0){
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "200");
-				jsonObject.put("msg", "请求成功");
+				jsonObject.put("msg", "获取成功");
 				jsonObject.put("data", data);
 				writer.write(jsonObject.toJSONString());
 				return;
@@ -104,6 +102,5 @@ public class getInfoPartServlet {
 			writer.close();
 		}
 	}
-	
 
 }

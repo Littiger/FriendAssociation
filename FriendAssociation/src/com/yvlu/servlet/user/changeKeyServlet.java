@@ -1,29 +1,27 @@
-package com.yvlu.servlet.posts;
+package com.yvlu.servlet.user;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONObject;
-import com.yvlu.dao.posts.getPostInfoUtil;
-import com.yvlu.dao.posts.postsDao;
+import com.ndktools.javamd5.Mademd5;
 import com.yvlu.dao.posts.tokenUtils;
+import com.yvlu.dao.user.userDao;
 
 /**
- * @desc   搜索部分未审核的帖子信息
+ * @desc   修改指定用户密码
  * @author JZH
  * @time   2021年2月3日
  */
-public class getInfoPartServlet {
+public class changeKeyServlet {
+	userDao userDao = new userDao();
+	Mademd5 md5 = new Mademd5();
 
-	postsDao postsDao = new postsDao();
-	
-	public void getInfoPart	(HttpServletRequest request, HttpServletResponse response) {
+	public void changeKey(HttpServletRequest request, HttpServletResponse response) {
 		// json对象
 		JSONObject jsonObject = null;
 		PrintWriter writer = null;
@@ -35,9 +33,11 @@ public class getInfoPartServlet {
 		
 		//接值
 		String token = request.getParameter("token");
-		String word = request.getParameter("word");//可以为空，空的话查询全部
+		String userid = request.getParameter("userid");
+		String password = request.getParameter("password");
 		
 		try {
+			
 			//判空
 			if(token == null || token.equals("")){
 				jsonObject = new JSONObject();
@@ -46,10 +46,17 @@ public class getInfoPartServlet {
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
-			if(word == null || word.equals("")){
+			if(userid == null || userid.equals("")){
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
 				jsonObject.put("msg", "参数异常");
+				writer.write(jsonObject.toJSONString());
+				return;
+			}
+			if(password == null || password.equals("")){
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "-1");
+				jsonObject.put("msg", "请输入新密码");
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
@@ -62,34 +69,40 @@ public class getInfoPartServlet {
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
-			
-			//获取帖子
-			List<Map<String, Object>> posts = postsDao.getPosts(word);
-			if(posts == null || posts.size() == 0){
+			//判断用户是否存在
+			Map<String, Object> user = userDao.queryUserById(userid);
+			if(user == null){
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "-1");
-				jsonObject.put("msg", "暂无帖子");
+				jsonObject.put("msg", "无此用户");
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
-			//data
-			List<Map<String, Object>> data = new ArrayList<Map<String,Object>>();
-			for (Map<String, Object> map : posts) {
-				data.add(getPostInfoUtil.getInfo(map));
+			//转换为MD5
+			password = md5.toMd5(password);
+			//判断新密码是否与原密码相同
+			if(user.get("password").toString().equals(password)){
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "-1");
+				jsonObject.put("msg", "请勿与原密码相同");
+				writer.write(jsonObject.toJSONString());
+				return;
 			}
-			if(data != null || data.size() != 0){
+			//修改密码
+			int count = userDao.updatePasswordById(userid,password);
+			if(count != 0){
 				jsonObject = new JSONObject();
 				jsonObject.put("code", "200");
-				jsonObject.put("msg", "请求成功");
-				jsonObject.put("data", data);
+				jsonObject.put("msg", "修改成功");
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
 			jsonObject = new JSONObject();
 			jsonObject.put("code", "-1");
-			jsonObject.put("msg", "获取失败");
+			jsonObject.put("msg", "修改失败");
 			writer.write(jsonObject.toJSONString());
 			return;
+			
 			
 			
 		} catch (Exception e) {
@@ -104,6 +117,4 @@ public class getInfoPartServlet {
 			writer.close();
 		}
 	}
-	
-
 }

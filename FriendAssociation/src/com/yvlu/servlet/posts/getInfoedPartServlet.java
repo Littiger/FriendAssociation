@@ -46,6 +46,13 @@ public class getInfoedPartServlet {
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
+			if(word == null || word.equals("")){
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "-1");
+				jsonObject.put("msg", "参数异常");
+				writer.write(jsonObject.toJSONString());
+				return;
+			}
 			//判断是否登录
 			Map<String, Object> manager = tokenUtils.queryToken(token);
 			if(manager == null || manager.size() == 0){
