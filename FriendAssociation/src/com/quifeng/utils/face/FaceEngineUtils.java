@@ -34,8 +34,8 @@ public class FaceEngineUtils {
 		// 从官网获取
 		String appId = "CiU9hZbg7LgqomhwuRUieyteLPnCJUkarUmUqodokzns";
 		String sdkKey = "FeLvhUeS1DTfvaqXNs5CnWfi4pJo16dKym26rvTgJLeX";
-		faceEngine = new FaceEngine("H:\\HBSI_JAVA\\MyCode\\ArcSoft_ArcFace_Java_Windows_x64_V3.0\\libs\\WIN64");
-//        faceEngine = new FaceEngine("C:\\Users\\Administrator\\Desktop\\ArcSoft_ArcFace_Java_Windows_x64_V3.0\\libs\\WIN64");
+//		faceEngine = new FaceEngine("H:\\HBSI_JAVA\\MyCode\\ArcSoft_ArcFace_Java_Windows_x64_V3.0\\libs\\WIN64");
+        faceEngine = new FaceEngine("C:\\Users\\Administrator\\Desktop\\ArcSoft_ArcFace_Java_Windows_x64_V3.0\\libs\\WIN64");
 //        faceEngine = new FaceEngine("D:\\java\\java_study\\idea\\ArcSoft_ArcFace_Java_Windows_x64_V3.0\\libs\\WIN64");
 		int errorCode = faceEngine.activeOnline(appId, sdkKey);
 		if (errorCode != ErrorInfo.MOK.getValue() && errorCode != ErrorInfo.MERR_ASF_ALREADY_ACTIVATED.getValue()) {

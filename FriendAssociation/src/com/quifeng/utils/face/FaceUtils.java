@@ -20,9 +20,9 @@ public class FaceUtils {
 
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-//	        faceDetector = new CascadeClassifier("C:\\Users\\Administrator\\Desktop\\opencv\\sources\\data\\haarcascades\\haarcascade_frontalface_alt.xml");
-		faceDetector = new CascadeClassifier(
-				"E:\\opencv\\sources\\data\\haarcascades\\haarcascade_frontalface_alt.xml");
+	        faceDetector = new CascadeClassifier("C:\\Users\\Administrator\\Desktop\\opencv\\sources\\data\\haarcascades\\haarcascade_frontalface_alt.xml");
+//		faceDetector = new CascadeClassifier(
+//				"E:\\opencv\\sources\\data\\haarcascades\\haarcascade_frontalface_alt.xml");
 	}
 
 	/**

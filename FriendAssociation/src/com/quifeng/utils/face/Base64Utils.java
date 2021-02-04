@@ -23,8 +23,8 @@ import sun.misc.BASE64Encoder;
 public class Base64Utils {
 
 //  private static final String OPENCV_DLL_PATH ="D:\\java\\opencv\\opencv\\build\\java\\x64\\opencv_java3412.dll";
-//	private static final String OPENCV_DLL_PATH ="C:\\Users\\Administrator\\Desktop\\opencv\\build\\java\\x64\\opencv_java3412.dll";
-	private static final String OPENCV_DLL_PATH = "E:\\opencv\\build\\java\\x64\\opencv_java3412.dll";
+	private static final String OPENCV_DLL_PATH ="C:\\Users\\Administrator\\Desktop\\opencv\\build\\java\\x64\\opencv_java3412.dll";
+//	private static final String OPENCV_DLL_PATH = "E:\\opencv\\build\\java\\x64\\opencv_java3412.dll";
 	static {
 		// 加载 opencv_java401.dll
 		System.load(OPENCV_DLL_PATH);

@@ -52,8 +52,13 @@ public class InfoServlet {
 				//服务器数据
 				//服务器运行时间
 				long dateTime =System.currentTimeMillis()-getServerStqrtTime();
+				double total = (Runtime.getRuntime().totalMemory()) / (1024.0 * 1024);
+				double max = (Runtime.getRuntime().maxMemory()) / (1024.0 * 1024);
+				double free = (Runtime.getRuntime().freeMemory()) / (1024.0 * 1024);
+				int freezz = (int) (total-(max-total+free));
+				
 				dataP.put("serverruntime",getDate(dateTime)+"天");
-				dataP.put("servermemory",Runtime.getRuntime().totalMemory()+"kb"); //服务器内润
+				dataP.put("servermemory",freezz+"/"+total+" MB"); //服务器内润
 				//创建返回的数据 countinfo
 				Map<String, Object> countInfo = new HashMap<String, Object>();
 				countInfo.put("user", infoDao.getUserCount().get("count"));	
