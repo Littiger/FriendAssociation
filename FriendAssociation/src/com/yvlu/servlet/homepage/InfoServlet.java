@@ -1,20 +1,19 @@
 package com.yvlu.servlet.homepage;
 
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import com.alibaba.fastjson.JSON;
 import com.quifeng.dao.user.UserDao;
-import com.quifeng.utils.generate.TokenUtils;
+import com.sun.management.OperatingSystemMXBean;
 import com.yvlu.dao.homepage.InfoDao;
+
 
 
 /**
@@ -27,7 +26,6 @@ public class InfoServlet {
 	//infoDao Dao层
 	private static InfoDao infoDao = new InfoDao();
 	private static UserDao userDao = new UserDao();
-	
 	public String info(String token){
 		//创建返回的数据 
 		Map<String, Object> data = new HashMap<String, Object>();
@@ -42,27 +40,50 @@ public class InfoServlet {
 				//用户id  头像
 				String  avatar = rootMap.get("avatar").toString();
 				String  rootname = rootMap.get("rootname").toString();
-				//获取新的token
-				String newtoken = TokenUtils.getToken(UUID.randomUUID().toString());
-				infoDao.updateRootTokenByidorToken(token, newtoken );
+				String  managerlevel = rootMap.get("managerlevel").toString(); //管理员
+
 				//添加数据
-				dataP.put("token", newtoken);
+	
 				dataP.put("managername", rootname);
 				dataP.put("manageravatar",avatar);
+				dataP.put("managerlevel",managerlevel);
 				//服务器数据
 				//服务器运行时间
 				long dateTime =System.currentTimeMillis()-getServerStqrtTime();
-				double total = (Runtime.getRuntime().totalMemory()) / (1024.0 * 1024);
-				double max = (Runtime.getRuntime().maxMemory()) / (1024.0 * 1024);
-				double free = (Runtime.getRuntime().freeMemory()) / (1024.0 * 1024);
-				int freezz = (int) (total-(max-total+free));
+				dataP.put("serverruntime",getDate(dateTime)+"小时");
+			
+				 //服务器内存
+				OperatingSystemMXBean osmxb = (OperatingSystemMXBean)ManagementFactory.getOperatingSystemMXBean(); 	
+				 // 总的物理内存
+		        long totalvirtualMemory = osmxb.getTotalSwapSpaceSize(); //单位是字节数，除以1024是K
+		        //剩余的内存
+		        long freePhysicalMemorySize = osmxb.getFreePhysicalMemorySize(); 
+		        //使用的内存 
+		         long compare = totalvirtualMemory-freePhysicalMemorySize;
+				dataP.put("servermemory",totalvirtualMemory/1024/1024+"mb/"+(compare/1024/1204)+"mb");
 				
-				dataP.put("serverruntime",getDate(dateTime)+"天");
-				dataP.put("servermemory",freezz+"/"+total+" MB"); //服务器内润
+				//cpu核数
+				dataP.put("servercores", Runtime.getRuntime().availableProcessors());
+				//cpu线程数
+				
+                // 获得线程总数
+                ThreadGroup parentThread;
+                for (parentThread = Thread.currentThread().getThreadGroup(); parentThread
+                        .getParent() != null; parentThread = parentThread.getParent()) {
+
+                }
+
+                int totalThread = parentThread.activeCount();
+				dataP.put("serverthreads",totalThread);
+				
+				//服务器操作系统
+				dataP.put("serveros",System.getProperty("os.name"));
+				//获取java的版本
+				dataP.put("serverjavaversion",System.getProperty("java.version"));
+				
 				//创建返回的数据 countinfo
 				Map<String, Object> countInfo = new HashMap<String, Object>();
 				countInfo.put("user", infoDao.getUserCount().get("count"));	
-				countInfo.put("check", infoDao.getCheckCount().get("count"));
 				countInfo.put("goods", infoDao.getGoodsCount().get("count"));
 				countInfo.put("posts", infoDao.getPostsCount().get("count"));
 				countInfo.put("audits", infoDao.getAuditsCount().get("count"));
@@ -96,7 +117,7 @@ public class InfoServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return pring(data, "-5", "查询异常");
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return pring(data, "-5", "数据更新异常");
@@ -110,7 +131,7 @@ public class InfoServlet {
     }
 
 	public long getDate(long time){
-		long days =  time / (1000 * 60 * 60 * 24);
+		long days =  time / (1000 * 60 * 60 );
 		return days;
 	}
 	
