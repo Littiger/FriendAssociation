@@ -109,9 +109,21 @@ public class InfoServlet {
 				//添加数据
 				dataP.put("userlogs", userlogs);
 				
+				
+				//热词
+				List<String> hotwords = new ArrayList<String>();
+				//获取5个热词
+				List<Map<String, Object>> hots = infoDao.getAllSearchFrom5();
+				for (Map<String, Object> map : hots) {
+					hotwords.add(map.get("word").toString());
+				}
+				dataP.put("hotwords", hotwords);
+				
 				//添加数据
 				data.put("data", dataP);
 				return pring(data, "200","请求成功");
+				
+				
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block

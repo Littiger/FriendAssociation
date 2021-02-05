@@ -20,6 +20,9 @@ public class InfoController extends HttpServlet{
 	private InfoServlet infoServlet = new InfoServlet();
 	
 	
+	
+	
+	
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		//获取参数

@@ -28,7 +28,7 @@ public class InfoDao {
 	 * @throws ClassNotFoundException 
 	 */
 	public Map<String, Object> getRootByToken(String token) throws ClassNotFoundException, SQLException{
-		Map<String, Object> data = dao.executeQueryForMap("SELECT * FROM `root` WHERE rootid = (SELECT rootid FROM  rootlogin WHERE token=?)", new int[]{
+		Map<String, Object> data = dao.executeQueryForMap("SELECT * FROM root WHERE rootid = (SELECT rootid FROM  rootlogin WHERE token=?)", new int[]{
 				Types.VARCHAR
 		}, new Object[]{
 				token	
@@ -127,5 +127,15 @@ public class InfoDao {
 		
 	}
 	
+	/**
+	 * @Desc 获取前5个日志
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
+	public List<Map<String,Object>> getAllSearchFrom5() throws ClassNotFoundException, SQLException{	
+		List<Map<String, Object>> data = dao.executeQueryForList("select * ,count(*) as c from search group by word ORDER BY c DESC LIMIT 5");
+		return data;
+	}
 	
 }
