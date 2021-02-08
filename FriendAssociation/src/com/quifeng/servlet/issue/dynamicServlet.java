@@ -203,13 +203,16 @@ public class dynamicServlet {
 			//限制视频大小
 			//设置大小
 			int maxSize = 1024*1024*100;
-			if(videoItem.getSize() > maxSize){
-				jsonObject = new JSONObject();
-				jsonObject.put("code", "-1");
-				jsonObject.put("msg", "视频大小超出100MB");
-				writer.write(jsonObject.toJSONString());
-				return;
+			if(videoItem !=null){
+				if(videoItem.getSize() > maxSize){
+					jsonObject = new JSONObject();
+					jsonObject.put("code", "-1");
+					jsonObject.put("msg", "视频大小超出100MB");
+					writer.write(jsonObject.toJSONString());
+					return;
+				}
 			}
+			
 			
 			
 			// 获取自己的id
