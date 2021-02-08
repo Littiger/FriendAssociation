@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.yvlu.servlet.controller.announcement.GetannouncementStatusServlet;
+import com.yvlu.servlet.controller.version.GetversionServlet;
 import com.yvlu.tools.tools;
 
 /**
@@ -25,7 +26,7 @@ import com.yvlu.tools.tools;
 public class GetStatusController extends HttpServlet{
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		GetannouncementStatusServlet.Info(response);
+		GetversionServlet.Info(response);
 	}
 	
 	
