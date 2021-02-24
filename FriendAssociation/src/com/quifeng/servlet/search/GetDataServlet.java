@@ -92,16 +92,18 @@ public class GetDataServlet {
 			} else {
 				errorMsg = "没有更多数据了";
 			}
-
+			//uid
+			String uid = tokenDao.queryUidByToken(token);
+			
 			// 搜索全部
 			if (type.equals("all")) {
 				List<Map<String, Object>> data = new ArrayList();
 				// 根据内容
 				List<Map<String, Object>> contentPostList = null;
 				if (size.equals("1") || size.equals("2")) {
-					contentPostList = searchDao.queryPostByText(wd, page, size);
+					contentPostList = searchDao.queryPostByText(uid,wd, page, size);
 				} else {
-					contentPostList = searchDao.queryPostByText(wd, page,
+					contentPostList = searchDao.queryPostByText(uid,wd, page,
 							Integer.parseInt(Integer.parseInt(size) / 3 + "") + "");
 				}
 
@@ -116,13 +118,13 @@ public class GetDataServlet {
 				// 根据用户
 				List<Map<String, Object>> userPostList = null;
 				if (size.equals("1") || size.equals("2")) {
-					userPostList = searchDao.queryUserByName(wd, page, size);
+					userPostList = searchDao.queryUserByName(uid,wd, page, size);
 				} else {
-					userPostList = searchDao.queryUserByName(wd, page,
+					userPostList = searchDao.queryUserByName(uid,wd, page,
 							Integer.parseInt(Integer.parseInt(size) / 3 + "") + "");
 				}
 
-				if (userPostList != null) {
+				if (userPostList != null) {   
 					for (Map<String, Object> map : userPostList) {
 						Map<String, Object> map2 = new HashMap<>();
 						map2.put("searchdata", 2);
@@ -218,7 +220,7 @@ public class GetDataServlet {
 			else if (type.equals("user")) {
 				List<Map<String, Object>> data = new ArrayList();
 				// 根据用户
-				List<Map<String, Object>> userPostList = searchDao.queryUserByName(wd, page, size);
+				List<Map<String, Object>> userPostList = searchDao.queryUserByName(uid,wd, page, size);
 				if (userPostList != null) {
 					for (Map<String, Object> map : userPostList) {
 						Map<String, Object> map2 = new HashMap<>();
@@ -281,7 +283,7 @@ public class GetDataServlet {
 			else if (type.equals("dyn")) {
 				List<Map<String, Object>> data = new ArrayList();
 				// 根据内容
-				List<Map<String, Object>> contentPostList = searchDao.queryPostByText(wd, page, size);
+				List<Map<String, Object>> contentPostList = searchDao.queryPostByText(uid,wd, page, size);
 				if (contentPostList != null) {
 					for (Map<String, Object> map : contentPostList) {
 						// 获取信息

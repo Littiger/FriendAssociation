@@ -26,12 +26,18 @@ public class CircleDao {
 	public List<Map<String, Object>> queryAllPost(String hottype, String size, String token)
 			throws ClassNotFoundException, SQLException {
 		String uid = tokenDao.queryUidByToken(token);
+		String schoolid = dao.executeQueryForMap("select * from user where uid=?",new int[]{Types.INTEGER},new Object[]{Integer.parseInt(uid)}).get("schoolid").toString();
 		System.out.println(uid);
-		String sql = "SELECT u.username,u.uid,p.posttext,p.createtime,p.placaid,p.postid,p.postimg,p.postvideo,u.useravatar,p.schoolid,p2.postzan,p2.postshare,p2.postaos,p2.postos,p2.postsee"
-				+ " from user u , (select post.* from post,user where not exists (SELECT postid from user , trilha where user.uid=? and user.uid=trilha.uid and post.postid=postid ) and post.schoolid=user.schoolid) p ,"
-				+ " postinfo p2 , postbk pb"
-				+ " where u.uid=p.uid and p.postid=p2.postid and p.display=0 and p.placaid=pb.placaid  and p2.isexamina=1 and pb.isschool=?"
-				+ " ORDER BY RAND() LIMIT ?";
+		String sql = "SELECT u.username,u.uid,p.posttext,p.createtime,p.placaid,p.postid,p.postimg,p.postvideo,"
+				+ "u.useravatar,p.schoolid,p2.postzan,p2.postshare,p2.postaos,p2.postos,p2.postsee "
+				+ "from user u , "
+				+ "(select post.* from post where post.postid not in "
+				+ "(SELECT post.postid from user , trilha,post "
+				+ "where user.uid=? and user.uid=trilha.uid and post.postid=trilha.postid) "
+				+ "and post.schoolid=?  ) p , "
+				+ "postinfo p2 , postbk pb "
+				+ "where u.uid=p.uid and p.postid=p2.postid and p.display=0 and p.placaid=pb.placaid  "
+				+ "and p2.isexamina=1 and pb.isschool=? ORDER BY RAND() LIMIT ?";
 		int temp;
 		if (hottype.equals("1")) {
 			temp = 1;
@@ -39,32 +45,20 @@ public class CircleDao {
 			temp = 0;
 		}
 
-		return dao.executeQueryForList(sql, new int[] { Types.INTEGER, Types.INTEGER, Types.INTEGER },
-				new Object[] { Integer.parseInt(uid), temp, new Integer(size) });
+		return dao.executeQueryForList(sql, new int[] { Types.INTEGER,Types.INTEGER, Types.INTEGER, Types.INTEGER },
+				new Object[] { Integer.parseInt(uid),Integer.parseInt(schoolid), temp, new Integer(size)});
 	}
 
 	/**
 	 * 推荐广告
 	 */
-	public List<Map<String, Object>> queryAllPost2(String hottype, String size, String token)
-			throws ClassNotFoundException, SQLException {
-		String uid = tokenDao.queryUidByToken(token);
-		System.out.println(token);
-		String sql = "SELECT u.username,p.posttext,p.createtime,p.placaid,p.postid,p.postimg,p.postvideo,u.useravatar"
-				+ " from user u ,"
-				+ " (select * from post where not exists (SELECT postid from user , trilha where user.uid=? and user.uid=trilha.uid and post.postid=postid )) p ,"
-				+ " postinfo p2 , postbk pb "
-				+ "where u.uid=p.uid and p.postid=p2.postid and p.display=0 and p.placaid=pb.placaid  and p.placaid like ? and p2.isexamina=1 and pb.isschool=?"
-				+ " ORDER BY RAND() LIMIT ?";
-		int temp;
-		if (hottype.equals("1")) {
-			temp = 1;
-		} else {
-			temp = 0;
-		}
+	public Map<String, Object> queryAllPost2() throws ClassNotFoundException, SQLException {
+		String sql = "select * from post "
+				+ "LEFT JOIN postinfo on post.postid=postinfo.postid "
+				+ "LEFT JOIN user u on u.uid=post.uid where post.placaid=0 and "
+				+ "postinfo.isexamina=1 and post.display=0 ORDER BY RAND() LIMIT 1";
 
-		return dao.executeQueryForList(sql, new int[] { Types.INTEGER, Types.INTEGER, Types.INTEGER, Types.INTEGER },
-				new Object[] { Integer.parseInt(uid), new Integer(hottype), temp, new Integer(size) });
+		return dao.executeQueryForMap(sql);
 	}
 
 	/**
@@ -147,23 +141,27 @@ public class CircleDao {
 	}
 
 	// 实现
-	public List<Map<String, Object>> getPostMM(String placaid, String size, String page) {
-
+	public List<Map<String, Object>> getPostMM(String uid,String placaid, String size, String page) throws NumberFormatException, ClassNotFoundException, SQLException {
+		
 		if (size == null || page == null) {
 			return null;
 		}
-
+		//参数转换为int类型
 		int size1 = Integer.parseInt(size);
 		int page1 = Integer.parseInt(page);
-
+		//获取学校id
+		String schoolid = dao.executeQueryForMap("select * from user where uid=?", new int[]{Types.INTEGER}, new Object[]{Integer.parseInt(uid)}).get("schoolid").toString();
+		
+		//翻页
 		if (page1 == 0)
 			page1 = 1;
 		page1 = (page1 - 1) * size1;
-		String sql = "select * from post p LEFT JOIN user u on p.uid=u.uid left join postinfo p2 on p2.postid=p.postid where p.display=0 and p.placaid=? and p2.isexamina=1 ORDER BY CAST(p.createtime as SIGNED) desc LIMIT?,?";
+		
+		String sql = "select * from post p LEFT JOIN user u on p.uid=u.uid left join postinfo p2 on p2.postid=p.postid where p.display=0 and p.placaid=? and p2.isexamina=1 and p.schoolid=? ORDER BY CAST(p.createtime as SIGNED) desc LIMIT?,?";
 		List<Map<String, Object>> list = null;
 		try {
-			list = dao.executeQueryForList(sql, new int[] { Types.INTEGER, Types.INTEGER, Types.INTEGER },
-					new Object[] { placaid, page1, size1 });
+			list = dao.executeQueryForList(sql, new int[] { Types.INTEGER,Types.INTEGER, Types.INTEGER, Types.INTEGER },
+					new Object[] { placaid,Integer.parseInt(schoolid), page1, size1 });
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}

@@ -36,7 +36,7 @@ public class searchDao {
 	 * @throws SQLException 
 	 * @throws ClassNotFoundException 
 	 */
-	public List<Map<String, Object>> queryPostByText(String wd,String page,String size) throws ClassNotFoundException, SQLException {
+	public List<Map<String, Object>> queryPostByText(String uid,String wd,String page,String size) throws ClassNotFoundException, SQLException {
 		
 		int size1 = Integer.parseInt(size);
 		int page1 = Integer.parseInt(page);
@@ -45,18 +45,22 @@ public class searchDao {
 		page1=(page1-1)*size1;
 		
 		wd = "%"+wd+"%";
+		//schoolid
+		String schoolid = dao.executeQueryForMap("select * from user where uid=?",new int[]{Types.INTEGER},new Object[]{Integer.parseInt(uid)}).get("schoolid").toString();
 		String sql = "select *,p.createtime ptime,p3.createtime placatime from post p "
 				+ "LEFT JOIN postinfo p2 on p.postid=p2.postid "
 				+ "LEFT JOIN user u on p.uid=u.uid "
 				+ "LEFT JOIN postbk p3 on p.placaid=p3.placaid "
-				+ "where p.display=0 and p2.isexamina=1 and p.posttext like ?  LIMIT ?,?";
+				+ "where p.display=0 and p2.isexamina=1 and p.schoolid=? and p.posttext like ?  LIMIT ?,?";
 		return dao.executeQueryForList(sql,
 				new int[]{
+						Types.INTEGER,
 						Types.VARCHAR,
 						Types.INTEGER,
 						Types.INTEGER
 				},
 				new Object[]{
+						Integer.parseInt(schoolid),
 						wd,
 						page1,
 						size1
@@ -69,7 +73,7 @@ public class searchDao {
 	 * @throws SQLException 
 	 * @throws ClassNotFoundException 
 	 */
-	public List<Map<String, Object>> queryUserByName(String wd,String page,String size) throws ClassNotFoundException, SQLException {
+	public List<Map<String, Object>> queryUserByName(String uid,String wd,String page,String size) throws ClassNotFoundException, SQLException {
 		int size1 = Integer.parseInt(size);
 		int page1 = Integer.parseInt(page);
 		
@@ -77,21 +81,25 @@ public class searchDao {
 		page1=(page1-1)*size1;
 		
 		wd = "%"+wd+"%";
-		String sql = "select * from user u where username like ? limit ?,?";
+		//schoolid
+		String schoolid = dao.executeQueryForMap("select * from user where uid=?",new int[]{Types.INTEGER},new Object[]{Integer.parseInt(uid)}).get("schoolid").toString();
+		String sql = "select * from user u where u.schoolid=? and username like ? limit ?,?";
 		return dao.executeQueryForList(sql,
 				new int[]{
+						Types.INTEGER,
 						Types.VARCHAR,
 						Types.INTEGER,
 						Types.INTEGER
 				},
 				new Object[]{
+						Integer.parseInt(schoolid),
 						wd,
 						page1,
 						size1
 				});
 	}
 	/**
-	 * 根据圈子查询帖子
+	 * 查询圈子
 	 * @param wd
 	 * @return
 	 * @throws SQLException 

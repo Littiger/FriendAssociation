@@ -92,8 +92,7 @@ public class CircleHotServlet {
 			List<Map<String, Object>> postListArr = new ArrayList<>();
 			// 获取广告
 			if (Math.abs(Math.random() * 10) > 7) {
-				listPost.remove(listPost.size() - 1);
-				listPost.add(circleDao.queryAllPost2("0", "1", token).get(0));
+				listPost.add(circleDao.queryAllPost2());//添加广告
 			}
 			for (Map<String, Object> mapPostArr : listPost) {
 				Map<String, Object> mapPost = new HashMap<>();
@@ -103,6 +102,7 @@ public class CircleHotServlet {
 				// 获取用户信息
 				mapUser.put("uname", mapPostArr.get("username").toString());
 				mapUser.put("useravatar", mapPostArr.get("useravatar").toString());
+				System.out.println(mapPostArr);
 				mapUser.put("uid", mapPostArr.get("uid").toString());
 				// 帖子信息
 				mapPost.put("userinfo", mapUser);

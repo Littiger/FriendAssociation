@@ -63,8 +63,8 @@ public class CirclePlateServlet {
 				out.close();
 				return;
 			}
-
-			List<Map<String, Object>> list = circleDao.getPostMM(placaid, size, page);
+			String uid = tokenDao.queryUidByToken(token);
+			List<Map<String, Object>> list = circleDao.getPostMM(uid,placaid, size, page);
 			if (list.size() == 0) {
 				datamap.put("code", "-1");
 				datamap.put("msg", "已经到底了");
