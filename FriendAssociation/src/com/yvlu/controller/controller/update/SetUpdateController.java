@@ -26,12 +26,12 @@ import com.yvlu.tools.tools;
 public class SetUpdateController extends HttpServlet{
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String token = request.getParameter("token");
-		String url = request.getParameter("url");
-		if(tools.isnull(token,url)){
-			tools.print(response, -1, "参数不全", null);
-		}else{
-			SetUpdateServlet.Info(token, url, response);
+		try {
+			SetUpdateServlet.Info(request, response);
+		} catch (Exception e) {
+			tools.print(response, -1, "请求异常", null);
 		}
+		
+		
 	}
 }
