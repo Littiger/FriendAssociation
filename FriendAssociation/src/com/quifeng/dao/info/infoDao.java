@@ -9,6 +9,7 @@ import com.quifeng.dao.token.TokenDao;
 import com.quifeng.utils.dao.Dao;
 import com.quifeng.utils.dao.DaoImpl;
 
+
 public class infoDao {
 	Dao dao = new DaoImpl();
 	TokenDao tokenDao = new TokenDao();

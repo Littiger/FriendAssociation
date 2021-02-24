@@ -99,6 +99,7 @@ public class GetMyPostServlet {
 
 			int postid = Integer.valueOf(map.get("postid").toString());// 帖子id
 			boolean isgreat = isGreat(map.get("zanid"));// 是否点赞
+			System.out.println(map);
 			String great = map.get("postzan").toString();// 点赞数量
 			String comment = map.get("postos").toString();// 评论数量
 			String share = map.get("postshare").toString();// 分享数量

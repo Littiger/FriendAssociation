@@ -102,7 +102,7 @@ public class ChatDao {
 	public Map<String, Object> addMess(String uid, String targetid, String mess)
 			throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
 		String mill = System.currentTimeMillis() + "";
-		dao.executeUpdate("insert into news values(0,?,?,?,0,?,0)",
+		dao.executeUpdate("insert into news values(0,?,?,?,0,?,0,0)",
 				new int[] { Types.INTEGER, Types.INTEGER, Types.VARCHAR, Types.VARCHAR },
 				new Object[] { Integer.parseInt(uid), Integer.parseInt(targetid), mess, mill });
 		return dao.executeQueryForMap("select * from news where resserid=? and recipients=? and createtime=?",

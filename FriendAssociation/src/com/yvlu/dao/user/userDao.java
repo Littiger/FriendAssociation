@@ -130,7 +130,7 @@ public class userDao {
 	 * @throws NumberFormatException 
 	 */
 	public int addBlcakName(String userid) throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
-		return dao.executeUpdate("insert into blackname values(0,?,?,0)",
+		return dao.executeUpdate("insert into blackname values(0,?,?,0,0)",
 				new int[]{
 						Types.INTEGER,
 						Types.VARCHAR

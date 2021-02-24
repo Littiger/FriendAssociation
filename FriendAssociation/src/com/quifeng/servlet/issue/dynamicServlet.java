@@ -203,7 +203,7 @@ public class dynamicServlet {
 			//限制视频大小
 			//设置大小
 			int maxSize = 1024*1024*100;
-			if(videoItem !=null){
+			if(videoItem != null){
 				if(videoItem.getSize() > maxSize){
 					jsonObject = new JSONObject();
 					jsonObject.put("code", "-1");

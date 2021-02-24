@@ -36,7 +36,7 @@ public class monitorDao {
 	public int addTemp(String d, String h, String m, String temps, String huty) throws ClassNotFoundException, FileNotFoundException, SQLException, IOException {
 		System.out.println(Double.parseDouble(temps));
 		System.out.println(Double.parseDouble(huty));
-		return dao.executeUpdate("insert into temper values(0,?,?,?,?,?)",
+		return dao.executeUpdate("insert into temper values(0,?,?,?,?,?,0)",
 				new int[]{
 						Types.VARCHAR,
 						Types.VARCHAR,
@@ -96,7 +96,7 @@ public class monitorDao {
 	 * @throws NumberFormatException 
 	 */
 	public int addMeanTemp(String d, String h, String meantemps, String meanhuty) throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
-		return dao.executeUpdate("insert into hourtemper values(0,?,?,?,?)",
+		return dao.executeUpdate("insert into hourtemper values(0,?,?,?,?,0)",
 				new int[]{
 						Types.VARCHAR,
 						Types.VARCHAR,

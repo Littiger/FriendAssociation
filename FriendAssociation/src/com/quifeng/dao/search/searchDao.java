@@ -175,7 +175,7 @@ public class searchDao {
 	 * @throws NumberFormatException 
 	 */
 	public void addSearchJiLu(String wd, String token) throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
-		dao.executeUpdate("insert into search values(0,?,?,?)",
+		dao.executeUpdate("insert into search values(0,?,?,?,0)",
 				new int[]{
 						Types.VARCHAR,
 						Types.INTEGER,

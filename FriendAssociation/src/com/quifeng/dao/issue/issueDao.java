@@ -45,7 +45,7 @@ public class issueDao {
 		// 添加帖子
 		// 有文本有图片
 		if (content != null && !image.equals("[]") && video == null) {
-			dao.executeUpdate("insert into post values(0,?,?,?,0,?,?,null,?,0)",
+			dao.executeUpdate("insert into post values(0,?,?,?,0,?,?,null,?,0,0)",
 					new int[] { Types.INTEGER, Types.INTEGER, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR,
 							Types.INTEGER },
 					new Object[] { Integer.parseInt(uid), Integer.parseInt(placaid), time, content, image,
@@ -53,7 +53,7 @@ public class issueDao {
 		}
 		// 有文本有视频
 		else if (content != null && video != null && image.equals("[]")) {
-			dao.executeUpdate("insert into post values(0,?,?,?,0,?,null,?,?,0)",
+			dao.executeUpdate("insert into post values(0,?,?,?,0,?,null,?,?,0,0)",
 					new int[] { Types.INTEGER, Types.INTEGER, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR,
 							Types.INTEGER },
 					new Object[] { Integer.parseInt(uid), Integer.parseInt(placaid), time, content, video,
@@ -61,21 +61,21 @@ public class issueDao {
 		}
 		// 只有视频
 		else if ((content == null || content.equals("")) && video != null && image.equals("[]")) {
-			dao.executeUpdate("insert into post values(0,?,?,?,0,null,null,?,?,0)",
+			dao.executeUpdate("insert into post values(0,?,?,?,0,null,null,?,?,0,0)",
 					new int[] { Types.INTEGER, Types.INTEGER, Types.VARCHAR, Types.VARCHAR, Types.INTEGER },
 					new Object[] { Integer.parseInt(uid), Integer.parseInt(placaid), time, video,
 							Integer.parseInt(schoolid) });
 		}
 		// 只有图片
 		else if ((content == null || content.equals("")) && video == null && !image.equals("[]")) {
-			dao.executeUpdate("insert into post values(0,?,?,?,0,null,?,null,?,0)",
+			dao.executeUpdate("insert into post values(0,?,?,?,0,null,?,null,?,0,0)",
 					new int[] { Types.INTEGER, Types.INTEGER, Types.VARCHAR, Types.VARCHAR, Types.INTEGER },
 					new Object[] { Integer.parseInt(uid), Integer.parseInt(placaid), time, image,
 							Integer.parseInt(schoolid) });
 		}
 		// 只有文本
 		else if (content != null && video == null && image.equals("[]")) {
-			dao.executeUpdate("insert into post values(0,?,?,?,0,?,null,null,?,0)",
+			dao.executeUpdate("insert into post values(0,?,?,?,0,?,null,null,?,0,0)",
 					new int[] { Types.INTEGER, Types.INTEGER, Types.VARCHAR, Types.VARCHAR, Types.INTEGER },
 					new Object[] { Integer.parseInt(uid), Integer.parseInt(placaid), time, content,
 							Integer.parseInt(schoolid) });
@@ -115,7 +115,7 @@ public class issueDao {
 	 */
 	public int addPostInfo(String postid, String schoolid)
 			throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
-		return dao.executeUpdate("insert into postinfo values(0,?,0,0,0,0,0,0,0,?)",
+		return dao.executeUpdate("insert into postinfo values(0,?,0,0,0,0,0,0,0,?,0)",
 				new int[] { Types.INTEGER, Types.INTEGER },
 				new Object[] { Integer.parseInt(postid), Integer.parseInt(schoolid) });
 	}

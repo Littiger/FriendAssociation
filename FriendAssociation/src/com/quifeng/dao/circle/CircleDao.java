@@ -240,7 +240,7 @@ public class CircleDao {
 	 */
 	public void addHastory(String postId, String placaid, String schoolid, String uid)
 			throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
-		String sql = "insert into trilha values(0,?,?,?,?,0,?)";
+		String sql = "insert into trilha values(0,?,?,?,?,0,?,0)";
 		dao.executeUpdate(sql, new int[] { Types.INTEGER, Types.INTEGER, Types.INTEGER, Types.VARCHAR, Types.INTEGER },
 				new Object[] { Integer.parseInt(uid), Integer.parseInt(postId), Integer.parseInt(placaid),
 						System.currentTimeMillis(), Integer.parseInt(schoolid) });
@@ -448,7 +448,7 @@ public class CircleDao {
 			throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
 		long time = System.currentTimeMillis();
 		// osfirst表+一条评论
-		dao.executeUpdate("insert into osfirst values(0,?,?,?,?,0,?)",
+		dao.executeUpdate("insert into osfirst values(0,?,?,?,?,0,?,0)",
 				new int[] { Types.INTEGER, Types.INTEGER, Types.VARCHAR, Types.VARCHAR, Types.INTEGER }, new Object[] {
 						Integer.parseInt(postid), Integer.parseInt(uid), time, comment, Integer.parseInt(schoolid) });
 		return time;
@@ -485,7 +485,7 @@ public class CircleDao {
 		int id = Integer.parseInt(osfirstid);
 		long time = System.currentTimeMillis();
 		// osother表添加评论
-		dao.executeUpdate("insert into osother values(0,?,?,?,0,?,?,?)",
+		dao.executeUpdate("insert into osother values(0,?,?,?,0,?,?,?,0)",
 				new int[] { Types.INTEGER, Types.VARCHAR, Types.INTEGER, Types.VARCHAR, Types.INTEGER, Types.INTEGER },
 				new Object[] { id, comment, -id, time, Integer.parseInt(schoolid), Integer.parseInt(uid) });
 		return time;
@@ -557,7 +557,7 @@ public class CircleDao {
 		}
 		// 第一次点赞
 		else {
-			dao.executeUpdate("insert into zan values(0,?,?,0,?,null)",
+			dao.executeUpdate("insert into zan values(0,?,?,0,?,null,0)",
 					new int[] { Types.INTEGER, Types.INTEGER, Types.INTEGER }, new Object[] { Integer.parseInt(postid),
 							Integer.parseInt(uid), Integer.parseInt(queryUserById(uid).get("schoolid").toString()), });
 			// postinfo postzan+1
@@ -633,7 +633,7 @@ public class CircleDao {
 					new Object[] { Integer.parseInt(commentid) }).get("postid").toString();
 		}
 		// 添加赞
-		dao.executeUpdate("insert into zan values(0,?,?,0,?,?)",
+		dao.executeUpdate("insert into zan values(0,?,?,0,?,?,0)",
 				new int[] { Types.INTEGER, Types.INTEGER, Types.INTEGER, Types.INTEGER },
 				new Object[] { Integer.parseInt(postid), Integer.parseInt(uid),
 						Integer.parseInt(queryUserById(uid).get("schoolid").toString()), Integer.parseInt(commentid)
@@ -693,7 +693,7 @@ public class CircleDao {
 		String uid = tokenDao.queryUidByToken(token);
 		String schoolid = queryUserById(uid).get("schoolid").toString();
 
-		dao.executeUpdate("insert into share values(0,?,?,0,?)",
+		dao.executeUpdate("insert into share values(0,?,?,0,?,0)",
 				new int[] { Types.INTEGER, Types.INTEGER, Types.INTEGER },
 				new Object[] { Integer.parseInt(postid), Integer.parseInt(uid), Integer.parseInt(schoolid) });
 	}
@@ -738,7 +738,7 @@ public class CircleDao {
 				new Object[] { Integer.parseInt(postid), Integer.parseInt(uid) });
 		// 第一次收藏
 		if (map == null) {
-			dao.executeUpdate("insert into aos values(0,?,?,'0',?)",
+			dao.executeUpdate("insert into aos values(0,?,?,'0',?,0)",
 					new int[] { Types.INTEGER, Types.INTEGER, Types.INTEGER }, new Object[] { Integer.parseInt(postid),
 							Integer.parseInt(uid), Integer.parseInt(queryUserById(uid).get("schoolid").toString()), });
 			// postinfo postzan+1
