@@ -41,15 +41,15 @@ public class getInfoPartServlet {
 			//判空
 			if(token == null || token.equals("")){
 				jsonObject = new JSONObject();
-				jsonObject.put("code", "-1");
-				jsonObject.put("msg", "非法请求");
+				jsonObject.put("code", "-2");
+				jsonObject.put("msg", "非法调用");
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
 			if(word == null || word.equals("")){
 				jsonObject = new JSONObject();
-				jsonObject.put("code", "-1");
-				jsonObject.put("msg", "参数异常");
+				jsonObject.put("code", "-2");
+				jsonObject.put("msg", "非法调用");
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
@@ -57,8 +57,8 @@ public class getInfoPartServlet {
 			Map<String, Object> manager = tokenUtils.queryToken(token);
 			if(manager == null || manager.size() == 0){
 				jsonObject = new JSONObject();
-				jsonObject.put("code", "-1");
-				jsonObject.put("msg", "未登录");
+				jsonObject.put("code", "-2");
+				jsonObject.put("msg", "非法调用");
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
