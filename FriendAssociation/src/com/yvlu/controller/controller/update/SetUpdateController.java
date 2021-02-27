@@ -27,6 +27,7 @@ public class SetUpdateController extends HttpServlet{
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
+			System.out.println("21asdasdasddasdas");
 			SetUpdateServlet.Info(request, response);
 		} catch (Exception e) {
 			tools.print(response, -1, "请求异常", null);

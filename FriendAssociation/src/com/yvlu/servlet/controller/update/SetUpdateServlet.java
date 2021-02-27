@@ -71,17 +71,22 @@ public class SetUpdateServlet {
 								}
 							} else {
 								if (Item.getFieldName().equals("token")) { // 发送人的token
-									token = Item.getString("utf-8");
+									token = Item.getString("utf-8").toString();
+									token = token.replace( "\"","");
 								}
 							}
 						}
 						// 信息获取完毕
+						System.out.println(token);
+						System.out.println(FileInputStream);
 						if(token != null && token!="" && FileInputStream !=null){
 							ProcessingData(token, FileInputStream, response);
 						}else{
+							System.out.println("21");
 							tools.print(response, -4, "参数异常", null);
 						}
 					}else{
+						System.out.println("01");
 						tools.print(response, -4, "参数异常", null);
 					}
 				} catch (Exception e) {
@@ -99,15 +104,17 @@ public class SetUpdateServlet {
 			return;
 		}else{
 			//写入数据库    应用id URl 连接ID
-			String url = putfile.Putimgs(FileInputStream, "apk");
-			int doinfo = registerDao.SetUpdateInfo(1, url);
-			if(doinfo>0){
-				tools.print(response, 200, "写入成功", null);
-				return;
-			}else{
-				tools.print(response, -3, "设置失败", null);
-				return;
-			}
+			 new Thread(
+			        	new Runnable() {
+			            	public void run() { 
+			            		String url = putfile.Putimgs(FileInputStream, "apk");
+			        			int doinfo = registerDao.SetUpdateInfo(1, url);
+			            	}
+			        	}
+			        	).start();
+			tools.print(response, 200, "上传成功，等待数据同步", null);
+				
+			
 		}
 	}
 }

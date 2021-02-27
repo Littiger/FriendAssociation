@@ -30,18 +30,21 @@ public class RegisterDao {
 	 * @return
 	 */
 	public Map<String, Object> getRootByToken(String token){
-		try {
-			return dao.executeQueryForMap("SELECT * FROM `root` WHERE rootid = (SELECT rootid FROM  rootlogin WHERE token=?)", new int[]{
-					Types.VARCHAR
-			}, new Object[]{
-					token	
-			});
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
+		
+			try {
+				return dao.executeQueryForMap("SELECT * FROM root WHERE rootid = (SELECT rootid FROM  rootlogin WHERE token=?)", new int[]{
+						Types.VARCHAR
+				}, new Object[]{
+						token
+				});
+			} catch (ClassNotFoundException | SQLException e) {
+				// TODO Auto-generated catch block
+				System.out.println("asdasddsaasdsadsads");
+				e.printStackTrace();
+				
+			}
+			return null;
+		
 	}
 
 	/**
