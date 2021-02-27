@@ -128,7 +128,9 @@ public class RegisterDao {
 		try {
 			String sql = "SELECT appupdate as info FROM appmessage WHERE appid = ?";
 			return dao.executeQueryForMap(sql,new int[]{Types.INTEGER}, new Object[]{appid});
-		} catch (ClassNotFoundException | SQLException e) {
+		}
+		catch (ClassNotFoundException | SQLException e) 
+		{
 			e.printStackTrace();
 		}
 		return null;
@@ -154,12 +156,12 @@ public class RegisterDao {
 	 * @desc 获取应用版本
 	 */
 	public Map<String, Object> Getappversion(int appid) {
-		String sql = "SELECT appversion as version FROM appmessage WHERE appid = ?";
+		String sql = "SELECT appversion as version,appupdate ,downpath as url FROM appmessage WHERE appid =?";
 		try {
 			return dao.executeQueryForMap(sql, new int[]{Types.INTEGER}, new Object[]{appid});
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
-		}		
+		}
 		return null;
 	}
 	
