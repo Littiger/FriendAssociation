@@ -102,7 +102,7 @@ public class RegisteredServlet {
 						org.json.JSONObject jObject = new org.json.JSONObject(smsJson);
 						org.json.JSONObject SendStatusSet = jObject.getJSONArray("SendStatusSet").getJSONObject(0);
 						if (SendStatusSet.getString("SerialNo") != null
-								|| (!SendStatusSet.getString("SerialNo").equals(""))) {
+								&& (!SendStatusSet.getString("SerialNo").equals(""))) {
 							try {
 								Map<String, Object> dataMap = userDao.getUserByPhone(phone);
 //								//向code表中存入验证码
@@ -128,7 +128,7 @@ public class RegisteredServlet {
 						}
 						return;
 					} else {
-						print(out, data, "-1", "验证码发送失败");
+						print(out, data, "-1", "请勿频繁发送(当天最多可发送10条)");
 						return;
 					}
 				}
