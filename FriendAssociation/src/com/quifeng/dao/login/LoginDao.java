@@ -104,10 +104,10 @@ public class LoginDao {
 	 */
 	public Map<String, Object> queryCodeByU(String user) {
 
-		String sql = " SELECT * FROM code WHERE uid = (SELECT uid FROM user WHERE userphone=?) or uid=? AND display=0";
+		String sql = " SELECT * FROM code WHERE uid = (SELECT uid FROM user WHERE userphone=?) AND display=0";
 		Map<String, Object> data = null;
 		try {
-			data = dao.executeQueryForMap(sql, new int[] { Types.VARCHAR, Types.VARCHAR }, new Object[] { user, user });
+			data = dao.executeQueryForMap(sql, new int[] { Types.VARCHAR }, new Object[] { user });
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -121,9 +121,9 @@ public class LoginDao {
 	public int updateCode(String user) {
 
 		int count = 0;
-		String sql = " UPDATE `code` SET  display=1	WHERE uid=1 or  uid = (SELECT uid FROM `user` WHERE userphone =?)";
+		String sql = " UPDATE code SET  display=1 WHERE uid = (SELECT uid FROM user WHERE userphone =?)";
 		try {
-			count = dao.executeUpdate(sql, new int[] { Types.INTEGER }, new Object[] { user });
+			count = dao.executeUpdate(sql, new int[] { Types.VARCHAR }, new Object[] { user });
 		} catch (ClassNotFoundException | SQLException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -139,7 +139,7 @@ public class LoginDao {
 	 */
 	public int uadateCodeByCount(String codeid, String cou) {
 		int count = 0;
-		String sql = " UPDATE `code` SET count=? WHERE codeid=?";
+		String sql = " UPDATE code SET count=? WHERE codeid=?";
 		try {
 			count = dao.executeUpdate(sql, new int[] { Types.INTEGER, Types.INTEGER }, new Object[] { cou, codeid });
 		} catch (ClassNotFoundException | SQLException | IOException e) {

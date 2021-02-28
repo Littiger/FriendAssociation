@@ -19,9 +19,9 @@ import java.util.Map;
 public class DaoImpl implements Dao {
 
 	private String sDBDriver = "org.gjt.mm.mysql.Driver";
-	private String sConnStr = "jdbc:mysql://127.0.0.1:3306/xyhdata?useUnicode=true&characterEncoding=utf-8";
+	private String sConnStr = "jdbc:mysql://localhost:3306/xyhdata?useUnicode=true&characterEncoding=utf-8";
 	private String username = "root"; // 登录数据库用户名
-	private String password = "000000"; // 登录数据库密码
+	private String password = "root"; // 登录数据库密码
 
 	/**
 	 * 建立连接

@@ -245,8 +245,11 @@ public class RegisteredServlet {
 					data.put("code", "200");
 					out.print(JSON.toJSONString(data));
 					out.close();
+					//display改为1
+					login.updateCode(phone);
 					// 修改用户状态 USERFIVE 没有认证人脸
 					StateUtils.queryType(phone, UserType.USERFIVE);
+					
 					return;
 
 				} else {
