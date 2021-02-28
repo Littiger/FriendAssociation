@@ -124,7 +124,7 @@ public class loginServlet {
 				dataP.put("data", data);
 
 				if (userzt.equals("7")) {
-					data.put("token", token);
+					data.put("token", newtoken);
 					data.put("state", 7);
 					dataP.put("data", data);
 					print(out, dataP, "200", "请先认证学校");
