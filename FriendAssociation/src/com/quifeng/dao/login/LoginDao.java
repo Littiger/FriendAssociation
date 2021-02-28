@@ -3,6 +3,7 @@ package com.quifeng.dao.login;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.List;
 import java.util.Map;
 
 import org.bytedeco.javacpp.presets.opencv_core.Str;
@@ -102,12 +103,12 @@ public class LoginDao {
 	 * @param phone
 	 * @return
 	 */
-	public Map<String, Object> queryCodeByU(String user) {
+	public List<Map<String, Object>> queryCodeByU(String user) {
 
 		String sql = " SELECT * FROM code WHERE uid = (SELECT uid FROM user WHERE userphone=?) AND display=0";
-		Map<String, Object> data = null;
+		List<Map<String, Object>> data = null;
 		try {
-			data = dao.executeQueryForMap(sql, new int[] { Types.VARCHAR }, new Object[] { user });
+			data = dao.executeQueryForList(sql, new int[] { Types.VARCHAR }, new Object[] { user });
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -118,12 +119,12 @@ public class LoginDao {
 
 	// 超过六次 认证失败 display 设置为 1 请求超时成为1 这里的参数是uid或者phone
 
-	public int updateCode(String user) {
+	public int updateCode(String phone) {
 
 		int count = 0;
 		String sql = " UPDATE code SET  display=1 WHERE uid = (SELECT uid FROM user WHERE userphone =?)";
 		try {
-			count = dao.executeUpdate(sql, new int[] { Types.VARCHAR }, new Object[] { user });
+			count = dao.executeUpdate(sql, new int[] { Types.VARCHAR }, new Object[] { phone });
 		} catch (ClassNotFoundException | SQLException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -137,16 +138,33 @@ public class LoginDao {
 	 * @param cou
 	 * @return
 	 */
-	public int uadateCodeByCount(String codeid, String cou) {
+	public int uadateCodeByCount(String phone) {
 		int count = 0;
-		String sql = " UPDATE code SET count=? WHERE codeid=?";
+		String sql = " UPDATE code SET count=count+1 WHERE uid=(SELECT uid FROM user WHERE userphone =?) and display=0";
 		try {
-			count = dao.executeUpdate(sql, new int[] { Types.INTEGER, Types.INTEGER }, new Object[] { cou, codeid });
+			count = dao.executeUpdate(sql, new int[] { Types.VARCHAR }, new Object[] { phone });
 		} catch (ClassNotFoundException | SQLException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+		return count;
+	}
+	
+	/**
+	 * 根据手机号和验证码删除验证码
+	 * @param phone
+	 * @param code
+	 */
+	public int updateCode(String phone, String code) {
+		int count = 0;
+		String sql = " UPDATE code SET  display=1 WHERE uid = (SELECT uid FROM user WHERE userphone =?) and code=?";
+		try {
+			count = dao.executeUpdate(sql, new int[] { Types.VARCHAR,Types.VARCHAR }, new Object[] { phone,code });
+		} catch (ClassNotFoundException | SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return count;
 	}
 

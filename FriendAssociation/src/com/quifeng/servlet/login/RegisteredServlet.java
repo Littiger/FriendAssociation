@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -92,7 +93,7 @@ public class RegisteredServlet {
 			// 验证手机号是否注册过
 			if (phoneMap != null) {
 
-				// 这里判断是是否手机号没有验证
+				// 这里判断是是否手机号没有验证——第二次以上发送
 				if (phoneMap.get("userzt").toString().equals("6")) {
 					String code = SMSUtils.createdCode();
 					String smsJson = SMSUtils.sendSms(code, new String[] { "86" + phone });
@@ -104,7 +105,7 @@ public class RegisteredServlet {
 								|| (!SendStatusSet.getString("SerialNo").equals(""))) {
 							try {
 								Map<String, Object> dataMap = userDao.getUserByPhone(phone);
-//									//向code表中存入验证码
+//								//向code表中存入验证码
 								login.addCode(dataMap.get("uid").toString(), code, "1");
 								Map<String, Object> datap = new HashMap<>();
 								String uid = phoneMap.get("uid").toString();
@@ -163,7 +164,8 @@ public class RegisteredServlet {
 						try {
 
 							Map<String, Object> dataMap = userDao.getUserByPhone(phone);
-
+							//第一次发送，将此手机之前的验证码删除
+							login.updateCode(phone);
 //							//向code表中存入验证码
 							login.addCode(dataMap.get("uid").toString(), code, "1");
 							print(out, data, "200", "请求成功");
@@ -214,68 +216,63 @@ public class RegisteredServlet {
 			print(out, data, "-1", "请输入验证码");
 		}
 
-		// 查询 code 判断是第几次
-		Map<String, Object> codeMap = login.queryCodeByU(phone);
+		// 查询 所有可以使用的code
+		List<Map<String, Object>> codeMap = login.queryCodeByU(phone);
 
 		// 这是判断是插入验证码 sql 出现了异常
-		if (codeMap == null) {
-			print(out, data, "-1", "验证码出现了一点小问题，请重新认证");
+		if (codeMap == null || codeMap.size() == 0) {
+			print(out, data, "-1", "验证码已失效，请重新获取验证码");
+			return;
+		}
+		//判断输入次数  超过7次
+		if(Integer.parseInt(codeMap.get(0).get("count").toString()) >= 7){
+			print(out, data, "-1", "验证码错误六次，已失效");
+			//删除所有验证码
+			login.updateCode(phone);
 			return;
 		}
 
-		// 有验证码 判断验证码的值是否为正确
-		if (codeMap.get("code").toString().equals(code)) {
-			String codeCreateTime = codeMap.get("createtime").toString();
-			// 没有超过时间
-			if (System.currentTimeMillis() - Long.parseLong(codeCreateTime) < 300000) {
-				// 获取验证码的次数
-				int codeCount = new Integer(codeMap.get("count").toString());// 获取验证次数
-				if (codeCount <= 7) {
-					// 返回值
-					Map<String, String> data1 = new HashMap<>();
-
-					Map<String, Object> userMap = userDao.getUserByPhone(phone);
-					String uid = userMap.get("uid").toString();
-					// 认证成功 将token 插入 log 中
-					Map<String, Object> userlog = tokenDao.getTokenByID(uid);
-					String token = userlog.get("utoken").toString();
-					data1.put("token", token);
-					data.put("data", data1);
-					data.put("msg", "认证成功");
-					data.put("code", "200");
-					out.print(JSON.toJSONString(data));
-					out.close();
-					//display改为1
-					login.updateCode(phone);
-					// 修改用户状态 USERFIVE 没有认证人脸
-					StateUtils.queryType(phone, UserType.USERFIVE);
-					
-					return;
-
-				} else {
-					print(out, data, "-1", "验证码超过六次失效");
-					// 设置 display=1 删除
-					login.updateCode(phone);
+		// 有验证码 判断验证码的值是否为正确(遍历所有可使用验证码)
+		for (Map<String, Object> map : codeMap) {
+			//获取验证码
+			String codeTemp = map.get("code").toString();
+			
+			if(codeTemp.equals(code)){//验证码正确
+				//判断验证码是否超时（300秒）
+				if(System.currentTimeMillis() - Long.parseLong(map.get("createtime").toString()) > 300000){
+					//删除该验证码
+					login.updateCode(phone,code);
+					print(out, data, "-1", "该验证码已超时");
 					return;
 				}
+				//没有超时
+				// 返回值
+				Map<String, String> data1 = new HashMap<>();
 
-			} else {
-				print(out, data, "-1", "验证码超时请重新获取");
-				// 先删除
+				Map<String, Object> userMap = userDao.getUserByPhone(phone);
+				String uid = userMap.get("uid").toString();
+				// 认证成功 将token 插入 log 中
+				Map<String, Object> userlog = tokenDao.getTokenByID(uid);
+				String token = userlog.get("utoken").toString();
+				data1.put("token", token);
+				data.put("data", data1);
+				data.put("msg", "认证成功");
+				data.put("code", "200");
+				out.print(JSON.toJSONString(data));
+				out.close();
+				//display改为1，删除所有可使用验证码
 				login.updateCode(phone);
+				// 修改用户状态 USERFIVE 没有认证人脸
+				StateUtils.queryType(phone, UserType.USERFIVE);
+				
 				return;
 			}
-		} else {
-			// 这里是验证码输入错误的 code +1
-			// 1. 获取count
-			Map<String, Object> codeM = login.queryCodeByU(phone);
-			int count = Integer.parseInt(codeM.get("count").toString());
-			count++;
-			System.out.println(codeM.get("codeid").toString());
-			// 更新
-			login.uadateCodeByCount(codeM.get("codeid").toString(), count + "");
-			print(out, data, "-1", "验证码错误，请重新验证");
 		}
+		//验证码全都不符合
+		//使用次数+1
+		login.uadateCodeByCount(phone);
+		print(out, data, "-1", "验证码错误 ");
+		return;
 
 	};
 

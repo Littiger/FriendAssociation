@@ -33,6 +33,7 @@ public class SignverifyController extends HttpServlet {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			out.print(ErrorUtils.errorTomCat());
+			e.printStackTrace();
 		} finally {
 			out.close();
 		}
