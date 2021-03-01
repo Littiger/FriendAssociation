@@ -50,18 +50,16 @@ public class GetMyUserHistoryDaoImpl {
 			page1 = 1;
 		page1 = (page1 - 1) * count1;
 		
-		String sql = "SELECT\n" + "	* \n" + "FROM\n" + "	post\n"
-				+ "	LEFT JOIN (SELECT postid AS historyid, createtime AS historytime FROM trilha WHERE uid = ? ) AS h ON h.historyid = post.postid \n"
-				+ "	LEFT JOIN (select username,useravatar,uid as user_uid from `user`) as u on u.user_uid = post.uid\n"
-				+ "	LEFT JOIN (select placaid as postbk_placaid,placaname from postbk) as bk on bk.postbk_placaid = post.placaid\n"
-				+ "	LEFT JOIN (select * from zan where postid in (select postid from trilha where uid = ? ) and uid = ? and display = 0 GROUP BY postid) as z on z.postid = post.postid\n"
-				+ "	LEFT JOIN (select postid,postzan,postshare,postos from postinfo) as p on p.postid = post.postid\n"
-				+ "WHERE\n" + "	h.historyid IS NOT NULL order by historytime DESC limit ?,?;";
+		String sql = " select * from trilha "
+				+ "left join post on trilha.postid=post.postid "
+				+ "left join user on user.uid=post.uid "
+				+ "LEFT JOIN postinfo on postinfo.postid=trilha.postid "
+				+ "where trilha.uid=? GROUP BY trilha.postid ORDER BY trilha.trilhaid desc limit ?,?";
 		List<Map<String, Object>> data = null;
 		try {
 			data = dao.executeQueryForList(sql,
-					new int[] { Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.INTEGER, Types.INTEGER },
-					new Object[] { uid, uid, uid, page1, count1 });
+					new int[] { Types.INTEGER,  Types.INTEGER, Types.INTEGER },
+					new Object[] { Integer.parseInt(uid) , page1, count1 });
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
