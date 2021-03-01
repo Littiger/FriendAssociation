@@ -42,7 +42,14 @@ public class GetMyUserHistoryDaoImpl {
 	 * @return
 	 */
 	public List<Map<String, Object>> getHistoryinfo(String uid, String page, String size) {
+		//用于分页的算法
+		int count1 = Integer.parseInt(size);
+		int page1 = Integer.parseInt(page);
 
+		if (page1 == 0)
+			page1 = 1;
+		page1 = (page1 - 1) * count1;
+		
 		String sql = "SELECT\n" + "	* \n" + "FROM\n" + "	post\n"
 				+ "	LEFT JOIN (SELECT postid AS historyid, createtime AS historytime FROM trilha WHERE uid = ? ) AS h ON h.historyid = post.postid \n"
 				+ "	LEFT JOIN (select username,useravatar,uid as user_uid from `user`) as u on u.user_uid = post.uid\n"
@@ -54,7 +61,7 @@ public class GetMyUserHistoryDaoImpl {
 		try {
 			data = dao.executeQueryForList(sql,
 					new int[] { Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.INTEGER, Types.INTEGER },
-					new Object[] { uid, uid, uid, page, size });
+					new Object[] { uid, uid, uid, page1, count1 });
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
