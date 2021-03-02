@@ -47,6 +47,14 @@ public class GetSchoolInfoServlet {
 						MappingData.put("schoolid", map.get("schoolid"));
 						MappingData.put("schoolname",map.get("schoolname"));
 						MappingData.put("schoolsede", map.get("schoolsede"));
+						//审核状态
+						String postShenHe = map.get("postshenhe").toString();
+						if(postShenHe.equals("0")){//审核
+							MappingData.put("postshenhe", true);
+						}
+						else{//不审核
+							MappingData.put("postshenhe", false);
+						}
 						if (map.get("schoolsede") ==null) {
 							MappingData.put("schoolsede", "");
 						}

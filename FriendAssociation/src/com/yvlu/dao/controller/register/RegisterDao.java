@@ -221,7 +221,7 @@ public class RegisterDao {
 	 * @desc 获取学校信息
 	 */
 	public List<Map<String, Object>> GetSchoolInfo(){
-		String sql ="SELECT school.schoolid,a.user,b.posts,c.audits,school.schoolname,school.schoolsede "
+		String sql ="SELECT school.schoolid,a.user,b.posts,c.audits,school.schoolname,school.schoolsede,school.postshenhe "
 				+ "FROM school "
 				+ "LEFT JOIN "
 				+ "(SELECT school.schoolid,count(*) AS user "
