@@ -84,7 +84,7 @@ public class MarkUserDaoImpl {
 	 */
 	public int markUser(String userid, String useredid) throws FileNotFoundException, IOException {
 		// TODO Auto-generated method stub
-		String sql = "INSERT INTO fixidez VALUES(0,?,?,?,?)";
+		String sql = "INSERT INTO fixidez VALUES(0,?,?,?,?,0)";
 		int data = 0;
 		try {
 			data = dao.executeUpdate(sql, new int[] { Types.INTEGER, Types.INTEGER, Types.VARCHAR, Types.VARCHAR },
