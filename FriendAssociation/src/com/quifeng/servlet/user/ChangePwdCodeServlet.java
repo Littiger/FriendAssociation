@@ -13,6 +13,7 @@ import com.quifeng.dao.token.TokenDao;
 import com.quifeng.dao.user.ChangePwdDao;
 import com.quifeng.dao.user.UserDao;
 import com.quifeng.utils.sms.SMSUtils;
+import com.quifeng.utils.sms.UpdatePwdSMSUtils;
 import com.yvlu.dao.posts.tokenUtils;
 
 /**
@@ -71,9 +72,9 @@ public class ChangePwdCodeServlet {
 			
 			//判断无误发送验证码
 			//生成验证码
-			String code = SMSUtils.createdCode();
+			String code = UpdatePwdSMSUtils.createdCode();
 			//发送
-			String smsJson = SMSUtils.sendSms(code, new String[] { "86" + phone });
+			String smsJson = UpdatePwdSMSUtils.sendSms(code, new String[] { "86" + phone });
 			System.out.println(smsJson);//返回的json
 			if (smsJson != null || (!(smsJson.equals("")))) {
 				//判断是否发送成功

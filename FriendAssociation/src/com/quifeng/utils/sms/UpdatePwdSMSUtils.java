@@ -16,17 +16,17 @@ import com.tencentcloudapi.sms.v20190711.models.SendSmsRequest;
 import com.tencentcloudapi.sms.v20190711.models.SendSmsResponse;
 
 /**
- * 注册用短信模板
+ * @desc   修改密码用的发短信模板
  * @author JZH
  *
  */
-public class SMSUtils {
+public class UpdatePwdSMSUtils {
 
 	static Properties pro = null;
 	static {
 		try {
 			pro = new Properties();
-			InputStream inputStream = SMSUtils.class.getClassLoader()
+			InputStream inputStream = UpdatePwdSMSUtils.class.getClassLoader()
 					.getResourceAsStream("com/quifeng/resource/sms.properties");
 			pro.load(inputStream);
 		} catch (IOException e) {
@@ -47,7 +47,7 @@ public class SMSUtils {
 	private static final String SMSSECREID = "AKID3jdhvTasZ3K9k6ufDVVJzQccbOvCECwN";
 	private static final String SMSSECREKEY = "SM2ScXIo8HNEoFRTKtHYbOwENHwQt87r";
 	private static final String SMSSIGN = "快学网";
-	private static final String SMSTEMPLATEID = "881214";
+	private static final String SMSTEMPLATEID = "881210";
 
 	/**
 	 * 发送短信
@@ -89,7 +89,7 @@ public class SMSUtils {
 		req.setPhoneNumberSet(phoneNumbers);
 
 		/* 模板参数: 若无模板参数，则设置为空 */
-		String[] templateParams = { valcode,"5" };
+		String[] templateParams = { valcode };
 		req.setTemplateParamSet(templateParams);
 
 		/*

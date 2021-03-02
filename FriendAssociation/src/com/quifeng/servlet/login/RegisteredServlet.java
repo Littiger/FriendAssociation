@@ -126,10 +126,10 @@ public class RegisteredServlet {
 
 							return;
 						}
-						return;
-					} else {
-						print(out, data, "-1", "请勿频繁发送(当天最多可发送10条)");
-						return;
+						 else {
+								print(out, data, "-1", "请勿频繁发送(当天最多可发送10条)");
+								return;
+							}
 					}
 				}
 
