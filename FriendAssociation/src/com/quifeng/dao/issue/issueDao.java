@@ -106,6 +106,7 @@ public class issueDao {
 	 * 
 	 * @param postid
 	 * @param schoolid
+	 * @param postshenhe 
 	 * @return
 	 * @throws NumberFormatException
 	 * @throws ClassNotFoundException
@@ -113,11 +114,11 @@ public class issueDao {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public int addPostInfo(String postid, String schoolid)
+	public int addPostInfo(String postid, String schoolid, String postshenhe)
 			throws NumberFormatException, ClassNotFoundException, FileNotFoundException, SQLException, IOException {
-		return dao.executeUpdate("insert into postinfo values(0,?,0,0,0,0,0,0,0,?,0)",
-				new int[] { Types.INTEGER, Types.INTEGER },
-				new Object[] { Integer.parseInt(postid), Integer.parseInt(schoolid) });
+		return dao.executeUpdate("insert into postinfo values(0,?,0,0,0,0,0,?,0,?,0)",
+				new int[] { Types.INTEGER,Types.INTEGER, Types.INTEGER },
+				new Object[] { Integer.parseInt(postid),Integer.parseInt(postshenhe), Integer.parseInt(schoolid) });
 	}
 
 	/**
@@ -144,5 +145,18 @@ public class issueDao {
 			throws NumberFormatException, ClassNotFoundException, SQLException {
 		return dao.executeQueryForMap("select * from user where uid=?", new int[] { Types.INTEGER },
 				new Object[] { Integer.parseInt(uid) });
+	}
+	
+	/**
+	 * 根据uid查询学校信息
+	 * @param uid
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 */
+	public Map<String, Object> querySchoolByUid(String uid) throws NumberFormatException, ClassNotFoundException, SQLException {
+		String sql = "select * from school where schoolid=(select schoolid from user where uid=?)";
+		return dao.executeQueryForMap(sql, new int[]{Types.INTEGER}, new Object[]{Integer.parseInt(uid)});
 	}
 }

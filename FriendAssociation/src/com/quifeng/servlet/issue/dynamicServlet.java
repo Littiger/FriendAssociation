@@ -234,23 +234,44 @@ public class dynamicServlet {
 				writer.write(jsonObject.toJSONString());
 				return;
 			}
-
-
+			//查询该用户所在学校是否需要审核
+			Map<String, Object> school = issueDao.querySchoolByUid(uid);
+			//学校信息异常
+			if(school == null || school.size() == 0){
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "-1");
+				jsonObject.put("msg", "请设置您的学校");
+				writer.write(jsonObject.toJSONString());
+				return;
+			}
+			
 			
 			//不为空 开启线程
 			if(imageItems != null || videoItem != null){
 				System.out.println("================================");
 				SendPostThread sendPostThread = 
-						new SendPostThread(video, videoItem, videoPrifix, image, imageItems, prifixList, uid, placaid, content, issueDao);
+						new SendPostThread(video, videoItem, videoPrifix, image, imageItems, prifixList, uid, placaid, content, issueDao,school.get("postshenhe").toString());
 				Thread thread = new Thread(sendPostThread);
 				thread.start();
 			}
 			
-			jsonObject = new JSONObject();
-			jsonObject.put("code", "200");
-			jsonObject.put("msg", "发布成功");
-			writer.write(jsonObject.toJSONString());
-			return;
+			
+			//需要审核
+			if(school.get("postshenhe").toString().equals("0")){
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "200");
+				jsonObject.put("msg", "发布成功，请等待审核");
+				writer.write(jsonObject.toJSONString());
+				return;
+			}
+			else{
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "200");
+				jsonObject.put("msg", "发布成功,请等待数据传输~");
+				writer.write(jsonObject.toJSONString());
+				return;
+			}
+			
 			
 			
 

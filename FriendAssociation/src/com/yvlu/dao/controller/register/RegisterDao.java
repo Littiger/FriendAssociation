@@ -221,63 +221,23 @@ public class RegisterDao {
 	 * @desc 获取学校信息
 	 */
 	public List<Map<String, Object>> GetSchoolInfo(){
-		String sql ="SELECT school.schoolid,school.schoolname,school.schoolsede,g.user,g.posts,g.audits FROM \n" +
-				"school left join\n" +
-				"(SELECT\n" +
-				"	school.schoolid,\n" +
-				"	a.user,\n" +
-				"	b.posts,\n" +
-				"	c.audits,\n" +
-				"	school.schoolname,\n" +
-				"	school.schoolsede\n" +
-				"FROM\n" +
-				"  	(\n" +
-				"		SELECT\n" +
-				"			school.schoolid,\n" +
-				"			count(*) AS user\n" +
-				"		FROM\n" +
-				"			user,\n" +
-				"			school\n" +
-				"		WHERE\n" +
-				"			user.schoolid = school.schoolid\n" +
-				"		GROUP BY\n" +
-				"			user.schoolid\n" +
-				"	) a,\n" +
-				"	(\n" +
-				"		SELECT\n" +
-				"			school.schoolid,\n" +
-				"			count(post.postid) AS posts\n" +
-				"		FROM\n" +
-				"			post,\n" +
-				"			school\n" +
-				"		WHERE\n" +
-				"			post.schoolid = school.schoolid\n" +
-				"		GROUP BY\n" +
-				"			post.schoolid\n" +
-				"	) b,\n" +
-				"	(\n" +
-				"		SELECT\n" +
-				"			school.schoolid,\n" +
-				"			count(post.postid) AS audits\n" +
-				"		FROM\n" +
-				"			postinfo,\n" +
-				"			school,\n" +
-				"			post\n" +
-				"		WHERE\n" +
-				"			post.display = 0\n" +
-				"		AND postinfo.isexamina = 0\n" +
-				"		AND post.schoolid = school.schoolid\n" +
-				"		AND post.postid = postinfo.postid\n" +
-				"		AND school.schoolusable = 1\n" +
-				"		GROUP BY\n" +
-				"			post.schoolid\n" +
-				"	) c,\n" +
-				"	school\n" +
-				"WHERE\n" +
-				"	a.schoolid = school.schoolid\n" +
-				"AND b.schoolid = school.schoolid\n" +
-				"AND c.schoolid = school.schoolid\n" +
-				")g  ON g.schoolid = school.schoolid";
+		String sql ="SELECT school.schoolid,a.user,b.posts,c.audits,school.schoolname,school.schoolsede "
+				+ "FROM school "
+				+ "LEFT JOIN "
+				+ "(SELECT school.schoolid,count(*) AS user "
+				+ "FROM user,school "
+				+ "WHERE user.schoolid = school.schoolid GROUP BY user.schoolid) a "
+				+ "on school.schoolid=a.schoolid "
+				+ "LEFT JOIN "
+				+ "(SELECT school.schoolid,count(post.postid) AS posts "
+				+ "FROM post,school WHERE post.schoolid = school.schoolid GROUP BY post.schoolid) b "
+				+ "on school.schoolid = b.schoolid "
+				+ "LEFT JOIN "
+				+ "(SELECT school.schoolid,count(post.postid) AS audits "
+				+ "FROM postinfo,school,post "
+				+ "WHERE post.display = 0 AND postinfo.isexamina = 0 AND post.schoolid = school.schoolid "
+				+ "AND post.postid = postinfo.postid AND school.schoolusable = 1 GROUP BY post.schoolid) c "
+				+ "on school.schoolid = c.schoolid";
 		try {
 			return dao.executeQueryForList(sql);
 		} catch (ClassNotFoundException | SQLException e) {

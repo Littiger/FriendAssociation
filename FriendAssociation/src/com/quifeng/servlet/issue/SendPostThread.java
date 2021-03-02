@@ -38,7 +38,8 @@ public class SendPostThread implements Runnable{
 	String content;
 	//dao
 	issueDao issueDao;
-	
+	//是否需要审核
+	String postshenhe;
 	
 
 
@@ -50,7 +51,7 @@ public class SendPostThread implements Runnable{
 
 	public SendPostThread(String video, FileItem videoItem, String videoPrifix, List image, List<FileItem> imageItems,
 			List<String> prifixList, String uid, String placaid, String content,
-			com.quifeng.dao.issue.issueDao issueDao) {
+			com.quifeng.dao.issue.issueDao issueDao, String postshenhe) {
 		this.video = video;
 		this.videoItem = videoItem;
 		this.videoPrifix = videoPrifix;
@@ -61,6 +62,7 @@ public class SendPostThread implements Runnable{
 		this.placaid = placaid;
 		this.content = content;
 		this.issueDao = issueDao;
+		this.postshenhe = postshenhe;
 	}
 
 
@@ -89,7 +91,7 @@ public class SendPostThread implements Runnable{
 				String postid = PostMessage.get("postid").toString();
 				String schoolid = PostMessage.get("schoolid").toString();
 				//添加帖子信息
-				int count = issueDao.addPostInfo(postid, schoolid);
+				int count = issueDao.addPostInfo(postid, schoolid,postshenhe);
 				System.out.println(count);
 			}
 			
