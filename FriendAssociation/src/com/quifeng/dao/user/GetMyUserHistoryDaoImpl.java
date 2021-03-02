@@ -50,12 +50,17 @@ public class GetMyUserHistoryDaoImpl {
 			page1 = 1;
 		page1 = (page1 - 1) * count1;
 		
-		String sql = " select * from trilha "
+		String sql = "select * from "
+				+ "(select post.placaid,trilha.trilhaid,user.uid,user.username,user.useravatar,"
+				+ "post.postid,postinfo.postzan,postinfo.postos,postinfo.postshare,post.createtime,"
+				+ "post.posttext,post.postimg,post.postvideo "
+				+ "from trilha "
 				+ "left join post on trilha.postid=post.postid "
 				+ "left join user on user.uid=post.uid "
 				+ "LEFT JOIN postinfo on postinfo.postid=trilha.postid "
 				+ "where trilha.uid=? and post.display=0 and postinfo.isexamina=1 "
-				+ "GROUP BY trilha.postid ORDER BY trilha.trilhaid desc limit ?,?";
+				+ "ORDER BY trilha.trilhaid desc) t "
+				+ "GROUP BY postid ORDER BY trilhaid desc limit ?,?";
 		List<Map<String, Object>> data = null;
 		try {
 			data = dao.executeQueryForList(sql,
