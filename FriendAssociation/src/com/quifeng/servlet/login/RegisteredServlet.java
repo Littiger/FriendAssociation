@@ -73,6 +73,10 @@ public class RegisteredServlet {
 				print(out, data, "-1", "请输入三位以上的用户名");
 				return;
 			}
+			if (username.length() > 8) {
+				print(out, data, "-1", "用户名过长");
+				return;
+			}
 			if (ValiUtils.isStrSize(userpwd, 5)) {
 				print(out, data, "-1", "密码太简单了请输入六位以上的密码");
 				return;

@@ -81,6 +81,14 @@ public class ModifyMyUserinfoServlet {
 			print(out, data, "-5", "非法调用");
 			return;
 		}
+		if(uname.length() > 8){
+			print(out, data, "-1", "用户名过长");
+			return;
+		}
+		if(usigntext.length() > 12){
+			print(out, data, "-1", "个性签名过长");
+			return;
+		}
 
 		// 修改信息
 		int result = modifyMyUserinfoDaoImpl.modify(userMap.get("uid").toString(), uname, usigntext, usex, umajor, ubir,
