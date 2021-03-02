@@ -7,6 +7,7 @@ import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 
+import com.ndktools.javamd5.Mademd5;
 import com.quifeng.dao.token.TokenDao;
 import com.quifeng.utils.dao.Dao;
 import com.quifeng.utils.dao.DaoImpl;
@@ -676,7 +677,7 @@ public class CircleDao {
 	}
 
 	/**
-	 * 分享表添加数据
+	 * 分享表添加数据(返回秘钥)
 	 * 
 	 * @param postid
 	 * @param token
@@ -686,14 +687,20 @@ public class CircleDao {
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
-	public void addShare(String postid, String token)
+	public String addShare(String postid, String token)
 			throws NumberFormatException, ClassNotFoundException, SQLException, FileNotFoundException, IOException {
 		String uid = tokenDao.queryUidByToken(token);
 		String schoolid = queryUserById(uid).get("schoolid").toString();
-
-		dao.executeUpdate("insert into share values(0,?,?,0,?,0)",
-				new int[] { Types.INTEGER, Types.INTEGER, Types.INTEGER },
-				new Object[] { Integer.parseInt(postid), Integer.parseInt(uid), Integer.parseInt(schoolid) });
+		//分享时间
+		String time = System.currentTimeMillis()+"";
+		//生成加密秘钥
+		String key =new Mademd5().toMd5(uid+time);
+		
+		dao.executeUpdate("insert into share values(0,?,?,0,?,?,?,0)",
+				new int[] { Types.INTEGER, Types.INTEGER, Types.INTEGER,Types.VARCHAR,Types.VARCHAR},
+				new Object[] { Integer.parseInt(postid), Integer.parseInt(uid), Integer.parseInt(schoolid),time,key});
+		
+		return key;
 	}
 
 	/**
@@ -910,6 +917,40 @@ public class CircleDao {
 		return dao.executeQueryForMap("select * from osfirst where osfirstid=? and postid=?",
 				new int[] { Types.INTEGER, Types.INTEGER },
 				new Object[] { Integer.parseInt(osfirstid), Integer.parseInt(postid) });
+	}
+
+	/**
+	 * 通过分享秘钥查询信息
+	 * @param id
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 */
+	public Map<String, Object> querySharePostInfo(String id) throws ClassNotFoundException, SQLException {
+		String sql = "select share.uid shareuid,share.postid,"
+				+ "postinfo.postzan,postinfo.postos,postinfo.postshare,"
+				+ "post.createtime,post.posttext,post.postimg,post.postvideo,"
+				+ "u.username uname,u.useravatar,"
+				+ "postbk.placaid,postbk.placaname from share "
+				+ "LEFT JOIN post on post.postid = share.postid "
+				+ "LEFT JOIN postinfo on post.postid=postinfo.postid "
+				+ "LEFT JOIN postbk on post.placaid=postbk.placaid "
+				+ "LEFT JOIN user u on post.uid=u.uid "
+				+ "where share.key=?";
+		return dao.executeQueryForMap(sql, new int[]{Types.VARCHAR}, new Object[]{id});
+	}
+	
+	/**
+	 * 根据id查询帖子
+	 * @param postid
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 */
+	public Map<String, Object> queryPostById(String postid) throws NumberFormatException, ClassNotFoundException, SQLException {
+		String sql = "select * from post LEFT JOIN postinfo on post.postid=postinfo.postid where post.display=0 and postinfo.isexamina=1 and post.postid=?";
+		return dao.executeQueryForMap(sql, new int[]{Types.INTEGER}, new Object[]{Integer.parseInt(postid)});
 	}
 
 }

@@ -81,11 +81,11 @@ public class ModifyMyUserinfoServlet {
 			print(out, data, "-5", "非法调用");
 			return;
 		}
-		if(uname.length() > 8){
+		if(uname.length() > 6){
 			print(out, data, "-1", "用户名过长");
 			return;
 		}
-		if(usigntext.length() > 12){
+		if(usigntext.length() > 10){
 			print(out, data, "-1", "个性签名过长");
 			return;
 		}

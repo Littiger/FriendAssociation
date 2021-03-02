@@ -126,7 +126,7 @@ public class GetMyPostServlet {
 
 				dataP.put("userinfo", userinfo);
 				dataP.put("postid", postid);
-				dataP.put("great", great);
+				dataP.put("postzan", great);
 				dataP.put("type", type);
 				//dataP.put("isgreat", isgreat);
 				// 是否点赞或收藏
@@ -141,8 +141,8 @@ public class GetMyPostServlet {
 				} else {
 					dataP.put("collect", false);
 				}
-				dataP.put("comment", comment);
-				dataP.put("share", share);
+				dataP.put("postos", comment);
+				dataP.put("postshare", share);
 				dataP.put("placa", placa);
 				dataP.put("createtime", createtime);
 				dataP.put("posttext", posttext);

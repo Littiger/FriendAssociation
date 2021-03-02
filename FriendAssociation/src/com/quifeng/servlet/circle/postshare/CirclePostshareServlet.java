@@ -10,11 +10,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ndktools.javamd5.Mademd5;
 import com.quifeng.dao.circle.CircleDao;
 import com.quifeng.dao.token.TokenDao;
 
@@ -57,13 +60,35 @@ public class CirclePostshareServlet {
 				writer.write(jsonObject.toString());
 				return;
 			}
+			//判断帖子是否可查
+			Map<String, Object> post = circleDao.queryPostById(postid);
+			if(post == null || post.size() == 0){
+				jsonObject = new JSONObject();
+				jsonObject.put("code", "-1");
+				jsonObject.put("msg", "该帖子不可分享");
+				writer.write(jsonObject.toString());
+				return;
+			}
+			
+			
 			// share 表添加数据
-			circleDao.addShare(postid, token);
+			String key = circleDao.addShare(postid, token);
+			System.out.println(key);
+			
 			// postinfo分享列+1
 			circleDao.updateShare(postid);
-			jsonObject = new JSONObject();
+
+			//生成url
+			String url = "www.qiufengvip.top/share.html?id="+key;
+			System.out.println(url);
+			
+			Map<String, Object> data = new HashMap<String, Object>();
+			data.put("url", url);
+			
+ 			jsonObject = new JSONObject();
 			jsonObject.put("code", "200");
 			jsonObject.put("msg", "分享成功");
+			jsonObject.put("data", data);
 			writer.write(jsonObject.toString());
 			return;
 

@@ -73,7 +73,7 @@ public class RegisteredServlet {
 				print(out, data, "-1", "请输入三位以上的用户名");
 				return;
 			}
-			if (username.length() > 8) {
+			if (username.length() > 6) {
 				print(out, data, "-1", "用户名过长");
 				return;
 			}

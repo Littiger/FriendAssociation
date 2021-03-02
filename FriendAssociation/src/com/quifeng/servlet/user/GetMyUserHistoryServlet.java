@@ -171,10 +171,10 @@ public class GetMyUserHistoryServlet {
 				} else {
 					postmap.put("posttext", map.get("posttext"));
 				}
-				postmap.put("great", map.get("postzan"));//点赞数量
+				postmap.put("postzan", map.get("postzan"));//点赞数量
 				postmap.put("postaos", map.get("postaos"));//收藏数量
-				postmap.put("share", map.get("postshare"));//分享数量
-				postmap.put("comment", map.get("postos"));//评论数量
+				postmap.put("postshare", map.get("postshare"));//分享数量
+				postmap.put("postos", map.get("postos"));//评论数量
 				postmap.put("postsee", map.get("postsee"));//观看量
 
 				if (map.get("postvideo") != null) {
