@@ -167,5 +167,17 @@ public class LoginDao {
 		}
 		return count;
 	}
+	
+	/**
+	 * 获取黑名单
+	 * @param string
+	 * @return
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
+	 */
+	public Map<String, Object> queryBlackUser(String uid) throws NumberFormatException, ClassNotFoundException, SQLException {
+		return dao.executeQueryForMap("select * from blackname where uid=?", new int[]{Types.INTEGER}, new Object[]{Integer.parseInt(uid)});
+	}
 
 }

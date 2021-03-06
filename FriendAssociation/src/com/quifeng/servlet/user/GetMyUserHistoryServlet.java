@@ -87,43 +87,7 @@ public class GetMyUserHistoryServlet {
 			List dataList = new ArrayList<>();
 
 			for (Map<String, Object> map : historyinfo) {
-//			Map<String, Object> dataP = new HashMap<String, Object>();// data json容器
-//			Map<String, Object> userinfo = new HashMap<String, Object>();// userinfo json容器
-//			userinfo.put("username", map.get("username").toString());// 发帖人id
-//			userinfo.put("uid", map.get("uid").toString());// userid
-//			userinfo.put("useravatar", map.get("useravatar").toString());// 用户头像
-//
-//			int postid = Integer.valueOf(map.get("postid").toString());// 帖子id
-//			boolean isgreat = isGreat(map.get("zanid"));// 是否点赞
-//			String great = map.get("postzan").toString();// 点赞数量
-//			String comment = map.get("postos").toString();// 评论数量
-//			String share = map.get("postshare").toString();// 分享数量
-//			int type = isType(map);// 帖子类型
-//
-//			Map<String, Object> placa = new HashMap<String, Object>();// placa json容器
-//			placa.put("placaid", Integer.valueOf(map.get("postbk_placaid").toString()));// 帖子模块 id
-//			placa.put("placaname", map.get("placaname").toString());// 帖子模块name
-//
-//			String createtime = map.get("historytime").toString();// 此历史记录访问时间
-//			String posttextObj = map.get("posttext") == null ? "null" : map.get("posttext").toString();// 文本
-//			String postimg = map.get("postimg") == null ? "null" : map.get("postimg").toString();// 图片地址
-//			String postvideo = map.get("postvideo") == null ? "null" : map.get("postvideo").toString();// 视频地址
-//
-//			dataP.put("userinfo", userinfo);
-//			dataP.put("postid", postid);
-//			dataP.put("great", great);
-//			dataP.put("type", type);
-//			dataP.put("isgreat", isgreat);
-//			dataP.put("comment", comment);
-//			dataP.put("share", share);
-//			dataP.put("placa", placa);
-//			dataP.put("createtime", createtime);
-//			dataP.put("posttext", posttextObj);
-//			dataP.put("postimg", postimg);
-//			dataP.put("postvideo", postvideo);
-//			dataList.add(dataP);
-				
-				
+
 				// 查看该帖子是否点赞或收藏
 				Map<String, Object> zanAos = circleDao.queryUserZanAndAos(map.get("postid").toString(), token);
 				Map<String, Object> postmap = new HashMap<String, Object>();

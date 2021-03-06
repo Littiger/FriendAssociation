@@ -101,7 +101,7 @@ public class DateUtils {
 		}
 		// 大于1天
 		else if (System.currentTimeMillis() - time > 86400000) {
-			return Math.abs(time / 1000 / 60 / 60 / 24) + "天前";
+			return Math.abs((System.currentTimeMillis() - time) / 1000 / 60 / 60 / 24) + "天前";
 		}
 		// 小于一天
 		else if (System.currentTimeMillis() - time > 3600000) {
@@ -123,4 +123,6 @@ public class DateUtils {
 		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return sd.format(date);
 	}
+	
+	
 }

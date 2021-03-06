@@ -96,17 +96,19 @@ public class FaceServlet {
 
 			String uid = userMap.get("uid").toString().trim();
 
+			//人脸数量
 			int count = faceDao.queryCountById(uid);
 
 			if (count < 8) {
 				String[] faceJpegPath = ImgeUtise.detectFaceImage(mat_01, FacePathUtis.getPath(request, ""));
-
+				int flag = 1;
 				for (String string : faceJpegPath) {
 					System.out.println(string);
 					String faceBase64 = Base64Utils.imageToBase64Str(string);
 					faceDao.addFace(uid, faceBase64, System.currentTimeMillis() + "");
 				}
 				data.put("isover", false);
+				dataF.put("msg", "正在分析人脸特征("+count+"/8)");
 				dataF.put("data", data);
 				out.print(JSON.toJSONString(dataF));
 				out.close();

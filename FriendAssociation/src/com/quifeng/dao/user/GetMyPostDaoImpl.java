@@ -113,17 +113,20 @@ public class GetMyPostDaoImpl {
 			page1 = 1;
 		page1 = (page1 - 1) * count1;
 
-		String sql = "SELECT\n" + "	*\n" + "FROM\n" + "	post\n"
-				+ "	LEFT JOIN (SELECT postid AS historyid, createtime AS historytime FROM trilha WHERE uid = ? ) AS h ON h.historyid = post.postid \n"
-				+ "	LEFT JOIN (select username,useravatar,uid as user_uid from `user`) as u on u.user_uid = post.uid\n"
-				+ "	LEFT JOIN (select placaid as postbk_placaid,placaname from postbk) as bk on bk.postbk_placaid = post.placaid\n"
-				+ "	LEFT JOIN (select * from zan where postid in (select postid from trilha where uid = ? ) and uid = ? and display = 0 GROUP BY postid) as z on z.postid = post.postid\n"
-				+ "	LEFT JOIN (select postid,postzan,postshare,postos from postinfo) as p on p.postid = post.postid\n"
-				+ "WHERE\n" + "	post.uid = ? order by createtime DESC limit ?,?;";
+		String sql = "select post.postid,post.posttext,post.createtime,"
+				+ "postinfo.postshare,postinfo.postos,postinfo.postzan,"
+				+ "post.postimg,post.postvideo,user.uid,user.username,"
+				+ "user.useravatar,postbk.placaid,postbk.placaname "
+				+ "from post "
+				+ "LEFT JOIN postinfo on post.postid=postinfo.postid "
+				+ "LEFT JOIN user on post.uid=user.uid "
+				+ "LEFT JOIN postbk on post.placaid=postbk.placaid "
+				+ "where post.display=0 and postinfo.isexamina=1 and user.uid=? "
+				+ "ORDER BY postid desc LIMIT ?,?";
 		List<Map<String, Object>> data = null;
 		try {
-			data = dao.executeQueryForList(sql, new int[] { Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR,
-					Types.INTEGER, Types.INTEGER }, new Object[] { uid, uid, uid, uid, page1, count1 });
+			data = dao.executeQueryForList(sql, new int[] { Types.INTEGER,Types.INTEGER,Types.INTEGER
+					}, new Object[] { uid, page1, count1 });
 		} catch (ClassNotFoundException | SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -3,6 +3,7 @@ package com.quifeng.servlet.login;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -217,8 +218,11 @@ public class loginServlet {
 	 * @param request
 	 * @param response
 	 * @throws IOException
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
+	 * @throws NumberFormatException 
 	 */
-	public void getUserinfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void getUserinfo(HttpServletRequest request, HttpServletResponse response) throws IOException, NumberFormatException, ClassNotFoundException, SQLException {
 		String token = request.getParameter("token");
 		PrintWriter out = response.getWriter();
 
@@ -228,6 +232,16 @@ public class loginServlet {
 
 		if (userMap == null) {
 			print(out, data, "-1", "未登录");
+			return;
+		}
+		String userzt = userMap.get("userzt").toString();
+		if(userzt.equals("6") || userzt.equals("5")){
+			print(out, data, "-1", "请完善该账号信息");
+			return;
+		}
+		Map<String, Object> blackUser = login.queryBlackUser(userMap.get("uid").toString());
+		if(blackUser != null && blackUser.size() > 0){
+			print(out, data, "-1", "您已被封禁");
 			return;
 		}
 

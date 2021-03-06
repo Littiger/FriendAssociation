@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSON;
 import com.quifeng.dao.circle.CircleDao;
 import com.quifeng.dao.user.GetMyPostDaoImpl;
+import com.quifeng.utils.dao.DateUtils;
 
 /**
  * APi : 获取我的发帖 URL : /api/info/getmepost
@@ -110,28 +111,40 @@ public class GetMyPostServlet {
 				int postid = Integer.valueOf(map.get("postid").toString());// 帖子id
 				//boolean isgreat = isGreat(map.get("zanid"));// 是否点赞
 				System.out.println(map);
-				String great = map.get("postzan").toString();// 点赞数量
-				String comment = map.get("postos").toString();// 评论数量
-				String share = map.get("postshare").toString();// 分享数量
-				int type = isType(map);// 帖子类型
+				String postzan = map.get("postzan").toString();// 点赞数量
+				String postos = map.get("postos").toString();// 评论数量
+				String postshare = map.get("postshare").toString();// 分享数量
+				// 帖子类型
+				// 视频帖
+				if (map.get("postvideo") != null) {
+					dataP.put("type", 3);
+				}
+				// 图片帖
+				else if (map.get("postimg") != null) {
+					dataP.put("type", 2);
+				}
+				// 文字帖
+				else if (map.get("posttext") != null) {
+					dataP.put("type", 1);
+				}
 
 				Map<String, Object> placa = new HashMap<String, Object>();// placa json容器
-				placa.put("placaid", Integer.valueOf(map.get("postbk_placaid").toString()));// 帖子模块 id
+				placa.put("placaid", Integer.valueOf(map.get("placaid").toString()));// 帖子模块 id
 				placa.put("placaname", map.get("placaname").toString());// 帖子模块name
 
-				String createtime = map.get("createtime").toString();// 此历史记录访问时间
+				String createtime = DateUtils.MillToTime(map.get("createtime").toString());// 发帖时间
 				String posttext = map.get("posttext").toString();// 文本
 				String postimg = map.get("postimg") == null ? "null" : map.get("postimg").toString();// 图片地址
 				String postvideo = map.get("postvideo") == null ? "null" : map.get("postvideo").toString();// 视频地址
 
 				dataP.put("userinfo", userinfo);
 				dataP.put("postid", postid);
-				dataP.put("postzan", great);
-				dataP.put("type", type);
+				dataP.put("postzan", postzan);
+				//dataP.put("type", type);
 				//dataP.put("isgreat", isgreat);
 				// 是否点赞或收藏
 				if (zanAos != null && !zanAos.get("zuid").toString().equals("0")) {
-					System.out.println(map.get("zuid"));
+					//System.out.println(zanAos.get("zuid"));
 					dataP.put("isgreat", true);
 				} else {
 					dataP.put("isgreat", false);
@@ -141,14 +154,15 @@ public class GetMyPostServlet {
 				} else {
 					dataP.put("collect", false);
 				}
-				dataP.put("postos", comment);
-				dataP.put("postshare", share);
+				dataP.put("postos", postos);
+				dataP.put("postshare", postshare);
 				dataP.put("placa", placa);
 				dataP.put("createtime", createtime);
 				dataP.put("posttext", posttext);
 				dataP.put("postimg", postimg);
 				dataP.put("postvideo", postvideo);
 				invitaionList.add(dataP);
+				
 			}
 			dataList.put("invitaionList", invitaionList);// 存放
 

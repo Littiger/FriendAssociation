@@ -21,6 +21,7 @@ import com.quifeng.utils.generate.ValiUtils;
 import com.quifeng.utils.sms.SMSUtils;
 import com.quifeng.utils.state.StateUtils;
 import com.quifeng.utils.state.UserType;
+import com.quifeng.utils.userinfo.UserInfoUtil;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 
 /**
@@ -73,7 +74,7 @@ public class RegisteredServlet {
 				print(out, data, "-1", "请输入三位以上的用户名");
 				return;
 			}
-			if (username.length() > 6) {
+			if (UserInfoUtil.userNameYanZheng(username,16,16,16) == false) {
 				print(out, data, "-1", "用户名过长");
 				return;
 			}

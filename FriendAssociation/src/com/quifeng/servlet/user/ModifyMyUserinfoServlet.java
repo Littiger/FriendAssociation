@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
 import com.quifeng.dao.user.ModifyMyUserinfoDaoImpl;
+import com.quifeng.utils.userinfo.UserInfoUtil;
 
 /**
  * APi : 修改个人信息 URL : /api/info/modify
@@ -81,11 +82,12 @@ public class ModifyMyUserinfoServlet {
 			print(out, data, "-5", "非法调用");
 			return;
 		}
-		if(uname.length() > 6){
+		System.out.println(uname.getBytes().length);
+		if(UserInfoUtil.userNameYanZheng(uname,16,16,16) == false){
 			print(out, data, "-1", "用户名过长");
 			return;
 		}
-		if(usigntext.length() > 10){
+		if(UserInfoUtil.userNameYanZheng(usigntext,24,24,24) == false){
 			print(out, data, "-1", "个性签名过长");
 			return;
 		}
